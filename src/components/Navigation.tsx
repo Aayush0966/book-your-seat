@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
-import logo from '@/assets/studio.png';
+import logo from '@/assets/logo.png';
 import { usePathname } from 'next/navigation'
 
 
@@ -26,8 +26,8 @@ const Navigation = () => {
           <Link href="/" className="flex items-center">
             <Image 
               src={logo} 
-              width={40} 
-              height={40} 
+              width={160} 
+              height={120} 
               alt="Studio Logo"
               className="hover:scale-105 transition-transform duration-200"
             />
