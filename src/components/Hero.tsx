@@ -1,40 +1,30 @@
 'use client'
 
-import { nowPlayingApiUrl } from '@/lib/constants';
-import axios from 'axios';
-import Image from 'next/image';
+import { Store } from '@/types/movie'; 
+import useMovieStore from '@/store/store'; 
+import Image from 'next/image'; 
 import React, { useState, useEffect } from 'react';
-import { Movie } from '@/types/movie';
 
-const  Hero = () => {
-    const [moviesList, setMoviesList] = useState<Movie[]>([])
-
-    const fetchBanners = async() => {
-        const api_key = process.env.NEXT_PUBLIC_TMDB_API_KEY;
-        const response = await axios.get(`${nowPlayingApiUrl}?api_key=${api_key}`);
-        const data = response.data.results;
-        setMoviesList(data)
-    }
-
-    useEffect(() => {
-        fetchBanners();
-    }, []);
-
-    const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
+const Hero = () => {
+  const items = useMovieStore((state: Store) => state.items); 
+  
+  const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentMovieIndex((prevIndex) => (prevIndex + 1) % moviesList.length); // Cycle through the movies
-    }, 10000); 
+    if (items.length > 0) {
+      const intervalId = setInterval(() => {
+        setCurrentMovieIndex((prevIndex) => (prevIndex + 1) % items.length);
+        }, 10000); 
 
-    return () => clearInterval(intervalId); 
-  }, [moviesList.length]);
+      return () => clearInterval(intervalId); 
+    }
+  }, [items.length]); 
 
-  const currentMovie = moviesList[currentMovieIndex];
+  const currentMovie = items[currentMovieIndex];
 
   return (
     <div className="w-full mx-auto rounded-xl p-10 flex justify-center items-center">
-      <div className="relative h-96 group overflow-hidden rounded-xl">
+      <div className="relative h-[600px] group overflow-hidden rounded-xl">
         {currentMovie && (
           <Image
             src={`https://image.tmdb.org/t/p/original${currentMovie.backdrop_path}`} // Fetch poster from TMDB API
