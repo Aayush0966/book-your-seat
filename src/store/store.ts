@@ -14,7 +14,7 @@ const useMovieStore = create<Store>((set) => ({
         const data = response.data.results;
       set({ items: data, isLoading: false }) 
     } catch (error) {
-      set({ error: 'Failed to fetch items', isLoading: false }) 
+      set({ error: `Failed to fetch items: ${error}`, isLoading: false }) 
     }
   },
 }))

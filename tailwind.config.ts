@@ -37,18 +37,20 @@ export default {
                 'dark-error': '#c0392b'
             },
             animation: {
-                'fade-in': 'fadeIn 0.5s ease-in',
-                'slide-up': 'slideUp 0.6s ease-out',
-                'zoom-in': 'zoomIn 0.4s ease-out'
+                'fade-in': 'fadeIn 0.8s ease-out forwards',
+                'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                'zoom-in': 'zoomIn 0.4s ease-out',
+                'delay-200': 'none 200ms',
+                'delay-300': 'none 300ms'
             },
             keyframes: {
                 fadeIn: {
-                    '0%': { opacity: '0' },
-                    '100%': { opacity: '1' }
+                    'from': { opacity: '0' },
+                    'to': { opacity: '1' }
                 },
                 slideUp: {
-                    '0%': { transform: 'translateY(20px)', opacity: '0' },
-                    '100%': { transform: 'translateY(0)', opacity: '1' }
+                    'from': { transform: 'translateY(30px)', opacity: '0' },
+                    'to': { transform: 'translateY(0)', opacity: '1' }
                 },
                 zoomIn: {
                     '0%': { transform: 'scale(0.95)', opacity: '0' },
