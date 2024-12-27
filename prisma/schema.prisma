@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -14,12 +15,17 @@ model User {
   password      String
   role          Role      @default(USER)
   contactNumber String    @db.VarChar(20)
+  otp           String?   @db.VarChar(6)  
+  otpExpiresAt  DateTime? 
+
   bookings      Booking[]
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   @@index([email])
 }
+
 
 model Movie {
   id          Int      @id @default(autoincrement())

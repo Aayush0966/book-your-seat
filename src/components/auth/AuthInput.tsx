@@ -4,12 +4,14 @@ import { LucideIcon } from 'lucide-react';
 interface AuthInputProps {
   icon: LucideIcon;
   type: string;
+  name: string
   placeholder: string;
 }
 
 const AuthInput = ({ 
   icon: Icon, 
   type,  
+  name,
   placeholder 
 }: AuthInputProps) => {
   return (
@@ -19,6 +21,7 @@ const AuthInput = ({
       </div>
       <input
         type={type}
+        name={name}
         className="block w-full pl-10 pr-3 py-3 border border-gray-700 rounded-lg bg-gray-900/50 text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
         placeholder={placeholder}
         required

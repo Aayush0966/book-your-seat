@@ -9,7 +9,10 @@ export function AdminLogin() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle admin login logic here
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get('email')
+    const password = formData.get('password')
+    console.log("Email: ", email, " Password: ", password)
   };
 
   return (
@@ -23,10 +26,12 @@ export function AdminLogin() {
               <AuthInput
                 icon={Mail}
                 type="email"
+                name= "email"
                 placeholder="Admin Email"
               />
               <AuthInput
                 icon={Lock}
+                name= "password"
                 type="password"
                 placeholder="Password"
               />

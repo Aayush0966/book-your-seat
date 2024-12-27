@@ -1,5 +1,3 @@
-import Hero from "@/components/Hero";
-import NowShowingSection from "@/components/NowShowingSection";
 
 export default function Home() {
   return (
