@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,3 +7,88 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            Int       @id @default(autoincrement())
+  fullName      String    @db.VarChar(100)
+  email         String    @unique @db.VarChar(255)
+  password      String
+  role          Role      @default(USER)
+  contactNumber String    @db.VarChar(20)
+  bookings      Booking[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([email])
+}
+
+model Movie {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  imageUrl    String   @db.Text
+  genres      String[]
+  duration    Int      @db.Integer
+  releaseDate DateTime
+  rating      Float    @db.DoublePrecision
+  shows       Show[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([title])
+}
+
+model Screen {
+  id           Int      @id @default(autoincrement())
+  screenNumber Int      @unique
+  totalSeats   Int      @db.Integer
+  shows        Show[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([screenNumber])
+}
+
+model Show {
+  id        Int       @id @default(autoincrement())
+  movieId   Int
+  screenId  Int
+  showTime  DateTime
+  price     Float     @db.DoublePrecision
+  movie     Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  screen    Screen    @relation(fields: [screenId], references: [id], onDelete: Cascade)
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([movieId])
+  @@index([screenId])
+  @@index([showTime])
+}
+
+model Booking {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  showId      Int
+  seatsBooked String[]
+  totalPrice  Float    @db.DoublePrecision
+  bookingDate DateTime @default(now())
+  status      Status   @default(CONFIRMED)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  show        Show     @relation(fields: [showId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([showId])
+  @@index([status])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Status {
+  CONFIRMED
+  CANCELLED
+}
