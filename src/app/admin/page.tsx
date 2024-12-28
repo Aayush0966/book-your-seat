@@ -1,6 +1,7 @@
 import { AdminLogin } from '@/components/auth/AdminLogin'
 import React from 'react'
 import { cookies } from 'next/headers'
+import Dashboard from '@/components/admin/Dashboard'
 
 const page = async () => {
     const cookieStore = await cookies()
@@ -9,7 +10,7 @@ const page = async () => {
   return (
     <>
     {
-        loggedIn && <div>Hi</div>
+        loggedIn && <Dashboard />
     }
     {
         !loggedIn && <AdminLogin />
