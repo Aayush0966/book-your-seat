@@ -14,9 +14,9 @@ model User {
   email         String    @unique @db.VarChar(255)
   password      String
   role          Role      @default(USER)
-  contactNumber String    @db.VarChar(20)
-  otp           String?   @db.VarChar(6)  
-  otpExpiresAt  DateTime? 
+  contactNumber Int    
+  otp           Int?   @db.Integer  
+  otpExpiresAt  BigInt?    
 
   bookings      Booking[]
 

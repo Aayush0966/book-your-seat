@@ -1,9 +1,10 @@
 import { AdminLogin } from '@/components/auth/AdminLogin'
 import React from 'react'
+import { cookies } from 'next/headers'
 
-const page = () => {
-
-    const loggedIn = false
+const page = async () => {
+    const cookieStore = await cookies()
+    const loggedIn = cookieStore.get('loggedIn')
 
   return (
     <>

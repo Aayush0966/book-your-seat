@@ -41,7 +41,8 @@ export default {
                 'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                 'zoom-in': 'zoomIn 0.4s ease-out',
                 'delay-200': 'none 200ms',
-                'delay-300': 'none 300ms'
+                'delay-300': 'none 300ms',
+                "caret-blink": "caret-blink 1.25s ease-out infinite",
             },
             keyframes: {
                 fadeIn: {
@@ -55,7 +56,11 @@ export default {
                 zoomIn: {
                     '0%': { transform: 'scale(0.95)', opacity: '0' },
                     '100%': { transform: 'scale(1)', opacity: '1' }
-                }
+                },
+                "caret-blink": {
+                    "0%,70%,100%": { opacity: "1" },
+                    "20%,50%": { opacity: "0" },
+                  },
             }
         },
     },

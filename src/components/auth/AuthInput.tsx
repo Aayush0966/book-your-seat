@@ -10,7 +10,7 @@ interface AuthInputProps {
 
 const AuthInput = ({ 
   icon: Icon, 
-  type,  
+type,     
   name,
   placeholder 
 }: AuthInputProps) => {

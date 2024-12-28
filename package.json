@@ -25,6 +25,7 @@
     "prisma:wipe": "npx prisma migrate reset --force && npx prisma db push"
   },
   "dependencies": {
+    "@emailjs/nodejs": "^5.0.2",
     "@prisma/client": "^6.1.0",
     "@radix-ui/react-slot": "^1.1.1",
     "@tanstack/react-query": "^5.62.10",
@@ -32,12 +33,16 @@
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "emailjs-com": "^3.2.0",
     "framer-motion": "^11.15.0",
+    "input-otp": "^1.4.1",
     "lucide-react": "^0.469.0",
     "next": "15.1.2",
     "next-auth": "^4.24.11",
+    "nodemailer": "^6.9.16",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.4.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "zustand": "^5.0.2"
@@ -47,6 +52,7 @@
     "@commitlint/config-conventional": "^19.6.0",
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "commitizen": "^4.3.1",
