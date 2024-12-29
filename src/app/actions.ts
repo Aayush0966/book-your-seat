@@ -29,6 +29,17 @@ export const authenticateOTP = async (email:string, OTP:number) => {
     return user;
 }
 
+export const logOutAdmin = async () => {
+    try {
+        const cookieStore = await cookies();
+        cookieStore.delete('loggedIn');
+        return true
+    } catch (error) {
+        console.log('Failed to logout: ', error)
+        return false
+    }
+}
+
 export const genOTP = async () => {
     const numbers = '123456789'
     let otp = '';

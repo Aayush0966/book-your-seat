@@ -1,6 +1,10 @@
 'use client'
 import React from 'react'
-import { Film, Ticket, Users, Clock, Settings, LogOut, LayoutDashboardIcon } from 'lucide-react';
+import { Film, Ticket, Users, Clock, Settings, LayoutDashboardIcon } from 'lucide-react';
+import { logOutAdmin } from '@/app/actions';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import LogoutModal from './LogoutModal';
 
 interface SidebarProps {
     activeItem: string;
@@ -8,10 +12,16 @@ interface SidebarProps {
   }
 
 const Sidebar = ({activeItem, setActiveItem}: SidebarProps) => {
-
+    const router = useRouter();
 
     const handleActive = (label: string) => {
         setActiveItem(label.toLowerCase())
+    }
+
+    const handleLogout = async () => {
+      const response = await logOutAdmin();
+      if (!response) toast.error("Failed to logout.")
+      router.push('/admin')
     }
 
   return (
@@ -28,10 +38,9 @@ const Sidebar = ({activeItem, setActiveItem}: SidebarProps) => {
           { icon: Users, label: 'Users' },
           { icon: Clock, label: 'Showtimes' },
           { icon: Settings, label: 'Settings' },
-          {icon: LogOut, label: 'Log out'}
         ].map((item) => (
           <button
-            onClick={(e: React.MouseEvent) => handleActive(item.label)}
+            onClick={() => handleActive(item.label)}
             key={item.label}
             className={`flex w-full items-center px-6 py-3 text-sm ${
               activeItem === item.label.toLowerCase()
@@ -43,6 +52,10 @@ const Sidebar = ({activeItem, setActiveItem}: SidebarProps) => {
             {item.label}
           </button>
         ))}
+      </div>
+      <div className= 'flex w-full items-center px-6 py-3 text-sm text-gray-600 hover:bg-gray-50'>
+    <LogoutModal  onLogout={handleLogout} />
+    
       </div>
     </nav>
   </div>

@@ -3,11 +3,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from '@/components/ui/button';
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { X, Upload, Plus } from 'lucide-react';
+import { X,  Plus } from 'lucide-react';
 
 interface MovieFormProps {
   closeForm: () => void;
@@ -37,9 +35,6 @@ const MovieForm = ({ closeForm }: MovieFormProps) => {
           </TabsList>
 
           <TabsContent value="details" className="space-y-6">
-            {/* Image Upload Section */}
-            
-
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="title">Movie Title *</Label>
@@ -62,18 +57,11 @@ const MovieForm = ({ closeForm }: MovieFormProps) => {
 
               <div className="space-y-2">
                 <Label htmlFor="genre">Genre *</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select genre" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="action">Action</SelectItem>
-                    <SelectItem value="comedy">Comedy</SelectItem>
-                    <SelectItem value="drama">Drama</SelectItem>
-                    <SelectItem value="horror">Horror</SelectItem>
-                    <SelectItem value="scifi">Sci-Fi</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input
+                id="genre"
+                type='text'
+                placeholder='action, comedy, animation'
+                />
               </div>
 
               <div className="space-y-2">
@@ -84,9 +72,8 @@ const MovieForm = ({ closeForm }: MovieFormProps) => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="english">English</SelectItem>
-                    <SelectItem value="spanish">Spanish</SelectItem>
-                    <SelectItem value="french">French</SelectItem>
-                    <SelectItem value="german">German</SelectItem>
+                    <SelectItem value="hindi">Hindi</SelectItem>
+                    <SelectItem value="nepalese">Nepali</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
