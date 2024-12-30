@@ -1,12 +1,31 @@
 export interface Movie {
-    id: number;
     title: string;
-    backdrop_path: string;
-    poster_path: string;
-    overview: string;
-    release_date: string;
-    vote_average: number;
-    vote_count: number;
+    genre: string;
+    duration: number;
+    description: string;
+    director: string;
+    release: number;
+    language: string;
+    castMembers: string[];
+}
+
+export interface Show {
+    startDate: number
+    endDate : number
+    screenId : string
+    showTimes: string[]
+    seats?: seat[]
+
+}
+export interface Price {
+  screenId : string
+  seatCategory : seat[]
+  }
+
+interface seat {
+    seatType: string;
+    price: number
+
 }
 
 export interface Store {

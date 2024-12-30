@@ -32,6 +32,7 @@ model Movie {
   director    String   @db.Text
   imageUrl    String   @db.Text
   genres      String[]
+  casts       String[]
   language    String   @db.Text
   duration    Int      @db.Integer
   releaseDate DateTime
@@ -58,6 +59,8 @@ model Show {
   movieId   Int
   screenId  Int
   showTime  DateTime
+  startDate Int
+  endDate   Int
   price     Float     @db.DoublePrecision
   movie     Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
   screen    Screen    @relation(fields: [screenId], references: [id], onDelete: Cascade)

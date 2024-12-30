@@ -5,14 +5,33 @@ import { X } from 'lucide-react';
 import DetailForm from './DetailForm';
 import ShowtimeForm from './ShowTimeForm';
 import PricingForm from './PricingForm';
+import { Movie, Price, Show } from '@/types/movie';
 
 interface MovieFormProps {
   closeForm: () => void;
 }
-
 const MovieForm = ({ closeForm }: MovieFormProps) => {
+
+  const [movieDetails, setMovieDetails] = React.useState<Movie>()
+  const [showDetails, setShowDetails] = React.useState<Show[]>([])
+
+
+
+  const handleAddPrice = (prices: Price[]) => {
+    prices.forEach((price) => {
+      showDetails.forEach((show) => {
+        if (price.screenId === show.screenId) {
+          console.log(price, show)
+          show.seats = price.seatCategory
+        }
+      })
+    })
+  }
+
+  console.log(movieDetails)
+
   return (
-    <form className="mt-6 bg-white rounded-lg shadow-lg max-w-5xl mx-auto">
+    <div className="mt-6 bg-white rounded-lg shadow-lg max-w-5xl mx-auto">
       <div className="flex items-center justify-between p-6 border-b">
         <h2 className="text-2xl font-bold text-gray-800">Add New Movie</h2>
         <Button 
@@ -34,18 +53,16 @@ const MovieForm = ({ closeForm }: MovieFormProps) => {
           </TabsList>
 
           <TabsContent value="details">
-            <DetailForm />
-            <div className="flex justify-end space-x-3 pt-6 mt-6 border-t">
-            </div>
+            <DetailForm setDetails={(movie: Movie) => setMovieDetails(movie)} />
           </TabsContent>
 
 
           <TabsContent value="showtime">
-            <ShowtimeForm />
+            <ShowtimeForm setShow={(shows:Show[]) => setShowDetails(shows)} />
           </TabsContent>
 
           <TabsContent value="pricing">
-            <PricingForm />
+            <PricingForm setPrice={handleAddPrice} />
            
           </TabsContent>
         </Tabs>
@@ -55,7 +72,7 @@ const MovieForm = ({ closeForm }: MovieFormProps) => {
             </div>
       </div>
 
-    </form>
+    </div>
   );
 };
 

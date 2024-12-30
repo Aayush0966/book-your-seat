@@ -12,8 +12,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
+import { Movie } from '@/types/movie'
 
-const DetailForm = () => {
+const DetailForm = ({setDetails}: {setDetails: (movie: Movie) => void;}) => {
   const [castMembers, setCastMembers] = useState<string[]>([])
   const [cast, setCast] = useState('')
 
@@ -22,6 +23,21 @@ const DetailForm = () => {
       setCastMembers([...castMembers, cast.trim()])
       setCast('')
     }
+  }
+
+
+  const handleDetails = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const title = formData.get('title') as string;
+    const duration = parseInt(formData.get('duration') as string, 10);
+    const genre = formData.get('genre') as string;
+    const language = formData.get('language') as string;
+    const release = new Date(formData.get('release') as string).getTime();
+    const director = formData.get('director') as string;
+    const description = formData.get('description') as string;
+    const movie: Movie = { title, director, duration, genre, castMembers, language, release, description };
+    setDetails(movie);
   }
 
   const handleCastKeyPress = (e: React.KeyboardEvent) => {
@@ -38,11 +54,12 @@ const DetailForm = () => {
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardContent>
-        <div className="grid mt-6 gap-6 md:grid-cols-2">
+        <form onSubmit={handleDetails} className="grid mt-6 gap-6 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="title">Movie Title *</Label>
             <Input 
               id="title" 
+              name='title'
               placeholder="Enter movie title"
               className="focus-visible:ring-blue-500"
             />
@@ -53,6 +70,7 @@ const DetailForm = () => {
             <Input 
               id="duration" 
               type="number" 
+              name='duration'
               placeholder="Enter duration"
               min="1"
               className="focus-visible:ring-blue-500"
@@ -64,6 +82,7 @@ const DetailForm = () => {
             <Input
               id="genre"
               type='text'
+              name='genre'
               placeholder='action, comedy, animation'
               className="focus-visible:ring-blue-500"
             />
@@ -71,7 +90,7 @@ const DetailForm = () => {
 
           <div className="space-y-2">
             <Label htmlFor="language">Language *</Label>
-            <Select>
+            <Select name='language'>
               <SelectTrigger className="focus-visible:ring-blue-500">
                 <SelectValue placeholder="Select language" />
               </SelectTrigger>
@@ -88,6 +107,7 @@ const DetailForm = () => {
             <Input 
               id="release" 
               type="date"
+              name='release'
               className="focus-visible:ring-blue-500"
             />
           </div>
@@ -96,6 +116,7 @@ const DetailForm = () => {
             <Label htmlFor="director">Director</Label>
             <Input 
               id="director" 
+              name='director'
               placeholder="Enter director name"
               className="focus-visible:ring-blue-500"
             />
@@ -145,12 +166,20 @@ const DetailForm = () => {
             <Label htmlFor="description">Synopsis *</Label>
             <Textarea 
               id="description"
+              name='description'
               placeholder="Enter movie synopsis"
               rows={4}
               className="focus-visible:ring-blue-500"
             />
           </div>
-        </div>
+          <Button 
+            type="submit"
+            variant="destructive"
+            className="col-span-2 w-fit mx-auto py-2 mt-4"
+          >
+            Save Movie
+          </Button>
+        </form>
       </CardContent>
     </Card>
   )

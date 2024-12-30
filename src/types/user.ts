@@ -9,7 +9,7 @@ export type UserType = {
     role: Role;
     contactNumber: number;
     otp: number | null;
-    otpExpiresAt: number | null;
+    otpExpiresAt: bigint | null;
     createdAt: Date;
     updatedAt: Date;
 }
