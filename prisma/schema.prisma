@@ -14,12 +14,10 @@ model User {
   email         String    @unique @db.VarChar(255)
   password      String
   role          Role      @default(USER)
-  contactNumber Int    
+  contactNumber Int   
   otp           Int?   @db.Integer  
   otpExpiresAt  BigInt?    
-
   bookings      Booking[]
-
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -31,6 +29,7 @@ model Movie {
   id          Int      @id @default(autoincrement())
   title       String   @db.VarChar(255)
   description String   @db.Text
+  director    String   @db.Text
   imageUrl    String   @db.Text
   genres      String[]
   language    String   @db.Text
@@ -40,7 +39,6 @@ model Movie {
   shows       Show[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
   @@index([title])
 }
 
