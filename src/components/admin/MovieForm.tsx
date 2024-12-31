@@ -15,20 +15,22 @@ const MovieForm = ({ closeForm }: MovieFormProps) => {
   const [movieDetails, setMovieDetails] = React.useState<Movie>()
   const [showDetails, setShowDetails] = React.useState<Show[]>([])
 
-
-
   const handleAddPrice = (prices: Price[]) => {
     prices.forEach((price) => {
       showDetails.forEach((show) => {
-        if (price.screenId === show.screenId) {
-          console.log(price, show)
+        if (price.screenNumber === show.screenNumber) {
           show.seats = price.seatCategory
         }
       })
     })
+    
   }
 
-  console.log(movieDetails)
+  const handleSubmit = () => {
+    console.log(movieDetails)
+    console.log(showDetails)
+  }
+
 
   return (
     <div className="mt-6 bg-white rounded-lg shadow-lg max-w-5xl mx-auto">
@@ -68,7 +70,7 @@ const MovieForm = ({ closeForm }: MovieFormProps) => {
         </Tabs>
         <div className="flex justify-end space-x-3 pt-6 mt-6">
               <Button variant="outline">Cancel</Button>
-              <Button className="bg-blue-600 hover:bg-blue-700">Add Movie</Button>
+              <Button onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-700">Add Movie</Button>
             </div>
       </div>
 

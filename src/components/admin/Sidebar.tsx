@@ -13,6 +13,7 @@ interface SidebarProps {
 
 const Sidebar = ({activeItem, setActiveItem}: SidebarProps) => {
     const router = useRouter();
+    
 
     const handleActive = (label: string) => {
         setActiveItem(label.toLowerCase())
@@ -25,9 +26,9 @@ const Sidebar = ({activeItem, setActiveItem}: SidebarProps) => {
     }
 
   return (
-    <div className="relative  min-h-screen w-64 bg-white shadow-lg">
+    <div className="relative sm:w-40 w-20  min-h-screen  bg-white shadow-lg">
     <div className="p-6">
-      <h2 className="text-xl font-bold text-gray-800">Movie Admin</h2>
+      <h2 className="text-xs sm:text-xl font-bold text-gray-800">Movie Admin</h2>
     </div>
     <nav className="mt-6">
       <div className="space-y-1">
@@ -44,12 +45,12 @@ const Sidebar = ({activeItem, setActiveItem}: SidebarProps) => {
             key={item.label}
             className={`flex w-full items-center px-6 py-3 text-sm ${
               activeItem === item.label.toLowerCase()
-                ? 'bg-gray-100 text-blue-600' 
+                ? 'sm:bg-gray-100 bg-white text-blue-600' 
                 : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
             <item.icon className="mr-3 h-5 w-5" />
-            {item.label}
+            <span className='sm:block hidden'> {item.label}  </span>
           </button>
         ))}
       </div>

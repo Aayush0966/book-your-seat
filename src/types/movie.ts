@@ -4,7 +4,8 @@ export interface Movie {
     duration: number;
     description: string;
     director: string;
-    release: number;
+    imageUrl : string;
+    releaseDate: number;
     language: string;
     castMembers: string[];
 }
@@ -12,13 +13,13 @@ export interface Movie {
 export interface Show {
     startDate: number
     endDate : number
-    screenId : string
+    screenNumber : string
     showTimes: string[]
     seats?: seat[]
 
 }
 export interface Price {
-  screenId : string
+  screenNumber : string
   seatCategory : seat[]
   }
 

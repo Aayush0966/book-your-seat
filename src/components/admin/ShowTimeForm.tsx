@@ -22,9 +22,9 @@ const ShowtimeForm = ({setShow}: {setShow: (shows: Show[]) => void}) => {
 
  const handleScreenChange = (value: string) => {
   setScreen(value)
-  if (!shows.find(sh => sh.screenId === value)) {  
+  if (!shows.find(sh => sh.screenNumber === value)) {  
     const newShowTime = {
-      screenId : value,  
+      screenNumber : value,  
       startDate : Date.now(), // Changed to Unix timestamp
       endDate : Date.now(), // Changed to Unix timestamp
       showTimes: []
@@ -36,7 +36,7 @@ const ShowtimeForm = ({setShow}: {setShow: (shows: Show[]) => void}) => {
  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
   setError('')
   const newDate = new Date(e.target.value).getTime() // Convert to Unix timestamp
-  const showIndex = shows.findIndex(sh => sh.screenId === screen)
+  const showIndex = shows.findIndex(sh => sh.screenNumber === screen)
   if (showIndex === -1) return
 
   if (type === 'start') {
@@ -61,7 +61,7 @@ const ShowtimeForm = ({setShow}: {setShow: (shows: Show[]) => void}) => {
  const handleShowTime = () => {
   setShows(prevShows => 
     prevShows.map(show => 
-      show.screenId === screen 
+      show.screenNumber === screen 
         ? { ...show, showTimes: [...show.showTimes, ''] } 
         : show
     )
@@ -70,7 +70,7 @@ const ShowtimeForm = ({setShow}: {setShow: (shows: Show[]) => void}) => {
 
  const handleShowTimeChange = (index: number, value: string) => {
   setShows(prevShows => prevShows.map(show => 
-    show.screenId === screen 
+    show.screenNumber === screen 
       ? { ...show, showTimes: show.showTimes.map((time, i) => i === index ? value : time) }
       : show
   ))
@@ -78,7 +78,7 @@ const ShowtimeForm = ({setShow}: {setShow: (shows: Show[]) => void}) => {
 
  const removeShowTime = (index: number) => {
   setShows(prevShows => prevShows.map(show => 
-    show.screenId === screen 
+    show.screenNumber === screen 
       ? { ...show, showTimes: show.showTimes.filter((_, i) => i !== index) }
       : show
   ))
@@ -127,7 +127,7 @@ const ShowtimeForm = ({setShow}: {setShow: (shows: Show[]) => void}) => {
           {screen && <div className="mt-6">
             <Label>Show Times</Label>
             <div className="mt-2 space-y-4">
-              {shows.find(sh => sh.screenId === screen)?.showTimes.map((time, index) => (
+              {shows.find(sh => sh.screenNumber === screen)?.showTimes.map((time, index) => (
                 <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
                   <div className="relative flex-1">
                     <Input 

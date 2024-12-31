@@ -23,7 +23,7 @@ const LogoutModal = ({ onLogout }: LogoutModalProps) => {
       <AlertDialogTrigger asChild>
         <button className="flex w-full items-center text-left">
           <LogOut className="mr-3 h-5 w-5" />
-          Logout
+         <span className='sm:block hidden'>Logout </span> 
         </button>
       </AlertDialogTrigger>
       <AlertDialogContent className="sm:max-w-md">

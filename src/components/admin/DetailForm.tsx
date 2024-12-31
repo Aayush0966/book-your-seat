@@ -33,10 +33,11 @@ const DetailForm = ({setDetails}: {setDetails: (movie: Movie) => void;}) => {
     const duration = parseInt(formData.get('duration') as string, 10);
     const genre = formData.get('genre') as string;
     const language = formData.get('language') as string;
-    const release = new Date(formData.get('release') as string).getTime();
+    const releaseDate = new Date(formData.get('release') as string).getTime();
     const director = formData.get('director') as string;
     const description = formData.get('description') as string;
-    const movie: Movie = { title, director, duration, genre, castMembers, language, release, description };
+    const imageUrl = formData.get('imageUrl') as string;
+    const movie: Movie = { title, director, duration, genre, castMembers, language, releaseDate, description, imageUrl };
     setDetails(movie);
   }
 
@@ -118,6 +119,16 @@ const DetailForm = ({setDetails}: {setDetails: (movie: Movie) => void;}) => {
               id="director" 
               name='director'
               placeholder="Enter director name"
+              className="focus-visible:ring-blue-500"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="imageUrl">Image URL *</Label>
+            <Input 
+              id="imageUrl" 
+              name='imageUrl'
+              placeholder="Enter image URL"
               className="focus-visible:ring-blue-500"
             />
           </div>

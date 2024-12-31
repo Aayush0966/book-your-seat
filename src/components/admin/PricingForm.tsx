@@ -20,7 +20,7 @@ const PricingForm = ({setPrice}: {setPrice: (prices:Price[]) => void}) => {
 
 const defaultPrice: Price[] = [
   {
-  screenId : 'screen0',
+  screenNumber : 'screen0',
   seatCategory: [
     {
       seatType: 'platinum',
@@ -37,7 +37,7 @@ const defaultPrice: Price[] = [
   ],
 },
 {
-  screenId : 'screen1',
+  screenNumber : 'screen1',
   seatCategory: [
     {
       seatType: 'platinum',
@@ -54,7 +54,7 @@ const defaultPrice: Price[] = [
   ],
 },
 {
-  screenId : 'screen2',
+  screenNumber : 'screen2',
   seatCategory: [
     {
       seatType: 'platinum',
@@ -71,7 +71,7 @@ const defaultPrice: Price[] = [
   ],
 }]
 
-  const screenIds = [
+  const screenNumbers = [
     { id: 'screen0', name: 'Standard', basePrice: '400' },
     { id: 'screen1', name: '3D', basePrice: '600' },
     { id: 'screen2', name: 'IMAX', basePrice: '800' },
@@ -81,7 +81,7 @@ const defaultPrice: Price[] = [
   const handlePrice = (screen: string, seatType: string, newPrice: number) => {
    setPrices((prevPrices) => 
     prevPrices.map((price) => 
-      price.screenId === screen ?
+      price.screenNumber === screen ?
      {...price, 
       seatCategory: price.seatCategory.map((seat) => 
         seat.seatType.toLowerCase() === seatType.toLowerCase() ?
@@ -99,12 +99,12 @@ const defaultPrice: Price[] = [
     <div className="space-y-6">
       <Tabs defaultValue="screen0">
         <TabsList className="grid w-full grid-cols-3 mb-6">
-          {screenIds.map(screen => (
+          {screenNumbers.map(screen => (
             <TabsTrigger key={screen.id} value={screen.id}>{screen.name}</TabsTrigger>
           ))}
         </TabsList>
 
-        {screenIds.map(screen => (
+        {screenNumbers.map(screen => (
           <TabsContent key={screen.id} value={screen.id}>
             <Card>
               <CardHeader>
@@ -121,7 +121,7 @@ const defaultPrice: Price[] = [
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {prices.find(pr => pr.screenId === screen.id)?.seatCategory.map((seat) => (
+                    {prices.find(pr => pr.screenNumber === screen.id)?.seatCategory.map((seat) => (
                       <TableRow key={seat.seatType}>
                         <TableCell className="font-medium">{seat.seatType}</TableCell>
                         <TableCell>
