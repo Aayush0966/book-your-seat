@@ -1,79 +1,361 @@
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
-import DetailForm from './DetailForm';
-import ShowtimeForm from './ShowTimeForm';
-import PricingForm from './PricingForm';
-import { Movie, Price, Show } from '@/types/movie';
+import React, { useState, JSX } from 'react';
+import { ChevronLeft, ChevronRight, Film, Clock, Calendar, Users, DollarSign } from 'lucide-react';
+import { Price } from '@/types/movie';
 
-interface MovieFormProps {
-  closeForm: () => void;
-}
-const MovieForm = ({ closeForm }: MovieFormProps) => {
-
-  const [movieDetails, setMovieDetails] = React.useState<Movie>()
-  const [showDetails, setShowDetails] = React.useState<Show[]>([])
-
-  const handleAddPrice = (prices: Price[]) => {
-    prices.forEach((price) => {
-      showDetails.forEach((show) => {
-        if (price.screenNumber === show.screenNumber) {
-          show.seats = price.seatCategory
-        }
-      })
-    })
-    
+const MovieForm = () => {
+  const [step, setStep] = useState(1);
+  interface FormData {
+    title: string;
+    description: string;
+    genres: string[];
+    release_date: string;
+    language: string;
+    runtime: string;
+    age_rating: string;
+    poster_url: string;
+    show_dates: {
+      start_date: string;
+      end_date: string;
+    };
+    showtimes: string[];
+    pricing: Price[];
+    cast: string[];
+    director: string;
+    status: string;
   }
+  
+  const [formData] = useState<FormData>({
+    title: '',
+    description: '',
+    genres: [],
+    release_date: '',
+    language: '',
+    runtime: '',
+    age_rating: '',
+    poster_url: '',
+    show_dates: {
+      start_date: '',
+      end_date: ''
+    },
+    showtimes: [],
+    pricing: [],
+    cast: [],
+    director: '',
+    status: 'draft'
+  });
 
-  const handleSubmit = () => {
-    console.log(movieDetails)
-    console.log(showDetails)
-  }
+  const totalSteps = 5;
 
+
+  const nextStep = () => {
+    if (step < totalSteps) setStep(step + 1);
+  };
+
+  const prevStep = () => {
+    if (step > 1) setStep(step - 1);
+  };
+
+  const renderProgressBar = () => (
+    <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
+      <div 
+        className="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-in-out"
+        style={{ width: `${(step / totalSteps) * 100}%` }}
+      />
+    </div>
+  );
+
+  // const StepIcon = ({ step }: { step: number }) => {
+  //   const icons: { [key: number]: JSX.Element } = {
+  //     1: <Film className="w-6 h-6" />,
+  //     2: <Clock className="w-6 h-6" />,
+  //     3: <Calendar className="w-6 h-6" />,
+  //     4: <DollarSign className="w-6 h-6" />,
+  //     5: <Users className="w-6 h-6" />
+  //   };
+  //   return icons[step] || null;
+  // };
+
+  const renderStep = () => {
+    switch(step) {
+      case 1:
+        return (
+          <div className="space-y-6 animate-fadeIn">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Film className="w-6 h-6" />
+              Basic Information
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Movie Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                  placeholder="Enter movie title"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  className="w-full p-2 border rounded-lg h-32 focus:ring-2 focus:ring-blue-500 transition"
+                  placeholder="Enter movie description"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Genres</label>
+                <div className="flex flex-wrap gap-2">
+                  {['Action', 'Comedy', 'Drama', 'Sci-Fi', 'Thriller', 'Horror'].map(genre => (
+                    <button
+                      key={genre}
+                      className={`px-4 py-2 rounded-full transition-all ${
+                        formData.genres.includes(genre)
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 hover:bg-gray-300'
+                      }`}
+                    >
+                      {genre}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="space-y-6 animate-fadeIn">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Clock className="w-6 h-6" />
+              Technical Details
+            </h2>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Runtime (minutes)</label>
+                <input
+                  type="number"
+                  name="runtime"
+                  value={formData.runtime}
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Language</label>
+                <select
+                  name="language"
+                  value={formData.language}
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                >
+                  <option value="">Select language</option>
+                  <option value="English">English</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="French">French</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Age Rating</label>
+                <select
+                  name="age_rating"
+                  value={formData.age_rating}
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                >
+                  <option value="">Select rating</option>
+                  <option value="G">G</option>
+                  <option value="PG">PG</option>
+                  <option value="PG-13">PG-13</option>
+                  <option value="R">R</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Poster URL</label>
+                <input
+                  type="url"
+                  name="poster_url"
+                  value={formData.poster_url}
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                  placeholder="https://"
+                />
+              </div>
+            </div>
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="space-y-6 animate-fadeIn">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Calendar className="w-6 h-6" />
+              Show Schedule
+            </h2>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Start Date</label>
+                  <input
+                    type="date"
+                    name="show_dates.start_date"
+                    value={formData.show_dates.start_date}
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">End Date</label>
+                  <input
+                    type="date"
+                    name="show_dates.end_date"
+                    value={formData.show_dates.end_date}
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Showtimes</label>
+                <div className="flex flex-wrap gap-2">
+                  {['10:00 AM', '01:00 PM', '05:00 PM', '09:00 PM'].map(time => (
+                    <button
+                      key={time}
+                      className={`px-4 py-2 rounded-full transition-all ${
+                        formData.showtimes.includes(time)
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 hover:bg-gray-300'
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="space-y-6 animate-fadeIn">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <DollarSign className="w-6 h-6" />
+              Pricing
+            </h2>
+            
+            {['Standard', '3D', 'IMAX'].map((screenType, index) => (
+              <div key={screenType} className="p-4 border rounded-lg space-y-4">
+                <h3 className="font-semibold">{screenType} Screen</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  {['Platinum', 'Gold', 'Silver'].map(seatType => (
+                    <div key={seatType} className="space-y-2">
+                      <label className="block text-sm font-medium">{seatType}</label>
+                      <input
+                        type="number"
+                        name={`pricing.${index}.seatCategory.${seatType.toLowerCase()}`}
+                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                        placeholder="Price"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+
+      case 5:
+        return (
+          <div className="space-y-6 animate-fadeIn">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Users className="w-6 h-6" />
+              Cast & Crew
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Director</label>
+                <input
+                  type="text"
+                  name="director"
+                  value={formData.director}
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                  placeholder="Enter director's name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Cast (comma-separated)</label>
+                <textarea
+                  name="cast"
+                  value={formData.cast.join(', ')}
+                  className="w-full p-2 border rounded-lg h-32 focus:ring-2 focus:ring-blue-500 transition"
+                  placeholder="Enter cast members, separated by commas"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Status</label>
+                <select
+                  name="status"
+                  value={formData.status}
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="mt-6 bg-white rounded-lg shadow-lg max-w-5xl mx-auto">
-      <div className="flex items-center justify-between p-6 border-b">
-        <h2 className="text-2xl font-bold text-gray-800">Add New Movie</h2>
-        <Button 
-          variant="ghost" 
-          size="icon"
-          onClick={closeForm}
-          className="hover:bg-gray-100 rounded-full"
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+      {renderProgressBar()}
+      
+      <div className="min-h-[500px]">
+        {renderStep()}
+      </div>
+      
+      <div className="flex justify-between mt-8">
+        <button
+          onClick={prevStep}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+            step === 1
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+          }`}
+          disabled={step === 1}
         >
-          <X className="h-5 w-5" />
-        </Button>
+          <ChevronLeft className="w-4 h-4" />
+          Previous
+        </button>
+
+        <button
+          onClick={nextStep}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+            step === totalSteps
+              ? 'bg-green-600 hover:bg-green-700 text-white'
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
+          }`}
+        >
+          {step === totalSteps ? 'Submit' : 'Next'}
+          {step !== totalSteps && <ChevronRight className="w-4 h-4" />}
+        </button>
       </div>
-
-      <div className="p-6">
-        <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="details">Movie Details</TabsTrigger>
-            <TabsTrigger value="showtime">Showtimes</TabsTrigger>
-            <TabsTrigger value="pricing">Pricing</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="details">
-            <DetailForm setDetails={(movie: Movie) => setMovieDetails(movie)} />
-          </TabsContent>
-
-
-          <TabsContent value="showtime">
-            <ShowtimeForm setShow={(shows:Show[]) => setShowDetails(shows)} />
-          </TabsContent>
-
-          <TabsContent value="pricing">
-            <PricingForm setPrice={handleAddPrice} />
-           
-          </TabsContent>
-        </Tabs>
-        <div className="flex justify-end space-x-3 pt-6 mt-6">
-              <Button variant="outline">Cancel</Button>
-              <Button onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-700">Add Movie</Button>
-            </div>
-      </div>
-
     </div>
   );
 };

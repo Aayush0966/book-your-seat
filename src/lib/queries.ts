@@ -41,48 +41,9 @@ export const verifyOTP = async (email:string, otp:number) => {
 
 export const addMovie = async(movie:Movie, show:Show) => {
     try {
-        const movieResult = await prisma.movie.create({
-            data: movie
-        })
-        if (!movieResult) return null;
-        const showList = show.showTimes.map((sh) => {
-           return {
-            movieId: movieResult.id,
-            screenId: Number(show.screenNumber) + 1,
-            showTime: sh,
-            startDate: show.startDate,
-            endDate: show.endDate
-        }
-        })
-
-        await prisma.show.createMany({
-            data: showList
-        });
-
-        const shows = await prisma.show.findMany({
-            where: {
-                movieId: movieResult.id
-            }
-        })
-
-       const priseList = shows.flatMap((sh) => {
-        return show.seats?.map((seat) => {
-            return {
-                showId: sh.id,
-                screenId: sh.screenId,
-                seatType: seat.seatType,
-                price: seat.price
-            }
-        }) || []
-       })
-        
-        const priceResult = await prisma.price.createMany({
-            data: priseList
-        });
-
-        return {movieResult, shows, priceResult};
+        console.log(movie, show)
     } catch (error) {
-        console.log('something went wrong: ', error)
-        return null
+        console.log('Something went wrong:', error);
+        return null;
     }
-}
+};

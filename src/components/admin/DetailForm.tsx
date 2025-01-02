@@ -25,19 +25,20 @@ const DetailForm = ({setDetails}: {setDetails: (movie: Movie) => void;}) => {
     }
   }
 
-
   const handleDetails = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const title = formData.get('title') as string;
     const duration = parseInt(formData.get('duration') as string, 10);
-    const genre = formData.get('genre') as string;
+    const genreList = formData.get('genre') as string;
+    const genres = genreList.split(', ')
     const language = formData.get('language') as string;
     const releaseDate = new Date(formData.get('release') as string).getTime();
     const director = formData.get('director') as string;
     const description = formData.get('description') as string;
     const imageUrl = formData.get('imageUrl') as string;
-    const movie: Movie = { title, director, duration, genre, castMembers, language, releaseDate, description, imageUrl };
+    const casts = castMembers
+    const movie: Movie = { title, director, duration, genres, casts, language, releaseDate, description, imageUrl };
     setDetails(movie);
   }
 

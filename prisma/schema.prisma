@@ -55,9 +55,9 @@ model Screen {
 }
 model Price {
   id         Int     @id @default(autoincrement())
-  showId     Int     // Foreign key to Show
-  screenId   Int     // Foreign key to Screen
-  seatType   String  @db.VarChar(50) // e.g., "platinum", "gold", "silver"
+  showId     Int    
+  screenId   Int   
+  seatType   String  @db.VarChar(50) 
   price      Float   @db.DoublePrecision
   show       Show    @relation(fields: [showId], references: [id], onDelete: Cascade)
   screen     Screen  @relation(fields: [screenId], references: [id], onDelete: Cascade)

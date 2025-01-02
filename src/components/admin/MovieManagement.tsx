@@ -36,7 +36,7 @@ const MovieManagement = () => {
       </div>
       <div className='mt-4 p-2 rounded-xl'>
       {
-        showForm && <MovieForm closeForm={() => setShowForm(false)} />
+        showForm && <MovieForm />
       }
       </div>
       

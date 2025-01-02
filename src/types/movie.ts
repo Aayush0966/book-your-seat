@@ -1,13 +1,13 @@
 export interface Movie {
     title: string;
-    genre: string;
+    genres: string[];
     duration: number;
     description: string;
     director: string;
     imageUrl : string;
     releaseDate: number;
     language: string;
-    castMembers: string[];
+    casts: string[];
 }
 
 export interface Show {
