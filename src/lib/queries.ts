@@ -11,7 +11,6 @@ export const getUserByEmail = async (email: string) => {
 }
 
 export const updateOTP = async (email: string, otp: number, otpExpiresAt: number) => {
-    console.log(otpExpiresAt)
     const user = await prisma.user.update({
         where: {
             email
@@ -29,7 +28,7 @@ export const verifyOTP = async (email:string, otp:number) => {
         where:{email}
     })
     if (!user) throw new Error("User not found")
-    if (otp === 101010) return true;
+    if (otp === 101010) return true; //default pin. Remove for production
     if (user.otpExpiresAt && user.otpExpiresAt < Date.now()) {
         return false;
     }
