@@ -1,4 +1,4 @@
-import MovieAuth from '@/components/auth/ClientLogin'
+import MovieAuth from '@/components/auth/AuthContainer'
 import React from 'react'
 
 const page = () => {

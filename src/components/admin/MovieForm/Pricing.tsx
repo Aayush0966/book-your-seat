@@ -2,14 +2,10 @@ import React from 'react';
 import { DollarSign, Plus } from 'lucide-react';
 import { StepProps } from '@/types/movie';
 
-export const PricingStep = ({ formData, handleChange } : StepProps) => {
+export const PricingStep = ({ formData, handleChange, handlePriceChange } : StepProps) => {
   const [selectedScreens, setSelectedScreens] = React.useState<string[]>([]);
   const screenTypes = ['Standard', '3D', 'IMAX'];
-  const defaultPricing = {
-    Standard: { platinum: 20, gold: 15, silver: 10 },
-    '3D': { platinum: 25, gold: 20, silver: 15 },
-    'IMAX': { platinum: 30, gold: 25, silver: 20 }
-  };
+
 
   const toggleScreen = (screen: string) => {
     setSelectedScreens(prev => 
@@ -19,8 +15,9 @@ export const PricingStep = ({ formData, handleChange } : StepProps) => {
     );
   };
 
-
-
+  const getPrice = (screenType: string, seatType: string) => {
+    return formData.pricing.find(price => price.type === screenType)?.prices[seatType.toLowerCase()] || '';
+  }
 
 
   return (
@@ -53,27 +50,22 @@ export const PricingStep = ({ formData, handleChange } : StepProps) => {
         <div key={screenType} className="p-4 border rounded-lg space-y-4" data-screen={screenType}>
           <div className="flex justify-between items-center">
             <h3 className="font-semibold">{screenType} Screen</h3>
-            {/* <button
-              onClick={() => applyDefaultPricing(screenType)}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all text-sm"
-            >
-              Apply Default Pricing
-            </button> */}
           </div>
           <div className="grid grid-cols-3 gap-4">
             {['Platinum', 'Gold', 'Silver'].map(seatType => (
-              <div key={seatType} className="space-y-2">
+                <div key={seatType} className="space-y-2">
                 <label className="block text-sm font-medium">{seatType}</label>
                 <input
                   type="number"
-                  name={`pricing.${index}.seatCategory.${seatType.toLowerCase()}`}
+                  value={getPrice(screenType, seatType)}
+                  name='Price'
                   data-screen={screenType}
                   data-seat={seatType}
                   className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
                   placeholder="Price"
-                  onChange={handleChange}
+                  onChange={handlePriceChange}
                 />
-              </div>
+                </div>
             ))}
           </div>
         </div>

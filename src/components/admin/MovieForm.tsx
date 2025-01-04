@@ -23,7 +23,20 @@ const MovieForm = () => {
     showStartDate: (Math.floor(new Date().getTime()/1000)),
     showEndDate: (Math.floor(new Date().getTime()/1000)) + 7 * 24 * 60 * 60,
     showtimes: [],
-    pricing: [],
+    pricing: [
+      {
+        type: "Standard",
+        prices: { platinum: 150, gold: 200, silver: 300 }
+      },
+      {
+        type: "3D",
+        prices: { platinum: 250, gold: 300, silver: 400 }
+      },
+      {
+        type: "IMAX",
+        prices: { platinum: 300, gold: 400, silver: 600 }
+      }
+    ],
     cast: [],
     director: '',
     status: 'draft'
@@ -61,8 +74,29 @@ const MovieForm = () => {
         cast
       }));
     };
+  
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const price = parseFloat(e.target.value);
+    const screenType = e.target?.dataset.screen;
+    const seatType = e.target?.dataset.seat;
+    setFormData((prev) => ({
+      ...prev,
+      pricing: prev.pricing.map((pricing) =>
+        pricing.type === screenType
+          ? {
+              ...pricing,
+              prices: {
+                ...pricing.prices,
+                [seatType?.toLocaleLowerCase() as string]: price,
+              },
+            }
+          : pricing
+      ),
+    }));
+  }
 
   const nextStep = () => {
+    if (step === totalSteps) handleMovieSubmit()
     if (step < totalSteps) setStep(step + 1);
   };
 
@@ -79,20 +113,25 @@ const MovieForm = () => {
     </div>
   );
 
+  const handleMovieSubmit = () => {
+    console.log(formData)
+  }
+
   const renderStep = () => {
     const props: StepProps = {
       formData,
       handleChange,
       handleGenreChange,
       handleShowtimeChange,
-      handleCastChange
+      handleCastChange,
+      handlePriceChange
     };
 
     switch(step) {
       case 1: return <BasicInfoStep {...props} />;
       case 2: return <TechnicalDetailsStep {...props} />;
       case 3: return <ShowScheduleStep {...props} />;
-      case 4: return <PricingStep {...props} />;
+      case 4: return <PricingStep {...props}  />;
       case 5: return <CastCrewStep {...props} />;
       default: return null;
     }

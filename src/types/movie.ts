@@ -17,19 +17,9 @@ export interface Show {
     endDate : number
     screenNumber : string
     showTimes: string[]
-    seats?: seat[]
-
+    Price?: Price[]
 }
-export interface Price {
-  screenNumber : string
-  seatCategory : seat[]
-  }
 
-interface seat {
-    seatType: string;
-    price: number
-
-}
 
 export interface Store {
     items: Movie[]
@@ -50,10 +40,24 @@ export interface FormData {
   showStartDate: number;
   showEndDate: number;
   showtimes: number[];
-  pricing: any[];
+  pricing: Price[];
   cast: string[];
   director: string;
   status: string;
+}
+
+export interface Pricing {
+  [key: string]: number;
+}
+
+export interface Price {
+  type: string;
+  prices: Pricing;
+}
+
+export interface AuthProps {
+  showPassword: boolean;
+  setShowPassword: (show: boolean) => void;
 }
 
 export interface StepProps {
@@ -62,4 +66,5 @@ export interface StepProps {
   handleGenreChange: (genre: string) => void;
   handleShowtimeChange: (time: number) => void;
   handleCastChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  handlePriceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
