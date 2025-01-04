@@ -1,38 +1,13 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { BasicInfoStep } from './MovieForm/BasicInfo';
 import { TechnicalDetailsStep } from './MovieForm/TechnicalDetails';
 import { ShowScheduleStep } from './MovieForm/ShowSchedule';
 import { PricingStep } from './MovieForm/Pricing';
 import { CastCrewStep } from './MovieForm/CastCrew';
+import { FormData, StepProps } from '@/types/movie';
 
-interface FormData {
-  title: string;
-  description: string;
-  genres: string[];
-  release_date: string;
-  language: string;
-  runtime: string;
-  age_rating: string;
-  poster_url: string;
-  show_dates: {
-    start_date: string;
-    end_date: string;
-  };
-  showtimes: string[];
-  pricing: any[];
-  cast: string[];
-  director: string;
-  status: string;
-}
 
-export interface StepProps {
-  formData: FormData;
-  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-  handleGenreChange: (genre: string) => void;
-  handleShowtimeChange: (time: string) => void;
-  handleCastChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-}
 
 const MovieForm = () => {
   const [step, setStep] = useState(1);
@@ -45,10 +20,8 @@ const MovieForm = () => {
     runtime: '',
     age_rating: '',
     poster_url: '',
-    show_dates: {
-      start_date: '',
-      end_date: ''
-    },
+    showStartDate: (Math.floor(new Date().getTime()/1000)),
+    showEndDate: (Math.floor(new Date().getTime()/1000)) + 7 * 24 * 60 * 60,
     showtimes: [],
     pricing: [],
     cast: [],
@@ -58,39 +31,36 @@ const MovieForm = () => {
 
   const totalSteps = 5;
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
+    const convertedValue = name === 'showStartDate' || name === 'showEndDate' ? new Date(value).getTime() / 1000 : value;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: convertedValue
     }));
   };
 
   const handleGenreChange = (genre: string) => {
-    setFormData(prev => ({
-      ...prev,
-      genres: prev.genres.includes(genre)
-        ? prev.genres.filter(g => g !== genre)
-        : [...prev.genres, genre]
+    setFormData((prevData) => ({
+      ...prevData,
+      genres: prevData.genres.includes(genre) ? prevData.genres.filter((existingGenre) => existingGenre !== genre) : [...prevData.genres, genre]
     }));
-  };
+  }
 
-  const handleShowtimeChange = (time: string) => {
-    setFormData(prev => ({
+  const handleShowtimeChange = (time: number) => {
+    setFormData((prev) => ({
       ...prev,
-      showtimes: prev.showtimes.includes(time)
-        ? prev.showtimes.filter(t => t !== time)
-        : [...prev.showtimes, time]
-    }));
-  };
+      showtimes: prev.showtimes.includes(time) ? prev.showtimes.filter(show => show !== time) : [...prev.showtimes, time]
+    }))
+  }
 
   const handleCastChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const castArray = e.target.value.split(',').map(item => item.trim());
-    setFormData(prev => ({
-      ...prev,
-      cast: castArray
-    }));
-  };
+      const cast = e.target.value.split(', ');
+      setFormData((prevData) => ({
+        ...prevData,
+        cast
+      }));
+    };
 
   const nextStep = () => {
     if (step < totalSteps) setStep(step + 1);

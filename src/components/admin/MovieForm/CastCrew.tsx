@@ -1,6 +1,6 @@
 import React from 'react';
 import { Users } from 'lucide-react';
-import { StepProps } from '../MovieForm';
+import { StepProps } from '@/types/movie';
 
 export const CastCrewStep = ({ formData, handleChange, handleCastChange }: StepProps) => {
   return (

@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 export interface Movie {
     title: string;
     genres: string[];
@@ -36,4 +38,28 @@ export interface Store {
     fetchItems: () => void
   }
 
-  
+export interface FormData {
+  title: string;
+  description: string;
+  genres: string[];
+  release_date: string;
+  language: string;
+  runtime: string;
+  age_rating: string;
+  poster_url: string;
+  showStartDate: number;
+  showEndDate: number;
+  showtimes: number[];
+  pricing: any[];
+  cast: string[];
+  director: string;
+  status: string;
+}
+
+export interface StepProps {
+  formData: FormData;
+  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  handleGenreChange: (genre: string) => void;
+  handleShowtimeChange: (time: number) => void;
+  handleCastChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+}

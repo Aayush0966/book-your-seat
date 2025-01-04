@@ -1,6 +1,6 @@
 import React from 'react';
 import { Film } from 'lucide-react';
-import { StepProps } from '../MovieForm';
+import { StepProps } from '@/types/movie';
 
 export const BasicInfoStep = ({ formData, handleChange, handleGenreChange } : StepProps) => {
   const genres = [

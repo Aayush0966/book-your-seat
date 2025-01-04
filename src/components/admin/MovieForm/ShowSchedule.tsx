@@ -1,20 +1,37 @@
 import React from 'react';
 import { Calendar, Plus, X } from 'lucide-react';
-import { StepProps } from '../MovieForm';
+import { StepProps } from '@/types/movie';
 
 export const ShowScheduleStep = ({ formData, handleChange, handleShowtimeChange } : StepProps) => {
     const [customTime, setCustomTime] = React.useState('');
     const defaultTimes = ['10:00 AM', '01:00 PM', '05:00 PM', '09:00 PM'];
   
     const handleAddCustomTime = () => {
-      if (customTime && !formData.showtimes.includes(customTime)) {
-        handleShowtimeChange(customTime);
+      if (customTime && !formData.showtimes.includes(convertTime(customTime))) {
+        const modifiedTime = convertTime(customTime)
+        handleAdd(modifiedTime)
         setCustomTime('');
       }
     };
+
+    const convertTime = (time:string) => {
+     const todayDate = new Date().toISOString().split('T')[0];
+     const dateTime = new Date(`${todayDate} ${time}`);
+     const unixTime = Math.floor(dateTime.getTime() / 1000);
+     return unixTime;
+    }
   
-    const removeShowtime = (time) => {
+    const handleAdd = (time: number) => {
+      handleShowtimeChange( time)
+    }
+
+    const removeShowtime = (time: number) => {
       handleShowtimeChange(time);
+    };
+
+    const formatDate = (timestamp: number) => {
+      const date = new Date(timestamp * 1000);
+      return date.toISOString().split('T')[0]; // Return date in 'YYYY-MM-DD' format
     };
   
     return (
@@ -30,8 +47,8 @@ export const ShowScheduleStep = ({ formData, handleChange, handleShowtimeChange 
               <label className="block text-sm font-medium mb-1">Start Date</label>
               <input
                 type="date"
-                name="show_dates.start_date"
-                value={formData.show_dates.start_date}
+                name="showStartDate"
+                value={formData.showStartDate ? formatDate(formData.showStartDate) : ''}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
               />
@@ -41,8 +58,8 @@ export const ShowScheduleStep = ({ formData, handleChange, handleShowtimeChange 
               <label className="block text-sm font-medium mb-1">End Date</label>
               <input
                 type="date"
-                name="show_dates.end_date"
-                value={formData.show_dates.end_date}
+                name="showEndDate"
+                value={formData.showEndDate ? formatDate(formData.showEndDate) : ''}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
               />
@@ -55,9 +72,9 @@ export const ShowScheduleStep = ({ formData, handleChange, handleShowtimeChange 
               {defaultTimes.map(time => (
                 <button
                   key={time}
-                  onClick={() => handleShowtimeChange(time)}
+                  onClick={() => handleAdd(convertTime(time))}
                   className={`px-4 py-2 rounded-full transition-all ${
-                    formData.showtimes.includes(time)
+                    formData.showtimes.includes(convertTime(time))
                       ? 'bg-blue-600 text-white'
                       : 'bg-gray-200 hover:bg-gray-300'
                   }`}
@@ -95,7 +112,7 @@ export const ShowScheduleStep = ({ formData, handleChange, handleShowtimeChange 
                     key={time}
                     className="flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full"
                   >
-                    <span>{time}</span>
+                    <span>{new Date(time * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     <button
                       onClick={() => removeShowtime(time)}
                       className="text-red-500 hover:text-red-700"

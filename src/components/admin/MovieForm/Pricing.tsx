@@ -1,9 +1,9 @@
 import React from 'react';
 import { DollarSign, Plus } from 'lucide-react';
-import { StepProps } from '../MovieForm';
+import { StepProps } from '@/types/movie';
 
-export const PricingStep = ({ formData } : StepProps) => {
-  const [selectedScreens, setSelectedScreens] = React.useState([]);
+export const PricingStep = ({ formData, handleChange } : StepProps) => {
+  const [selectedScreens, setSelectedScreens] = React.useState<string[]>([]);
   const screenTypes = ['Standard', '3D', 'IMAX'];
   const defaultPricing = {
     Standard: { platinum: 20, gold: 15, silver: 10 },
@@ -11,7 +11,7 @@ export const PricingStep = ({ formData } : StepProps) => {
     'IMAX': { platinum: 30, gold: 25, silver: 20 }
   };
 
-  const toggleScreen = (screen) => {
+  const toggleScreen = (screen: string) => {
     setSelectedScreens(prev => 
       prev.includes(screen)
         ? prev.filter(s => s !== screen)
@@ -20,21 +20,7 @@ export const PricingStep = ({ formData } : StepProps) => {
   };
 
 
-  const applyDefaultPricing = (screenType) => {
-    const priceInputs = document.querySelectorAll(`[data-screen="${screenType}"] input`);
-    const prices = defaultPricing[screenType];
-    
-    priceInputs.forEach(input => {
-      const seatType = input.getAttribute('data-seat').toLowerCase();
-      input.value = prices[seatType];
-      handleChange({
-        target: {
-          name: input.name,
-          value: prices[seatType]
-        }
-      });
-    });
-  };
+
 
 
   return (
@@ -67,12 +53,12 @@ export const PricingStep = ({ formData } : StepProps) => {
         <div key={screenType} className="p-4 border rounded-lg space-y-4" data-screen={screenType}>
           <div className="flex justify-between items-center">
             <h3 className="font-semibold">{screenType} Screen</h3>
-            <button
+            {/* <button
               onClick={() => applyDefaultPricing(screenType)}
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all text-sm"
             >
               Apply Default Pricing
-            </button>
+            </button> */}
           </div>
           <div className="grid grid-cols-3 gap-4">
             {['Platinum', 'Gold', 'Silver'].map(seatType => (
