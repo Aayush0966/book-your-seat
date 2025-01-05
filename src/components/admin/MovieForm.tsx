@@ -6,6 +6,8 @@ import { ShowScheduleStep } from './MovieForm/ShowSchedule';
 import { PricingStep } from './MovieForm/Pricing';
 import { CastCrewStep } from './MovieForm/CastCrew';
 import { FormData, StepProps } from '@/types/movie';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 
 
@@ -113,8 +115,16 @@ const MovieForm = () => {
     </div>
   );
 
-  const handleMovieSubmit = () => {
-    console.log(formData)
+  const handleMovieSubmit = async () => {
+    try {
+      const response = await axios.post('/api/movie', {formData})
+      if (response.statusText != 'OK') {
+        toast.error("Something Went Wrong")
+      }
+      toast.success('Movie added successfully')
+    } catch (error) {
+       toast.error(error)
+    }
   }
 
   const renderStep = () => {

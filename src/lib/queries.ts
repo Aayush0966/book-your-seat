@@ -1,4 +1,4 @@
-import { Movie, Show } from "@/types/movie"
+import { FormData, Movie, Show } from "@/types/movie"
 import prisma from "./prisma"
 
 export const getUserByEmail = async (email: string) => {
@@ -38,9 +38,9 @@ export const verifyOTP = async (email:string, otp:number) => {
     return true;
 }
 
-export const addMovie = async(movie:Movie, show:Show) => {
+export const addMovie = async(formData: FormData) => {
     try {
-        console.log(movie, show)
+        
     } catch (error) {
         console.log('Something went wrong:', error);
         return null;

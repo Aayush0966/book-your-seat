@@ -1,8 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import SignInForm from './SignInForm';
-import SignupForm from './SignUpForm';
+import { SignInForm, SignupForm } from './AuthForms';
 import SlideShow from './SlideShow';
 
 const MovieAuth = () => {
@@ -10,61 +9,78 @@ const MovieAuth = () => {
   const [isLogin, setIsLogin] = useState(false);
 
   return (
-    <div className="min-h-screen flex bg-gray-900">
+    <div className="min-h-screen flex bg-gradient-to-br from-gray-900 to-gray-900">
       <SlideShow />
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-20">
-        <div className="w-full max-w-md">
+      <div className="w-1/2 flex items-center justify-center">
+        <div className="w-full max-w-2xl px-16">
           <AnimatePresence mode="wait">
             <motion.div
               key={isLogin ? 'login' : 'signup'}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, x: isLogin ? -20 : 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: isLogin ? 20 : -20 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="space-y-10"
             >
-              <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-white mb-2">
-                  {isLogin ? "Welcome back" : "Create account"}
+              <motion.div 
+                className="text-center"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <h1 className="text-5xl font-bold text-white mb-4">
+                  {isLogin ? "Welcome Back" : "Create Account"}
                 </h1>
-                <p className="text-gray-400">
+                <p className="text-gray-400 text-lg">
                   {isLogin ? "New to our platform? " : "Already have an account? "}
                   <button
                     onClick={() => setIsLogin(!isLogin)}
-                    className="text-purple-400 hover:text-purple-300"
+                    className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200 hover:underline"
                   >
                     {isLogin ? "Sign up" : "Log in"}
                   </button>
                 </p>
-              </div>
+              </motion.div>
 
-              {isLogin ? <SignInForm showPassword={showPassword} setShowPassword={setShowPassword} /> : <SignupForm showPassword={showPassword} setShowPassword={setShowPassword} />}
+              {isLogin ? (
+                <SignInForm showPassword={showPassword} setShowPassword={setShowPassword} />
+              ) : (
+                <SignupForm showPassword={showPassword} setShowPassword={setShowPassword} />
+              )}
 
-              <div className="relative mt-8">
+              <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-white/10"></div>
                 </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 text-gray-500 bg-gray-900">Or continue with</span>
+                <div className="relative flex justify-center text-base">
+                  <span className="px-6 text-gray-400 bg-gray-900">
+                    Or continue with
+                  </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mt-8">
+              <motion.div 
+                className="grid grid-cols-2 gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
                 <button
                   type="button"
-                  className="flex items-center justify-center px-4 py-3 border border-white/10 rounded-lg hover:bg-white/5 transition-colors text-white"
+                  className="flex items-center justify-center px-8 py-5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-purple-500/50 hover:scale-105 transition-all duration-200 text-white/90 hover:text-white group"
                 >
-                  <img src="https://img.icons8.com/fluency/48/google-logo.png" alt="Google" className="w-5 h-5 mr-2" />
-                  Google
+                  <img src="https://img.icons8.com/fluency/48/google-logo.png" alt="Google" className="w-6 h-6 mr-3 opacity-80 group-hover:opacity-100 transition-opacity" />
+                  <span className="text-lg">Google</span>
                 </button>
                 <button
                   type="button"
-                  className="flex items-center justify-center px-4 py-3 border border-white/10 rounded-lg hover:bg-white/5 transition-colors text-white"
+                  className="flex items-center justify-center px-8 py-5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-purple-500/50 hover:scale-105 transition-all duration-200 text-white/90 hover:text-white group"
                 >
-                  <img src="https://img.icons8.com/ios-filled/50/mac-os.png" alt="Apple" className="w-5 h-5 mr-2" />
-                  Apple
+                  <img src="https://img.icons8.com/ios-filled/50/mac-os.png" alt="Apple" className="w-6 h-6 mr-3 opacity-80 group-hover:opacity-100 transition-opacity" />
+                  <span className="text-lg">Apple</span>
                 </button>
-              </div>
+              </motion.div>
             </motion.div>
           </AnimatePresence>
         </div>
