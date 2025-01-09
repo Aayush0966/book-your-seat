@@ -22,7 +22,8 @@
     "prisma:seed": "tsx ./prisma/seed.ts",
     "prisma:setup": "prisma generate && prisma migrate deploy && prisma db push",
     "prisma:studio": "npx prisma studio",
-    "prisma:wipe": "npx prisma migrate reset --force && npx prisma db push"
+    "prisma:wipe": "npx prisma migrate reset --force && npx prisma db push",
+    "prisma:migrate-and-generate": "npx prisma migrate deploy && npx prisma generate"
   },
   "dependencies": {
     "@emailjs/nodejs": "^5.0.2",

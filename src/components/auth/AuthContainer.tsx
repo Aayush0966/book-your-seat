@@ -12,8 +12,8 @@ const MovieAuth = () => {
     <div className="min-h-screen flex bg-gradient-to-br from-gray-900 to-gray-900">
       <SlideShow />
 
-      <div className="w-1/2 flex items-center justify-center">
-        <div className="w-full max-w-2xl px-16">
+      <div className="flex-1 flex items-center justify-center">
+        <div className="w-full max-w-md px-6 mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={isLogin ? 'login' : 'signup'}
@@ -42,7 +42,7 @@ const MovieAuth = () => {
                   </button>
                 </p>
               </motion.div>
-
+            
               {isLogin ? (
                 <SignInForm showPassword={showPassword} setShowPassword={setShowPassword} />
               ) : (

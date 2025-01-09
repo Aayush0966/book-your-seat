@@ -1,23 +1,17 @@
+import { Prisma } from "@prisma/client";
 import { ChangeEvent } from "react";
 
 export interface Movie {
     title: string;
-    genres: string[];
+    genres: Prisma.InputJsonValue;
     duration: number;
     description: string;
     director: string;
-    imageUrl : string;
+    posterUrl : string;
     releaseDate: number;
     language: string;
-    casts: string[];
-}
-
-export interface Show {
-    startDate: number
-    endDate : number
-    screenNumber : string
-    showTimes: string[]
-    Price?: Price[]
+    ageRating: string,
+    casts: Prisma.InputJsonValue;
 }
 
 
@@ -28,32 +22,41 @@ export interface Store {
     fetchItems: () => void
   }
 
-export interface FormData {
+export interface Pricing {
+  platinum: number;
+  gold: number;
+  silver: number;
+}
+
+export interface Price {
+  screenId: number;
+  type: string;
+  prices: Pricing;
+}
+
+export interface MovieDetails {
   title: string;
   description: string;
   genres: string[];
-  release_date: string;
+  releaseDate: number;
   language: string;
-  runtime: string;
-  age_rating: string;
-  poster_url: string;
+  duration: number;
+  ageRating: string;
+  posterUrl: string;
   showStartDate: number;
   showEndDate: number;
-  showtimes: number[];
+  showtimes: Showtime[];
   pricing: Price[];
   cast: string[];
   director: string;
   status: string;
 }
 
-export interface Pricing {
-  [key: string]: number;
+export interface Showtime {
+  screenId: number;
+  showTime: number;
 }
 
-export interface Price {
-  type: string;
-  prices: Pricing;
-}
 
 export interface AuthProps {
   showPassword: boolean;
@@ -61,10 +64,10 @@ export interface AuthProps {
 }
 
 export interface StepProps {
-  formData: FormData;
+  movieDetails: MovieDetails;
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   handleGenreChange: (genre: string) => void;
-  handleShowtimeChange: (time: number) => void;
+  handleShowtimeChange: (screenId: number, showTime: number) => void;
   handleCastChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   handlePriceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

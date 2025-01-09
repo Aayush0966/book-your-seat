@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Plus, X } from "lucide-react"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
 import { Movie } from '@/types/movie'
+import { Plus, X } from "lucide-react"
+import React, { useState } from 'react'
 
 const DetailForm = ({setDetails}: {setDetails: (movie: Movie) => void;}) => {
   const [castMembers, setCastMembers] = useState<string[]>([])
@@ -27,16 +27,16 @@ const DetailForm = ({setDetails}: {setDetails: (movie: Movie) => void;}) => {
 
   const handleDetails = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const title = formData.get('title') as string;
-    const duration = parseInt(formData.get('duration') as string, 10);
-    const genreList = formData.get('genre') as string;
+    const movieDetails = new movieDetails(e.currentTarget);
+    const title = movieDetails.get('title') as string;
+    const duration = parseInt(movieDetails.get('duration') as string, 10);
+    const genreList = movieDetails.get('genre') as string;
     const genres = genreList.split(', ')
-    const language = formData.get('language') as string;
-    const releaseDate = new Date(formData.get('release') as string).getTime();
-    const director = formData.get('director') as string;
-    const description = formData.get('description') as string;
-    const imageUrl = formData.get('imageUrl') as string;
+    const language = movieDetails.get('language') as string;
+    const releaseDate = new Date(movieDetails.get('release') as string).getTime();
+    const director = movieDetails.get('director') as string;
+    const description = movieDetails.get('description') as string;
+    const imageUrl = movieDetails.get('imageUrl') as string;
     const casts = castMembers
     const movie: Movie = { title, director, duration, genres, casts, language, releaseDate, description, imageUrl };
     setDetails(movie);

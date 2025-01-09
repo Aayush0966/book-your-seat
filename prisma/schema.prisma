@@ -10,59 +10,61 @@ datasource db {
 
 model User {
   id            Int       @id @default(autoincrement())
-  fullName      String    @db.VarChar(100)
+  fullName      String    @map("full_name") @db.VarChar(100)
   email         String    @unique @db.VarChar(255)
   password      String
   role          Role      @default(USER)
-  contactNumber Int   
-  otp           Int?   @db.Integer  
-  otpExpiresAt  BigInt?    
+  contactNumber Int       @map("contact_number")
+  otp           Int?      @db.Integer
+  otpExpiresAt  BigInt?   @map("otp_expires_at")
   bookings      Booking[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
   @@index([email])
 }
-
 
 model Movie {
   id          Int      @id @default(autoincrement())
   title       String   @db.VarChar(255)
   description String   @db.Text
   director    String   @db.Text
-  imageUrl    String   @db.Text
-  genres      String[]
-  casts       String[]
+  posterUrl   String   @map("poster_url") @db.Text
+  ageRating   String   @map("age_rating") @db.Text
+  genres      Json
+  casts       Json
   language    String   @db.Text
   duration    Int      @db.Integer
-  releaseDate Int
+  releaseDate Int      @map("release_date")
   shows       Show[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
   @@index([title])
 }
 
 model Screen {
   id           Int      @id @default(autoincrement())
-  screenNumber Int      @unique
-  totalSeats   Int      @db.Integer
+  screenNumber Int      @unique @map("screen_number")
+  totalSeats   Int      @map("total_seats") @db.Integer
   shows        Show[]
   prices       Price[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@index([screenNumber])
 }
+
 model Price {
   id         Int     @id @default(autoincrement())
-  showId     Int    
-  screenId   Int   
-  seatType   String  @db.VarChar(50) 
+  showId     Int     @map("show_id")
+  screenId   Int     @map("screen_id")
+  seatType   String  @map("seat_type") @db.VarChar(50)
   price      Float   @db.DoublePrecision
   show       Show    @relation(fields: [showId], references: [id], onDelete: Cascade)
   screen     Screen  @relation(fields: [screenId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@index([showId])
   @@index([screenId])
@@ -71,17 +73,17 @@ model Price {
 
 model Show {
   id        Int       @id @default(autoincrement())
-  movieId   Int
-  screenId  Int
-  showTime  String    
-  startDate Int
-  endDate   Int
-  price     Price[]    
+  movieId   Int       @map("movie_id")
+  screenId  Int       @map("screen_id")
+  showTime  Int       @map("show_time")
+  startDate Int       @map("start_date")
+  endDate   Int       @map("end_date")
+  price     Price[]   
   movie     Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
   screen    Screen    @relation(fields: [screenId], references: [id], onDelete: Cascade)
   bookings  Booking[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
 
   @@index([movieId])
   @@index([screenId])
@@ -90,16 +92,16 @@ model Show {
 
 model Booking {
   id          Int      @id @default(autoincrement())
-  userId      Int
-  showId      Int
-  seatsBooked String[]
-  totalPrice  Float    @db.DoublePrecision
-  bookingDate DateTime @default(now())
+  userId      Int      @map("user_id")
+  showId      Int      @map("show_id")
+  seatsBooked String[] @map("seats_booked")
+  totalPrice  Float    @map("total_price") @db.DoublePrecision
+  bookingDate DateTime @default(now()) @map("booking_date")
   status      Status   @default(CONFIRMED)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   show        Show     @relation(fields: [showId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
   @@index([showId])

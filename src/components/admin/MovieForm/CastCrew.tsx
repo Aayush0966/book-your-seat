@@ -1,8 +1,7 @@
-import React from 'react';
-import { Users } from 'lucide-react';
 import { StepProps } from '@/types/movie';
+import { Users } from 'lucide-react';
 
-export const CastCrewStep = ({ formData, handleChange, handleCastChange }: StepProps) => {
+export const CastCrewStep = ({ movieDetails, handleChange, handleCastChange }: StepProps) => {
   return (
     <div className="space-y-6 animate-fadeIn">
       <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -16,7 +15,7 @@ export const CastCrewStep = ({ formData, handleChange, handleCastChange }: StepP
           <input
             type="text"
             name="director"
-            value={formData.director}
+            value={movieDetails.director}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
             placeholder="Enter director's name"
@@ -27,7 +26,7 @@ export const CastCrewStep = ({ formData, handleChange, handleCastChange }: StepP
           <label className="block text-sm font-medium mb-1">Cast (comma-separated)</label>
           <textarea
             name="cast"
-            value={formData.cast.join(', ')}
+            value={movieDetails.cast.join(', ')}
             onChange={handleCastChange}
             className="w-full p-2 border rounded-lg h-32 focus:ring-2 focus:ring-blue-500 transition"
             placeholder="Enter cast members, separated by commas"
@@ -38,7 +37,7 @@ export const CastCrewStep = ({ formData, handleChange, handleCastChange }: StepP
           <label className="block text-sm font-medium mb-1">Status</label>
           <select
             name="status"
-            value={formData.status}
+            value={movieDetails.status}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
           >

@@ -1,8 +1,8 @@
+import { Pricing, StepProps } from '@/types/movie';
+import { DollarSign } from 'lucide-react';
 import React from 'react';
-import { DollarSign, Plus } from 'lucide-react';
-import { StepProps } from '@/types/movie';
 
-export const PricingStep = ({ formData, handleChange, handlePriceChange } : StepProps) => {
+export const PricingStep = ({ movieDetails, handlePriceChange } : StepProps) => {
   const [selectedScreens, setSelectedScreens] = React.useState<string[]>([]);
   const screenTypes = ['Standard', '3D', 'IMAX'];
 
@@ -16,7 +16,7 @@ export const PricingStep = ({ formData, handleChange, handlePriceChange } : Step
   };
 
   const getPrice = (screenType: string, seatType: string) => {
-    return formData.pricing.find(price => price.type === screenType)?.prices[seatType.toLowerCase()] || '';
+    return movieDetails.pricing.find(price => price.type === screenType)?.prices[seatType.toLowerCase() as keyof Pricing] || '';
   }
 
 

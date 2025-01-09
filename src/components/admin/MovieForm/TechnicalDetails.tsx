@@ -1,8 +1,7 @@
-import React from 'react';
+import { StepProps } from '@/types/movie';
 import { Clock } from 'lucide-react';
-import { StepProps } from '../MovieForm';
 
-export const TechnicalDetailsStep = ({ formData, handleChange } : StepProps) => {
+export const TechnicalDetailsStep = ({ movieDetails, handleChange } : StepProps) => {
   return (
     <div className="space-y-6 animate-fadeIn">
       <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -15,8 +14,8 @@ export const TechnicalDetailsStep = ({ formData, handleChange } : StepProps) => 
           <label className="block text-sm font-medium mb-1">Runtime (minutes)</label>
           <input
             type="number"
-            name="runtime"
-            value={formData.runtime}
+            name="duration"
+            value={movieDetails.duration}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
           />
@@ -26,7 +25,7 @@ export const TechnicalDetailsStep = ({ formData, handleChange } : StepProps) => 
           <label className="block text-sm font-medium mb-1">Language</label>
           <select
             name="language"
-            value={formData.language}
+            value={movieDetails.language}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
           >
@@ -40,8 +39,8 @@ export const TechnicalDetailsStep = ({ formData, handleChange } : StepProps) => 
         <div>
           <label className="block text-sm font-medium mb-1">Age Rating</label>
           <select
-            name="age_rating"
-            value={formData.age_rating}
+            name="ageRating"
+            value={movieDetails.ageRating}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
           >
@@ -57,8 +56,8 @@ export const TechnicalDetailsStep = ({ formData, handleChange } : StepProps) => 
           <label className="block text-sm font-medium mb-1">Poster URL</label>
           <input
             type="url"
-            name="poster_url"
-            value={formData.poster_url}
+            name="posterUrl"
+            value={movieDetails.posterUrl}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
             placeholder="https://"
