@@ -4,7 +4,7 @@ import { getUserByEmail, updateOTP, verifyOTP } from "@/lib/queries";
 import { cookies } from "next/headers";
 
 export const checkUser = async (email: string) => {
-    const user = getUserByEmail(email)
+    const user = await getUserByEmail(email)
     if (!user) return null;
     const otp = await genOTP();
     const otpCreationTime = Date.now();

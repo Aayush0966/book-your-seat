@@ -156,10 +156,10 @@ const MovieForm = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+    <div className="max-w-screen-2xl p-6 bg-white rounded-xl">
       {renderProgressBar()}
 
-      <div className="min-h-[500px]">
+      <div className="min-h-[500px] w-full max-w-3xl min-w-[500px]">
         {renderStep()}
       </div>
 

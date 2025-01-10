@@ -24,7 +24,6 @@ export function AdminLogin() {
       const formData = new FormData(e.target as HTMLFormElement);
       if (isEmail) {
         await handleEmailSubmission(formData);
-        toast.success('OTP sent to your email');
       }
       else {
         await handleOTPSubmission();
@@ -43,13 +42,14 @@ export function AdminLogin() {
     const email = formData.get('email')?.toString().trim();
 
     const admin = await checkUser(email as string);
-    
+    console.log(admin)
     if (!admin) {
       toast.error('Admin account not found');
       return;
     }
     setIsEmail(false)
     setAdminDetails(admin);
+    toast.success('OTP sent to your email');
   }
 
   const handleOTPSubmission = async () => {
