@@ -12,16 +12,41 @@ model User {
   id            Int       @id @default(autoincrement())
   fullName      String    @map("full_name") @db.VarChar(100)
   email         String    @unique @db.VarChar(255)
-  password      String
+  password      String?   
   role          Role      @default(USER)
-  contactNumber Int       @map("contact_number")
+  contactNumber Int?      @map("contact_number")
   otp           Int?      @db.Integer
   otpExpiresAt  BigInt?   @map("otp_expires_at")
   bookings      Booking[]
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
+  accounts      Account[]
+  sessions      Session[]  
+  
   @@index([email])
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             Int     @map("user_id")
+  provider           String  
+  providerAccountId  String  @map("provider_account_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       Int
+  sessionToken String   @unique
+  accessToken  String?
+  expires      DateTime
+  
+  user User @relation(fields: [userId], references: [id])
+
 }
 
 model Movie {

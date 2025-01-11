@@ -1,6 +1,6 @@
 'use server'
+import { getUserByEmail, updateOTP, verifyOTP } from "@/database/queries";
 import { sendOTP } from "@/lib/nodeMailer";
-import { getUserByEmail, updateOTP, verifyOTP } from "@/lib/queries";
 import { cookies } from "next/headers";
 
 export const checkUser = async (email: string) => {
