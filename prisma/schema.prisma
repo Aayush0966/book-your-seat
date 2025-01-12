@@ -14,7 +14,7 @@ model User {
   email         String    @unique @db.VarChar(255)
   password      String?   
   role          Role      @default(USER)
-  contactNumber Int?      @map("contact_number")
+  contactNumber BigInt?      @map("contact_number")
   otp           Int?      @db.Integer
   otpExpiresAt  BigInt?   @map("otp_expires_at")
   bookings      Booking[]

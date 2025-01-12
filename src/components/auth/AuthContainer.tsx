@@ -46,7 +46,7 @@ const MovieAuth = () => {
               {isLogin ? (
                 <SignInForm showPassword={showPassword} setShowPassword={setShowPassword} />
               ) : (
-                <SignupForm showPassword={showPassword} setShowPassword={setShowPassword} />
+                <SignupForm setLogin={() => setIsLogin(true)} showPassword={showPassword} setShowPassword={setShowPassword} />
               )}
 
               <div className="relative">

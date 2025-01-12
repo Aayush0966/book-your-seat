@@ -1,4 +1,6 @@
 import * as userQueries from "@/database/user/queries";
+import { saltAndHashPassword } from "@/lib/password";
+import { SignupDetails } from "@/types/auth";
 
 export const verifyOTP = async (email:string, otp:number) => {
     const user = await userQueries.getUserByEmail(email);
@@ -11,4 +13,18 @@ export const verifyOTP = async (email:string, otp:number) => {
         return false
     }
     return true;
+}
+
+export const handleCreateAccount = async (signupDetails: SignupDetails) => {
+    const existingUser = await userQueries.getUserByEmail(signupDetails.email);
+    if (existingUser) {
+        return {success: false, error: "User already exists"}
+    }
+    signupDetails.password = await saltAndHashPassword(signupDetails.password)
+
+    const newUser = await userQueries.createAccount(signupDetails);
+    if (!newUser) {
+        return {success: false, error: "Something went wrong"}
+    }
+    return {success: true, data: newUser}
 }

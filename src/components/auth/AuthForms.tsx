@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, Phone, CheckCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
+import axios, { AxiosError } from 'axios';
 
 interface AuthProps {
   showPassword: boolean;
   setShowPassword: (show: boolean) => void;
+  setLogin? : () => void;
 }
 
 const SignInForm = ({ showPassword, setShowPassword }: AuthProps) => {
@@ -86,12 +89,52 @@ const SignInForm = ({ showPassword, setShowPassword }: AuthProps) => {
   );
 };
 
-const SignupForm = ({ showPassword, setShowPassword }: AuthProps) => {
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+const SignupForm = ({ setLogin, showPassword, setShowPassword }: AuthProps) => {
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add form submission logic here
+    setLoading(true);
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get("email");
+    const fullName = formData.get("fullName");
+    const contactNumberValue = formData.get("contactNumber");
+    const contactNumber = parseInt(contactNumberValue as string)
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirmPassword");
+
+    if (password !== confirmPassword) {
+      toast.error("Password should match Confirm password");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const signupData = {
+        email,
+        fullName,
+        password,
+        contactNumber
+      };
+     const response = await axios.post("/api/auth", signupData);
+      if (response.statusText !== "Created") {
+        toast.error("Something went wrong");
+        setLoading(false);
+        return;
+      }
+      toast.success("Account created successfully");
+      if (setLogin) {
+        setLogin();
+      }
+    } catch (error) {
+      console.log(error);
+      const axiosError = error as AxiosError;
+      const errorMessage = (axiosError?.response?.data as { error: string })?.error;
+      toast.error(`Error: ${errorMessage}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -107,6 +150,7 @@ const SignupForm = ({ showPassword, setShowPassword }: AuthProps) => {
           <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10 group-focus-within:text-purple-400 transition-all duration-200" />
           <input
             type="text"
+            name="fullName"
             placeholder="Full name"
             required
             className="w-full pl-12 pr-4 py-4 bg-white/[0.03] backdrop-blur-xl border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white/[0.05] text-white placeholder-gray-500 transition-all duration-200"
@@ -117,6 +161,7 @@ const SignupForm = ({ showPassword, setShowPassword }: AuthProps) => {
           <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10 group-focus-within:text-purple-400 transition-all duration-200" />
           <input
             type="email"
+            name="email"
             placeholder="Email address"
             required
             className="w-full pl-12 pr-4 py-4 bg-white/[0.03] backdrop-blur-xl border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white/[0.05] text-white placeholder-gray-500 transition-all duration-200"
@@ -126,7 +171,8 @@ const SignupForm = ({ showPassword, setShowPassword }: AuthProps) => {
         <div className="relative group">
           <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10 group-focus-within:text-purple-400 transition-all duration-200" />
           <input
-            type="tel"
+            type="number"
+            name="contactNumber"
             placeholder="Contact number"
             required
             className="w-full pl-12 pr-4 py-4 bg-white/[0.03] backdrop-blur-xl border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white/[0.05] text-white placeholder-gray-500 transition-all duration-200"
@@ -137,6 +183,7 @@ const SignupForm = ({ showPassword, setShowPassword }: AuthProps) => {
           <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10 group-focus-within:text-purple-400 transition-all duration-200" />
           <input
             type={showPassword ? "text" : "password"}
+            name="password"
             placeholder="Create password"
             required
             className="w-full pl-12 pr-12 py-4 bg-white/[0.03] backdrop-blur-xl border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white/[0.05] text-white placeholder-gray-500 transition-all duration-200"
@@ -155,6 +202,7 @@ const SignupForm = ({ showPassword, setShowPassword }: AuthProps) => {
           <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10 group-focus-within:text-purple-400 transition-all duration-200" />
           <input
             type={confirmPasswordVisible ? "text" : "password"}
+            name="confirmPassword"
             placeholder="Confirm password"
             required
             className="w-full pl-12 pr-12 py-4 bg-white/[0.03] backdrop-blur-xl border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white/[0.05] text-white placeholder-gray-500 transition-all duration-200"
@@ -194,14 +242,41 @@ const SignupForm = ({ showPassword, setShowPassword }: AuthProps) => {
       <button
         type="submit"
         className="relative w-full group"
+        disabled={loading}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-200" />
         <div className="relative w-full py-4 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 rounded-xl text-white font-medium transform hover:translate-y-[-1px] transition-all duration-200">
-          Create account
+          {loading ? (
+            <span className="flex items-center justify-center">
+              <svg
+                className="w-5 h-5 mr-2 text-white animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Creating...
+            </span>
+          ) : (
+            'Create Account'
+          )}
         </div>
       </button>
     </motion.form>
   );
 };
 
-export { SignInForm, SignupForm };
+export {SignInForm, SignupForm}
