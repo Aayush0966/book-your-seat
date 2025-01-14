@@ -1,3 +1,4 @@
+import { Phone } from 'lucide-react';
 import prisma from "@/lib/prisma"
 import { SignupDetails } from "@/types/auth"
 
@@ -16,6 +17,13 @@ export const getUserByEmail = async (email: string) => {
         }
     })
     return user ? user : null
+}
+
+export const getUserByEmailWithPassword = async (email:string) => {
+    const existingUser = await prisma.user.findUnique({
+     where: {email}
+     })
+     return existingUser ? existingUser : null
 }
 
 export const updateOTP = async (email: string, otp: number, otpExpiresAt: number) => {

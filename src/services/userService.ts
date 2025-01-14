@@ -1,5 +1,5 @@
 import * as userQueries from "@/database/user/queries";
-import { saltAndHashPassword } from "@/lib/password";
+import { comparePasswords, saltAndHashPassword } from "@/lib/password";
 import { SignupDetails } from "@/types/auth";
 
 export const verifyOTP = async (email:string, otp:number) => {
@@ -27,4 +27,14 @@ export const handleCreateAccount = async (signupDetails: SignupDetails) => {
         return {success: false, error: "Something went wrong"}
     }
     return {success: true, data: newUser}
+}
+export const handleLogin = async (email: string, password: string) => {
+    const existingUser = await userQueries.getUserByEmailWithPassword(email);
+    console.log(existingUser)
+    if (!existingUser) return null;
+    const isValid = await comparePasswords(password, existingUser.password as string);
+    if (!isValid) return null;
+
+    const { password: _, otp: __, otpExpiresAt: ___, ...user } = existingUser;
+    return user;
 }
