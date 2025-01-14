@@ -19,7 +19,7 @@ export async function POST (request: Request)  {
      if (result.error) {
          return NextResponse.json({error: result.error}, {status: 400})
      }
-     return NextResponse.json({data: result.data}, {status: 201})
+     return NextResponse.json({message: "Account created successfully"}, {status: 201})
    } catch (error) {
         console.error("Error creating account: ", error)
         return NextResponse.json({error: error}, {status: 500})
@@ -28,3 +28,4 @@ export async function POST (request: Request)  {
     
 }
 
+export const runtime = "nodejs";

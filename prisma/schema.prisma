@@ -22,7 +22,6 @@ model User {
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
   accounts      Account[]
-  sessions      Session[]  
   
   @@index([email])
 }
@@ -38,16 +37,6 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  userId       Int
-  sessionToken String   @unique
-  accessToken  String?
-  expires      DateTime
-  
-  user User @relation(fields: [userId], references: [id])
-
-}
 
 model Movie {
   id          Int      @id @default(autoincrement())

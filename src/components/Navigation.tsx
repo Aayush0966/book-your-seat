@@ -7,11 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { usePathname } from 'next/navigation'
-
+import {useSession} from "next-auth/react"
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const loggedIn = false;
+  const {data: session} = useSession();
   const pathname = usePathname()
 
   const navItems = [
@@ -47,7 +47,7 @@ const Navigation = () => {
           </div>
 
           <div className="hidden md:flex items-center">
-            {!loggedIn ? (
+            {!session ? (
               <Button 
                 className="bg-primary hover:bg-dark-primary transition-colors duration-200"
                 aria-label="Log in"
@@ -100,7 +100,7 @@ const Navigation = () => {
               {item.name}
             </Link>
           ))}
-          {!loggedIn && (
+          {!session && (
             <Button
               className="w-full mt-2 bg-primary hover:bg-dark-primary transition-colors duration-200"
             >

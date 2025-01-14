@@ -28,11 +28,13 @@ export const handleCreateAccount = async (signupDetails: SignupDetails) => {
     }
     return {success: true, data: newUser}
 }
+
 export const handleLogin = async (email: string, password: string) => {
     const existingUser = await userQueries.getUserByEmailWithPassword(email);
     console.log(existingUser)
     if (!existingUser) return null;
     const isValid = await comparePasswords(password, existingUser.password as string);
+    console.log(isValid)
     if (!isValid) return null;
 
     const { password: _, otp: __, otpExpiresAt: ___, ...user } = existingUser;

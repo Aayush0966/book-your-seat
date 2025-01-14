@@ -1,4 +1,3 @@
-import { Phone } from 'lucide-react';
 import prisma from "@/lib/prisma"
 import { SignupDetails } from "@/types/auth"
 

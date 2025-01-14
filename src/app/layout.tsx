@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
-import './styles/globals.css';
-import {Toaster} from 'react-hot-toast'
+import '@/app/styles/globals.css';
+import Navigation from '@/components/Navigation';
+import { SessionProvider } from 'next-auth/react';
 
 
 const roboto = Roboto({
@@ -24,8 +25,10 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} antialiased`}
       >
+        <SessionProvider>
+        <Navigation />
         {children}
-        <Toaster position='top-right' />
+        </SessionProvider>
       </body>
     </html>
   );

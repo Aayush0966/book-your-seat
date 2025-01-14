@@ -9,9 +9,6 @@ import { CredentialsType } from './types/auth';
 
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  session: {
-    strategy: "database",
-  },
   adapter: PrismaAdapter(prisma),
   providers: [
     Google({

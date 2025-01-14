@@ -5,14 +5,18 @@ import { CredentialsType } from "@/types/auth";
 
 export const verifyUser = async (credentials: CredentialsType) => {
     try {
-        const user = await signIn("credentials", credentials)
-        if (!user) return null;
+        const user = await signIn("credentials", {
+            ...credentials,
+            redirect: false, // Prevent automatic redirect
+        });
+        if (!user || user.error) return null; // Handle case when signIn fails
         return user;
     } catch (error) {
-        console.error("Error while verifying user: ", error)
-        return null
+        console.error("Error while verifying user: ", error);
+        return null;
     }
-}
+};
+
 
 export const logoutUser = async () => {
     await signOut();
