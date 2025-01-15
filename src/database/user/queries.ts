@@ -25,18 +25,7 @@ export const getUserByEmailWithPassword = async (email:string) => {
      return existingUser ? existingUser : null
 }
 
-export const updateOTP = async (email: string, otp: number, otpExpiresAt: number) => {
-    const user = await prisma.user.update({
-        where: {
-            email
-        },
-        data: {
-            otp: otp,
-            otpExpiresAt
-        }
-    })
-    return user;
-}
+
 
 export const createAccount = async (data: SignupDetails) => {
     const user = await prisma.user.create({

@@ -4,7 +4,7 @@ import { Mail } from 'lucide-react';
 import AuthHeader from './AuthHeader';
 import AuthInput from './AuthInput';
 import SubmitButton from '../SubmitButton';
-import { authenticateOTP, checkUser } from '@/app/actions';
+import { authenticateOTP, checkUser } from '@/app/admin/actions';
 import toast from 'react-hot-toast';
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp"
 import { UserType } from '@/types/user';
@@ -42,7 +42,6 @@ export function AdminLogin() {
     const email = formData.get('email')?.toString().trim();
 
     const admin = await checkUser(email as string);
-    console.log(admin)
     if (!admin) {
       toast.error('Admin account not found');
       return;

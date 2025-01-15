@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { Film, Ticket, Users, Clock, Settings, LayoutDashboardIcon } from 'lucide-react';
-import { logOutAdmin } from '@/app/actions';
+import { logOutAdmin } from '@/app/admin/actions';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import LogoutModal from './LogoutModal';

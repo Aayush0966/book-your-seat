@@ -5,11 +5,10 @@ export type UserType = {
     id: number;
     fullName: string;
     email: string;
-    password: string;
-    role: Role;
-    contactNumber: number;
-    otp: number | null;
-    otpExpiresAt: bigint | null;
-    createdAt: Date;
-    updatedAt: Date;
+    role?: Role;
+    contactNumber: bigint | null
+    otp?: number | null;
+    otpExpiresAt?: bigint | null;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
