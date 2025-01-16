@@ -1,9 +1,8 @@
 'use client'
-import React from 'react'
-import { Film, Ticket, Users, Clock, Settings, LayoutDashboardIcon } from 'lucide-react';
-import { logOutAdmin } from '@/app/admin/actions';
-import toast from 'react-hot-toast';
+import { logOutAdmin } from '@/app/(admin)/admin/actions';
+import { Clock, Film, LayoutDashboardIcon, Settings, Ticket, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import LogoutModal from './LogoutModal';
 
 interface SidebarProps {
@@ -36,8 +35,6 @@ const Sidebar = ({activeItem, setActiveItem}: SidebarProps) => {
             {icon: LayoutDashboardIcon, label: 'Dashboard'},
           { icon: Film, label: 'Movies' },
           { icon: Ticket, label: 'Bookings' },
-          { icon: Users, label: 'Users' },
-          { icon: Clock, label: 'Showtimes' },
           { icon: Settings, label: 'Settings' },
         ].map((item) => (
           <button

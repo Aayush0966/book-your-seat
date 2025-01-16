@@ -26,13 +26,16 @@ const SignInForm = ({ showPassword, setShowPassword }: AuthProps) => {
     const email = formData.get("email")
     const password = formData.get("password")
     const response = await verifyUser({email, password} as CredentialsType);
-    if (!response) {
+    if (response.error) {
       setLoading(false)
-      toast.error("Invalid credentials")
+      toast.error(response.error)
       return;
     }
+    else {
     setLoading(false)
-    router.push('/home')
+    router.push('/home')      
+    }
+
   };
 
   return (
@@ -99,7 +102,7 @@ const SignInForm = ({ showPassword, setShowPassword }: AuthProps) => {
 
       <button
         type="submit"
-        className="relative w-full group"
+        className="relative cursor-pointer w-full group"
         disabled = {loading}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-200" />

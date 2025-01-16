@@ -64,6 +64,7 @@ export const PricingStep = ({ movieDetails, handlePriceChange } : StepProps) => 
                   className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
                   placeholder="Price"
                   onChange={handlePriceChange}
+                  required
                 />
                 </div>
             ))}

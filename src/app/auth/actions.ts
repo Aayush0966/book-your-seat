@@ -2,20 +2,29 @@
 
 import { signIn, signOut } from "@/auth";
 import { CredentialsType } from "@/types/auth";
+import { AuthError } from "next-auth";
 
 export const verifyUser = async (credentials: CredentialsType) => {
-    try {
-        const user = await signIn("credentials", {
-            ...credentials,
-            redirect: false, // Prevent automatic redirect
-        });
-        if (!user || user.error) return null; // Handle case when signIn fails
-        return user;
-    } catch (error) {
-        console.error("Error while verifying user: ", error);
-        return null;
+  try {
+    const user = await signIn("credentials", {
+      ...credentials,
+      redirect: false, // Prevent automatic redirect
+    });
+
+    return { success: true };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return { error: 'Invalid credentials.' };
+        default:
+          return { error: 'Something went wrong.' };
+      }
     }
-};
+    throw error;
+  }
+}
+
 
 
 export const logoutUser = async () => {

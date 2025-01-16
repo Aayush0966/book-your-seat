@@ -1,14 +1,14 @@
 'use client'
-import React from 'react';
+import { authenticateOTP, checkUser } from '@/app/(admin)/admin/actions';
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
+import { UserType } from '@/types/user';
 import { Mail } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import toast from 'react-hot-toast';
+import SubmitButton from '../SubmitButton';
 import AuthHeader from './AuthHeader';
 import AuthInput from './AuthInput';
-import SubmitButton from '../SubmitButton';
-import { authenticateOTP, checkUser } from '@/app/admin/actions';
-import toast from 'react-hot-toast';
-import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp"
-import { UserType } from '@/types/user';
-import { useRouter } from 'next/navigation';
 
 export function AdminLogin() {
   const [loading, setLoading] = React.useState<boolean>(false);

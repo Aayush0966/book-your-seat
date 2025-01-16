@@ -9,7 +9,7 @@ import { PricingStep } from './MovieForm/Pricing';
 import { ShowScheduleStep } from './MovieForm/ShowSchedule';
 import { TechnicalDetailsStep } from './MovieForm/TechnicalDetails';
 
-const MovieForm = () => {
+const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
   const [step, setStep] = useState(1);
   const [movieDetails, setMovieDetails] = useState<MovieDetails>({
     title: '',
@@ -101,9 +101,98 @@ const MovieForm = () => {
     }));
   };
 
+  const validateStep = (currentStep: number): boolean => {
+    switch (currentStep) {
+      case 1: // Basic Info
+        if (!movieDetails.title.trim()) {
+          toast.error("Movie title is required");
+          return false;
+        }
+        if (!movieDetails.description.trim()) {
+          toast.error("Movie description is required");
+          return false;
+        }
+        if (!movieDetails.releaseDate) {
+          toast.error("Release date is required");
+          return false;
+        }
+        if (movieDetails.genres.length === 0) {
+          toast.error("Please select at least one genre");
+          return false;
+        }
+        return true;
+
+      case 2: // Technical Details
+        if (!movieDetails.language.trim()) {
+          toast.error("Language is required");
+          return false;
+        }
+        if (!movieDetails.duration || movieDetails.duration < 1) {
+          toast.error("Valid duration is required");
+          return false;
+        }
+        if (!movieDetails.ageRating.trim()) {
+          toast.error("Age rating is required");
+          return false;
+        }
+        if (!movieDetails.posterUrl.trim()) {
+          toast.error("Poster URL is required");
+          return false;
+        }
+        return true;
+
+      case 3: // Show Schedule
+        if (!movieDetails.showStartDate) {
+          toast.error("Show start date is required");
+          return false;
+        }
+        if (!movieDetails.showEndDate) {
+          toast.error("Show end date is required");
+          return false;
+        }
+        if (movieDetails.showtimes.length === 0) {
+          toast.error("Please select at least one showtime");
+          return false;
+        }
+        return true;
+
+      case 4: // Pricing
+        if (!movieDetails.pricing.length) {
+          toast.error("Pricing information is required");
+          return false;
+        }
+        for (const price of movieDetails.pricing) {
+          if (!price.prices.platinum || !price.prices.gold || !price.prices.silver) {
+            toast.error(`Please set all prices for ${price.type} screen`);
+            return false;
+          }
+        }
+        return true;
+
+      case 5: // Cast & Crew
+        if (!movieDetails.director.trim()) {
+          toast.error("Director name is required");
+          return false;
+        }
+        if (movieDetails.cast.length === 0) {
+          toast.error("Please add at least one cast member");
+          return false;
+        }
+        return true;
+
+      default:
+        return true;
+    }
+  };
+
   const nextStep = () => {
-    if (step === totalSteps) handleMovieSubmit();
-    if (step < totalSteps) setStep(step + 1);
+    if (!validateStep(step)) return;
+    
+    if (step === totalSteps) {
+      handleMovieSubmit();
+    } else {
+      setStep(step + 1);
+    }
   };
 
   const prevStep = () => {
@@ -123,7 +212,7 @@ const MovieForm = () => {
     setIsLoading(true);
     try {
       const response = await axios.post('/api/admin/movie', { movieDetails });
-      if (response.statusText !== 'OK') {
+      if (response.statusText !== 'Created') {
         toast.error("Something went wrong");
       } else {
         toast.success('Movie added successfully');
@@ -131,6 +220,7 @@ const MovieForm = () => {
     } catch (error) {
       toast.error("An error occurred during submission");
     } finally {
+      onSuccess()
       setIsLoading(false);
     }
   };

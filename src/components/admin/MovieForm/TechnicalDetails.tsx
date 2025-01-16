@@ -18,6 +18,7 @@ export const TechnicalDetailsStep = ({ movieDetails, handleChange } : StepProps)
             value={movieDetails.duration}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+            required
           />
         </div>
 
@@ -28,6 +29,7 @@ export const TechnicalDetailsStep = ({ movieDetails, handleChange } : StepProps)
             value={movieDetails.language}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+            required
           >
             <option value="">Select language</option>
             <option value="English">English</option>
@@ -43,6 +45,7 @@ export const TechnicalDetailsStep = ({ movieDetails, handleChange } : StepProps)
             value={movieDetails.ageRating}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+            required
           >
             <option value="">Select rating</option>
             <option value="G">G</option>
@@ -61,6 +64,7 @@ export const TechnicalDetailsStep = ({ movieDetails, handleChange } : StepProps)
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
             placeholder="https://"
+            required
           />
         </div>
       </div>

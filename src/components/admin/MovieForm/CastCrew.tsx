@@ -19,6 +19,7 @@ export const CastCrewStep = ({ movieDetails, handleChange, handleCastChange }: S
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
             placeholder="Enter director's name"
+            required
           />
         </div>
 
@@ -30,6 +31,7 @@ export const CastCrewStep = ({ movieDetails, handleChange, handleCastChange }: S
             onChange={handleCastChange}
             className="w-full p-2 border rounded-lg h-32 focus:ring-2 focus:ring-blue-500 transition"
             placeholder="Enter cast members, separated by commas"
+            required
           />
         </div>
 
@@ -40,6 +42,7 @@ export const CastCrewStep = ({ movieDetails, handleChange, handleCastChange }: S
             value={movieDetails.status}
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+            required
           >
             <option value="draft">Draft</option>
             <option value="published">Published</option>

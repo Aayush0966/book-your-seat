@@ -25,6 +25,7 @@ export const BasicInfoStep = ({ movieDetails, handleChange, handleGenreChange } 
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
             placeholder="Enter movie title"
+            required
           />
         </div>
 
@@ -36,6 +37,7 @@ export const BasicInfoStep = ({ movieDetails, handleChange, handleGenreChange } 
             onChange={handleChange}
             className="w-full p-2 border rounded-lg h-32 focus:ring-2 focus:ring-blue-500 transition"
             placeholder="Enter movie description"
+            required
           />
         </div>
 
@@ -44,9 +46,10 @@ export const BasicInfoStep = ({ movieDetails, handleChange, handleGenreChange } 
           <input
             type="date"
             name="releaseDate"
-            value={movieDetails.releaseDate}
+            
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+            required
           />
         </div>
 

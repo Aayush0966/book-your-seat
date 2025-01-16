@@ -1,6 +1,7 @@
 import { StepProps } from '@/types/movie';
 import { Calendar, Plus, X } from 'lucide-react';
 import React from 'react';
+import { FormikValues } from 'formik';
 
 export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeChange }: StepProps) => {
   const [customTime, setCustomTime] = React.useState('');
@@ -31,6 +32,19 @@ export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeCha
     return date.toISOString().split('T')[0]; // Return date in 'YYYY-MM-DD' format
   };
 
+  const handleSubmit = (values: FormikValues) => {
+    const formattedData = {
+        ...values,
+        showStartDate: BigInt(values.showStartDate),
+        showEndDate: BigInt(values.showEndDate),
+        showtimes: values.showtimes.map((showtime: any) => ({
+            screenId: showtime.screenId,
+            showTime: BigInt(showtime.showTime)
+        }))
+    };
+    onSubmit(formattedData);
+  };
+
   return (
     <div className="space-y-6 animate-fadeIn">
       <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -48,6 +62,7 @@ export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeCha
               value={movieDetails.showStartDate ? formatDate(movieDetails.showStartDate) : ''}
               onChange={handleChange}
               className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+              required
             />
           </div>
 
@@ -59,6 +74,7 @@ export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeCha
               value={movieDetails.showEndDate ? formatDate(movieDetails.showEndDate) : ''}
               onChange={handleChange}
               className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+              required
             />
           </div>
         </div>
@@ -70,6 +86,7 @@ export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeCha
             value={selectedScreen || ''}
             onChange={(e) => setSelectedScreen(Number(e.target.value))}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+            required
           >
             <option value="" disabled>Select Screen</option>
             {screenIds.map((screenId) => (
@@ -114,6 +131,7 @@ export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeCha
               value={customTime}
               onChange={(e) => setCustomTime(e.target.value)}
               className="p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+              required
             />
             <button
               onClick={handleAddCustomTime}

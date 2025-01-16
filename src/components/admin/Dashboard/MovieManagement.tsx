@@ -1,36 +1,24 @@
-import React from 'react';
-import { Plus, Film, Ticket, Clock, DollarSign } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import MovieForm from './MovieForm';
+import { Clock, DollarSign, Film, Plus, Ticket } from 'lucide-react';
+import React, { useState } from 'react';
+import MovieForm from '../MovieForm';
+import { StatCard } from "../StatCard";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
-interface StatCardProps {
-  title: string;
-  value: number | string;
-  Icon: React.ComponentType<{ className?: string }>;
-}
-
-const StatCard: React.FC<StatCardProps> = ({ title, value, Icon }) => (
-  <Card className="hover:shadow-lg transition-shadow">
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      <Icon className="h-4 w-4 text-muted-foreground" />
-    </CardHeader>
-    <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-    </CardContent>
-  </Card>
-);
 
 const MovieManagement = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   const stats = [
     { title: 'Total Movies', value: 45, Icon: Film },
     { title: 'Active Shows', value: 12, Icon: Clock },
@@ -48,7 +36,7 @@ const MovieManagement = () => {
           </p>
         </div>
         
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
@@ -56,7 +44,8 @@ const MovieManagement = () => {
             </Button>
           </DialogTrigger>
           <DialogContent className=" border-none sm:max-w-2xl ">
-            <MovieForm />
+            <DialogTitle>Fill all the input fields</DialogTitle>
+            <MovieForm onSuccess={handleClose} />
           </DialogContent>
         </Dialog>
       </div>

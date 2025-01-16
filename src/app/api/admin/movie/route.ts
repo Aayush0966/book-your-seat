@@ -1,9 +1,9 @@
-import { addMovie } from "@/database/queries";
+import { addMovieAndShow } from "@/services/movieServices";
 import { NextResponse } from "next/server";
 
 export const POST = async (request: Request) => {
     const {movieDetails} = await request.json();
-    const responseDate = await addMovie(movieDetails);
+    const responseDate = await addMovieAndShow(movieDetails);
     
     if (responseDate === null) {
         return NextResponse.json({message: 'Something went wrong'}, { status: 500 })

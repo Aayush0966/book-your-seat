@@ -34,6 +34,11 @@ export interface Price {
   prices: Pricing;
 }
 
+export type Showtime = {
+    screenId: number;
+    showTime: number;
+};
+
 export interface MovieDetails {
   title: string;
   description: string;
@@ -52,12 +57,6 @@ export interface MovieDetails {
   status: string;
 }
 
-export interface Showtime {
-  screenId: number;
-  showTime: number;
-}
-
-
 export interface AuthProps {
   showPassword: boolean;
   setShowPassword: (show: boolean) => void;
@@ -65,7 +64,7 @@ export interface AuthProps {
 
 export interface StepProps {
   movieDetails: MovieDetails;
-  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   handleGenreChange: (genre: string) => void;
   handleShowtimeChange: (screenId: number, showTime: number) => void;
   handleCastChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
