@@ -28,6 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "prettier.config.js"
-  ],
+, "src/middleware.ts"  ],
   "exclude": ["node_modules"]
 }
