@@ -71,3 +71,9 @@ export const createPricing = async (showId: number, screenId: number, prices: Pr
         )
     );
 };
+
+export const getShows = async () => {
+    const shows = await prisma.show.findMany();
+    return shows ? shows : null;
+}
+

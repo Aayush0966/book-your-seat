@@ -1,4 +1,4 @@
-import { addMovieAndShow } from "@/services/movieServices";
+import { addMovieAndShow } from "@/services/showServices";
 import { NextResponse } from "next/server";
 
 export const POST = async (request: Request) => {
