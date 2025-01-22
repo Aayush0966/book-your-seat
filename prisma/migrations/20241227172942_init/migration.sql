@@ -1,4 +1,5 @@
 -- CreateEnum
+-- DROP TYPE IF EXISTS "Role";
 CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
 
 -- CreateEnum

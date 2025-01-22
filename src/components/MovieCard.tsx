@@ -5,8 +5,8 @@ import { imageUrl } from '@/lib/constants';
 
 
 const MovieCard = ( movie: Movie) => {
-
-  const { title, poster_path } = movie;
+  console.log(movie)
+  const { title, posterUrl } = movie;
 
   return (
     <div className="group relative w-64 h-96 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105">
@@ -14,7 +14,7 @@ const MovieCard = ( movie: Movie) => {
 
       <div className="relative w-full h-full">
         <Image
-          src={`${imageUrl}/${poster_path}`}
+          src={`${imageUrl}/${posterUrl}`}
           alt={title}
           fill
           className="object-cover"

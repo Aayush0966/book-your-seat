@@ -1,70 +1,78 @@
-'use client'
-
-import useMovieStore from "@/store/store";
-import { useState } from "react";
+import { fetchNowShowingShows } from "@/services/showServices";
 import MovieCard from "./MovieCard";
-import { Film } from "lucide-react";
-import { Button } from "./ui/button";
+import { Film, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Movie } from "@/types/movie";
 
-const NowShowingSection = () => {
-  const items = useMovieStore((state) => state.items);
-  const [filter, setFilter] = useState('all');
-
-  const filteredItems = items.slice(0, 8).filter(item => {
-    if (filter === 'top') return item.vote_average >= 8;
-    return true;
-  });
+const NowShowingSection = async () => {
+  const shows = await fetchNowShowingShows();
 
   return (
     <section className="bg-background dark:bg-dark-background py-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-12">
           <div className="flex items-center space-x-3 mb-6 sm:mb-0 animate-fadeIn">
-            <Film className="w-8 h-8 text-primary" />
+            <div className="relative">
+              <Film className="w-8 h-8 text-primary" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+            </div>
             <h2 className="text-4xl font-bold text-dark-text dark:text-text">
               Now Showing
             </h2>
           </div>
           
-          <div className="flex gap-4 animate-fadeIn animation-delay-100">
-            <Button
-              variant={filter === 'all' ? 'default' : 'outline'}
-              onClick={() => setFilter('all')}
-              className="rounded-full"
-            >
-              All Movies
-            </Button>
-            <Button
-              variant={filter === 'top' ? 'default' : 'outline'}
-              onClick={() => setFilter('top')}
-              className="rounded-full"
-            >
-              Top Rated
-            </Button>
-          </div>
+          <Button 
+            variant="outline" 
+            className="group flex items-center space-x-2 hover:bg-primary hover:text-white transition-all duration-300"
+          >
+            <span>View All Shows</span>
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+          </Button>
         </div>
 
-        {filteredItems.length > 0 ? (
+        {/* Shows Grid */}
+        {shows && shows.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {filteredItems.map((item, index) => (
+            {shows.slice(0, 8).map((show, index) => (
               <div
-                key={item.id}
-                className="transform hover:scale-105 transition-all duration-300 animate-fadeIn"
-                style={{ animationDelay: `${index * 100}ms` }}
+                key={show.id}
+                className="group relative transform hover:scale-105 transition-all duration-300 animate-fadeIn"
+                style={{ 
+                  animationDelay: `${index * 150}ms`,
+                  opacity: 0,
+                  animation: 'fadeIn 0.5s ease-out forwards'
+                }}
               >
-                <MovieCard {...item} />
+                <div className="rounded-xl" />
+                <MovieCard {...show.movie as Movie} />
+               
               </div>
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-2xl">
-            <Film className="w-16 h-16 mb-4 text-gray-400 animate-pulse" />
-            <p className="text-xl text-gray-500">No movies available</p>
+          <div className="flex flex-col items-center justify-center h-96 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+            <Film className="w-16 h-16 mb-4 text-gray-400 animate-bounce" />
+            <p className="text-xl text-gray-500 mb-4">No movies available</p>
+            <Button variant="outline" className="hover:bg-primary hover:text-white">
+              Check back later
+            </Button>
           </div>
         )}
+
+        {/* Mobile View All Button */}
+        <div className="mt-12 text-center sm:hidden">
+          <Button 
+            variant="outline" 
+            className="w-full group flex items-center justify-center space-x-2 hover:bg-primary hover:text-white transition-all duration-300"
+          >
+            <span>View All Shows</span>
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+          </Button>
+        </div>
       </div>
     </section>
   );
 };
 
-export default NowShowingSection
+export default NowShowingSection;

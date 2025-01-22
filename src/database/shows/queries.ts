@@ -1,4 +1,4 @@
-import {  MovieDetails, Pricing, Showtime } from "@/types/movie";
+import {  MovieDetails, Pricing, Showtime, Status } from "@/types/movie";
 import prisma from "@/lib/prisma"; 
 import { Prisma } from "@prisma/client";
 
@@ -72,8 +72,20 @@ export const createPricing = async (showId: number, screenId: number, prices: Pr
     );
 };
 
-export const getShows = async () => {
-    const shows = await prisma.show.findMany();
+export const fetchShows = async (status: Status) => {
+    const shows = await prisma.show.findMany({
+        where: {
+            status
+        }
+    });
     return shows ? shows : null;
 }
 
+export const fetchMoviesById = async (movieId: number) => {
+    const movie = await prisma.movie.findFirst({
+        where: {
+            id: movieId
+        }
+    })
+    return movie ? movie: null
+}

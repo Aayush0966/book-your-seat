@@ -14,13 +14,12 @@ model User {
   email         String    @unique @db.VarChar(255)
   password      String?   
   role          Role      @default(USER)
-  contactNumber BigInt?      @map("contact_number")
+  contactNumber BigInt?   @map("contact_number")
   otp           Int?      @db.Integer
   otpExpiresAt  BigInt?   @map("otp_expires_at")
   bookings      Booking[]
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
-
   accounts      Account[]
   
   @@index([email])
@@ -31,12 +30,10 @@ model Account {
   userId             Int     @map("user_id")
   provider           String  
   providerAccountId  String  @map("provider_account_id")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
-
 
 model Movie {
   id          Int      @id @default(autoincrement())
@@ -89,6 +86,7 @@ model Show {
   id        Int       @id @default(autoincrement())
   movieId   Int       @map("movie_id")
   screenId  Int       @map("screen_id")
+  status    ShowStatus @default(UPCOMING)
   showTime  Int       @map("show_time")
   startDate Int       @map("start_date")
   endDate   Int       @map("end_date")
@@ -102,6 +100,7 @@ model Show {
   @@index([movieId])
   @@index([screenId])
   @@index([showTime])
+  @@index([status])
 }
 
 model Booking {
@@ -111,7 +110,7 @@ model Booking {
   seatsBooked String[] @map("seats_booked")
   totalPrice  Float    @map("total_price") @db.DoublePrecision
   bookingDate DateTime @default(now()) @map("booking_date")
-  status      Status   @default(CONFIRMED)
+  bookingStatus BookingStatus @default(CONFIRMED) @map("booking_status")
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   show        Show     @relation(fields: [showId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now()) @map("created_at")
@@ -119,7 +118,7 @@ model Booking {
 
   @@index([userId])
   @@index([showId])
-  @@index([status])
+  @@index([bookingStatus])
 }
 
 enum Role {
@@ -127,7 +126,13 @@ enum Role {
   ADMIN
 }
 
-enum Status {
+enum BookingStatus {
   CONFIRMED
   CANCELLED
+}
+
+enum ShowStatus {
+  UPCOMING
+  ACTIVE
+  COMPLETED
 }

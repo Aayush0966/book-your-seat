@@ -62,6 +62,8 @@ export interface AuthProps {
   setShowPassword: (show: boolean) => void;
 }
 
+export type Status = "ACTIVE" | "COMPLETED" | "UPCOMING";
+
 export interface StepProps {
   movieDetails: MovieDetails;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
