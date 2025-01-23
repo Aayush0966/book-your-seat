@@ -14,7 +14,7 @@ const MovieCard = ( movie: Movie) => {
 
       <div className="relative w-full h-full">
         <Image
-          src={`${imageUrl}/${posterUrl}`}
+          src={posterUrl}
           alt={title}
           fill
           className="object-cover"

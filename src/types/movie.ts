@@ -54,7 +54,7 @@ export interface MovieDetails {
   pricing: Price[];
   cast: string[];
   director: string;
-  status: string;
+  status: Status;
 }
 
 export interface AuthProps {

@@ -4,7 +4,7 @@ import { sendOTP } from "@/lib/nodeMailer";
 import { genOTP } from "@/lib/utils";
 
 export const verifyAdmin = async (email: string) => {
-    const admin = userQueries.getUserByEmail(email);
+    const admin = await userQueries.getUserByEmail(email);
     if (!admin) return null;
     const otp = await genOTP();
     const otpCreationTime = Date.now();

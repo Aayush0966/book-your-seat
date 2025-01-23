@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import NowShowingSection from "@/components/NowShowingSection";
+import UpcomingSection from "@/components/UpcomingSection";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
         <Hero />
       </div>
       <NowShowingSection />
+      <UpcomingSection />
     </div>
   )
 }

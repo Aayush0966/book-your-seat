@@ -14,6 +14,14 @@ const nextConfig: NextConfig = {
       {
         hostname: 'image.tmdb.org',
         protocol: 'https'
+      },
+      {
+        hostname: 'd346azgjfhsciq.cloudfront.net',
+        protocol: 'https'
+      },
+      {
+        hostname: 'ia.media-imdb.com',
+        protocol: 'https'
       }
     ]
   }

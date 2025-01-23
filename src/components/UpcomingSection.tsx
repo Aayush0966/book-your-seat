@@ -4,8 +4,8 @@ import { Film, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Movie } from "@/types/movie";
 
-const NowShowingSection = async () => {
-  const shows = await fetchMoviesWithShows('ACTIVE');
+const UpcomingSection = async () => {
+  const shows = await fetchMoviesWithShows('UPCOMING');
 
   return (
     <section className="bg-background dark:bg-dark-background py-20 px-4 md:px-8">
@@ -18,7 +18,7 @@ const NowShowingSection = async () => {
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
             </div>
             <h2 className="text-4xl font-bold text-dark-text dark:text-text">
-              Now Showing
+              Upcoming Movies
             </h2>
           </div>
           
@@ -75,4 +75,4 @@ const NowShowingSection = async () => {
   );
 };
 
-export default NowShowingSection;
+export default UpcomingSection;

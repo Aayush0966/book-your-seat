@@ -43,6 +43,7 @@ model Movie {
   posterUrl   String   @map("poster_url") @db.Text
   ageRating   String   @map("age_rating") @db.Text
   genres      Json
+  status    MovieStatus @default(UPCOMING)
   casts       Json
   language    String   @db.Text
   duration    Int      @db.Integer
@@ -50,7 +51,8 @@ model Movie {
   shows       Show[]
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
-
+  
+  @@index([status])
   @@index([title])
 }
 
@@ -86,7 +88,6 @@ model Show {
   id        Int       @id @default(autoincrement())
   movieId   Int       @map("movie_id")
   screenId  Int       @map("screen_id")
-  status    ShowStatus @default(UPCOMING)
   showTime  Int       @map("show_time")
   startDate Int       @map("start_date")
   endDate   Int       @map("end_date")
@@ -100,7 +101,6 @@ model Show {
   @@index([movieId])
   @@index([screenId])
   @@index([showTime])
-  @@index([status])
 }
 
 model Booking {
@@ -131,7 +131,7 @@ enum BookingStatus {
   CANCELLED
 }
 
-enum ShowStatus {
+enum MovieStatus {
   UPCOMING
   ACTIVE
   COMPLETED

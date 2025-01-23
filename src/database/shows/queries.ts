@@ -14,6 +14,7 @@ export const createMovie = async (movieDetails: MovieDetails) => {
         language: movieDetails.language,
         duration: movieDetails.duration,
         releaseDate: movieDetails.releaseDate,
+        status: movieDetails.status
     };
 
     return await prisma.movie.create({ data: movieData });
@@ -72,19 +73,19 @@ export const createPricing = async (showId: number, screenId: number, prices: Pr
     );
 };
 
-export const fetchShows = async (status: Status) => {
+export const fetchShows = async (movieId: number) => {
     const shows = await prisma.show.findMany({
         where: {
-            status
+            movieId
         }
     });
     return shows ? shows : null;
 }
 
-export const fetchMoviesById = async (movieId: number) => {
-    const movie = await prisma.movie.findFirst({
+export const fetchMovies = async (status: Status) => {
+    const movie = await prisma.movie.findMany({
         where: {
-            id: movieId
+            status: status
         }
     })
     return movie ? movie: null

@@ -44,9 +44,9 @@ export const CastCrewStep = ({ movieDetails, handleChange, handleCastChange }: S
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
             required
           >
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-            <option value="archived">Archived</option>
+            <option value="UPCOMING">Upcoming</option>
+            <option value="ACTIVE">Active</option>
+            <option value="COMPLETED">Completed</option>
           </select>
         </div>
       </div>
