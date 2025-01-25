@@ -1,51 +1,66 @@
 'use client'
 
-import useMovieStore from "@/store/store";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Star, Play, ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
+import {  Play, ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
-import { imageUrl } from "@/lib/constants";
+import {  nowPlayingApiUrl } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import axios from "axios";
+import { Movie } from "@/types/movie";
 
 const Hero = () => {
-  const items = useMovieStore((state) => state.items);
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
+  const [moviesData, setMoviesData] = useState<Movie[]>([]);
 
   const changeSlide = useCallback((direction: 'next' | 'prev') => {
-    if (items.length <= 1) return;
+    if (moviesData.length <= 1) return;
     
     setIsTransitioning(true);
     setIsImageLoading(true);
     setCurrentMovieIndex(prev => {
-      if (direction === 'next') return (prev + 1) % items.length;
-      return prev === 0 ? items.length - 1 : prev - 1;
+      if (direction === 'next') return (prev + 1) % moviesData.length;
+      return prev === 0 ? moviesData.length - 1 : prev - 1;
     });
     setTimeout(() => setIsTransitioning(false), 500);
-  }, [items.length]);
+  }, [moviesData.length]);
 
   useEffect(() => {
-    if (items.length > 1) {
+    if (moviesData.length > 1) {
       const intervalId = setInterval(() => changeSlide('next'), 10000);
       return () => clearInterval(intervalId);
     }
-  }, [items.length, changeSlide]);
+  }, [moviesData.length, changeSlide]);
 
-  // Reset states when items change
+  // Reset states when moviesData change
   useEffect(() => {
     setCurrentMovieIndex(0);
     setIsImageLoading(true);
     setImageError(false);
-  }, [items]);
+  }, [moviesData]);
 
-  const currentMovie = items[currentMovieIndex];
+  const currentMovie = moviesData[currentMovieIndex];
 
-  if (!items.length) {
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await axios.get(nowPlayingApiUrl);
+        setMoviesData(response.data.results);
+      } catch (error) {
+        console.log("Error while fetching movie data: ", error);
+        setImageError(true);
+      }
+    };
+
+    fetchMovies();
+  }, []);
+
+  if (!moviesData.length) {
     return (
       <div className="relative w-full h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-900 mt-16">
         <Alert variant="destructive" className="w-96">
@@ -68,6 +83,18 @@ const Hero = () => {
     setImageError(true);
   };
 
+  const convertUnixToMonthDay = (unixTime: number) => {
+    const date = new Date(unixTime * 1000);
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const month = months[date.getUTCMonth()];
+    const day = date.getUTCDate();
+    return `${month} ${day}`;
+  };
+  
+
   return (
     <div className="relative w-full h-[calc(100vh-4rem)] overflow-hidden bg-black mt-16">
       {currentMovie && (
@@ -82,7 +109,7 @@ const Hero = () => {
             )}
             
             <Image
-              src={`${imageUrl}${currentMovie.backdrop_path}`}
+              src={currentMovie.posterUrl}
               alt={currentMovie.title}
               fill
               priority
@@ -109,12 +136,9 @@ const Hero = () => {
               <div className="max-w-3xl space-y-6 transform translate-y-0 translate-x-0">
                 <div className="flex items-center gap-4 text-primary/80 font-medium animate-fade-in">
                   <span className="px-4 py-1 border border-primary/20 rounded-full backdrop-blur-sm hover:border-primary/40 transition-colors">
-                    {new Date(currentMovie.release_date).getFullYear()}
+                    {convertUnixToMonthDay(currentMovie.releaseDate)}
                   </span>
-                  <span className="flex items-center gap-1 px-4 py-1 backdrop-blur-sm">
-                    <Star className="w-4 h-4 text-yellow-400" fill="currentColor" />
-                    {currentMovie.vote_average.toFixed(1)}
-                  </span>
+                  
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight animate-slide-up">
@@ -122,7 +146,7 @@ const Hero = () => {
                 </h1>
 
                 <p className="text-base sm:text-lg text-gray-300 line-clamp-3 animate-slide-up animation-delay-200">
-                  {currentMovie.overview}
+                  {currentMovie.description}
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 animate-slide-up animation-delay-300">
@@ -148,7 +172,7 @@ const Hero = () => {
             </div>
           </div>
 
-          {items.length > 1 && (
+          {moviesData.length > 1 && (
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 animate-fade-in">
               <button 
                 onClick={() => changeSlide('prev')}
@@ -159,7 +183,7 @@ const Hero = () => {
                 <ChevronLeft className="w-5 h-5 text-white" />
               </button>
               <div className="flex gap-2" role="tablist">
-                {items.slice(0, 5).map((_, index) => (
+                {moviesData.slice(0, 5).map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentMovieIndex(index)}
