@@ -5,6 +5,7 @@ import { auth } from "../auth"; // Assuming you have auth function set up
 import { Button } from '@/components/ui/button';
 import logo from "@/assets/logo.png";
 import { User, X, Menu } from 'lucide-react';
+import ProfileDropdown from './ProfileDropdown';
 
 interface NavItem {
   name: string;
@@ -54,13 +55,7 @@ const Navigation = async () => {
 
           <div className="hidden md:flex items-center">
             {session ? (
-              <Button
-                variant="ghost"
-                className="flex items-center space-x-2 hover:bg-primary/10 rounded-full p-2"
-                aria-label="User menu"
-              >
-                <User className="h-6 w-6 text-dark-text" />
-              </Button>
+              <ProfileDropdown session={session} />
             ) : (
               <Link 
                 href="/auth"

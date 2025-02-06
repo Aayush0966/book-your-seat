@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import '@/app/styles/globals.css';
 import Navigation from '@/components/Navigation';
 import { SessionProvider } from 'next-auth/react';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
 
 
 // const roboto = Roboto({
@@ -26,8 +27,10 @@ export default function RootLayout({
         className={`antialiased`}
       >
         <SessionProvider>
+        <TooltipProvider>
         <Navigation />
         {children}
+        </TooltipProvider>
         </SessionProvider>
       </body>
     </html>
