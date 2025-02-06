@@ -16,7 +16,8 @@ const Navigation = async () => {
   const session = await auth(); 
   const navItems: NavItem[] = [
     { name: 'Home', path: '/home' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'Contact', path: '/contact' },
+    { name: 'Ticket rate', path: '/ticket-rate'}
   ];
 
   return (
