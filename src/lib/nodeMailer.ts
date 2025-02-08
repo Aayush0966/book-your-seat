@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // You can also use other email services like Outlook, Yahoo, etc.
+    service: 'gmail',
     auth: {
         user: process.env.NEXT_PUBLIC_EMAIL,
         pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendOTP = async (email: string, otp: number): Promise<void> => {
     const mailOptions = {
-        from: `"Book Your Seat" <${process.env.NEXT_PUBLIC_EMAIL}>`, // Sender address
+        from: `"Book Your Seat" <${process.env.NEXT_PUBLIC_EMAIL}>`, 
         to: 'alphaplayer118@gmail.com', 
         subject: 'Your OTP Code',
         html: `

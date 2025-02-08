@@ -67,6 +67,18 @@ export const TechnicalDetailsStep = ({ movieDetails, handleChange } : StepProps)
             required
           />
         </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Backdrop URL</label>
+          <input
+            type="url"
+            name="backdropUrl"
+            value={movieDetails.backdropUrl}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+            placeholder="https://"
+            required
+          />
+        </div>
       </div>
     </div>
   );

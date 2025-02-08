@@ -44,6 +44,7 @@ export interface MovieDetails {
   description: string;
   genres: string[];
   releaseDate: number;
+  backdropUrl: string;
   language: string;
   duration: number;
   ageRating: string;

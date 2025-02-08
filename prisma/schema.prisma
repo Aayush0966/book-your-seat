@@ -49,6 +49,7 @@ model Movie {
   duration    Int      @db.Integer
   releaseDate Int      @map("release_date")
   shows       Show[]
+  backdropUrl String   @map("backdrop_url") @db.Text
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   

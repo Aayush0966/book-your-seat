@@ -1,7 +1,6 @@
 import { StepProps } from '@/types/movie';
 import { Calendar, Plus, X } from 'lucide-react';
 import React from 'react';
-import { FormikValues } from 'formik';
 
 export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeChange }: StepProps) => {
   const [customTime, setCustomTime] = React.useState('');
@@ -30,19 +29,6 @@ export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeCha
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
     return date.toISOString().split('T')[0]; // Return date in 'YYYY-MM-DD' format
-  };
-
-  const handleSubmit = (values: FormikValues) => {
-    const formattedData = {
-        ...values,
-        showStartDate: BigInt(values.showStartDate),
-        showEndDate: BigInt(values.showEndDate),
-        showtimes: values.showtimes.map((showtime: any) => ({
-            screenId: showtime.screenId,
-            showTime: BigInt(showtime.showTime)
-        }))
-    };
-    onSubmit(formattedData);
   };
 
   return (

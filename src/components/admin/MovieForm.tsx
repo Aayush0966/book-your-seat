@@ -20,6 +20,7 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
     duration: 120,
     ageRating: '',
     posterUrl: '',
+    backdropUrl: '',
     showStartDate: (Math.floor(new Date().getTime() / 1000)),
     showEndDate: (Math.floor(new Date().getTime() / 1000)) + 7 * 24 * 60 * 60,
     showtimes: [],
@@ -42,7 +43,7 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
     ],
     cast: [],
     director: '',
-    status: 'draft'
+    status: "UPCOMING"
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -51,6 +52,7 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     const convertedValue = name === 'showStartDate' || name === 'showEndDate' || name === 'releaseDate' ? new Date(value).getTime() / 1000 : value;
+    console.log(convertedValue)
     setMovieDetails((prevData) => ({
       ...prevData,
       [name]: convertedValue
