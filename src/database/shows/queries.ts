@@ -9,6 +9,7 @@ export const createMovie = async (movieDetails: MovieDetails) => {
         director: movieDetails.director,
         posterUrl: movieDetails.posterUrl,
         ageRating: movieDetails.ageRating,
+        backdropUrl: movieDetails.backdropUrl,
         genres: movieDetails.genres as unknown as Prisma.InputJsonValue,
         casts: movieDetails.cast as unknown as Prisma.InputJsonValue,
         language: movieDetails.language,
