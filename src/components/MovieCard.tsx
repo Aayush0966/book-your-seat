@@ -1,15 +1,15 @@
+'use client'
 import React from 'react';
 import Image from 'next/image';
 import { Movie } from '@/types/movie';
-import { imageUrl } from '@/lib/constants';
-
+import { useRouter } from 'next/navigation';
 
 const MovieCard = ( movie: Movie) => {
-  console.log(movie)
   const { title, posterUrl } = movie;
+  const router = useRouter()
 
   return (
-    <div className="group relative w-64 h-96 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105">
+    <div onClick={() => router.push(`/show/${movie.id}`)} className="group relative w-64 h-96 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105">
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
 
       <div className="relative w-full h-full">

@@ -77,26 +77,39 @@ export const addMovieAndShow = async (movieDetails: MovieDetails) => {
 //         throw error;
 //     }
 // };
+
+
+export const fetchShowsByMovieId = async (movieId: number) => {
+    try {
+        const movie = await showQueries.fetchMovieById(movieId)
+        if (!movie) return null;
+        return movie
+       
+    } catch (error) {
+        console.log("Something went wrong: ", error)
+    }
+}
+
 export const fetchMoviesWithShows = async (status: Status) => {
     try {
         const movies = await showQueries.fetchMovies(status);
         if (!movies) return null;
 
-        const movieIds = movies.map((movie) => movie.id);
-        const shows = await Promise.all(
-            movieIds.map(async (movieId) => await showQueries.fetchShows(movieId))
-        ).then(results => results.flat());
+        // const movieIds = movies.map((movie) => movie.id);
+        // const shows = await Promise.all(
+        //     movieIds.map(async (movieId) => await showQueries.fetchShows(movieId))
+        // ).then(results => results.flat());
 
-        if (!shows) return null;
+        // if (!shows) return null;
 
-        const moviesWithShows = movies.map((movie) => {
-            const movieShows = shows.filter((show) => show?.movieId === movie.id);
-            return {
-                ...movie,
-                shows: movieShows,
-            };
-        });
-        return moviesWithShows;
+        // const moviesWithShows = movies.map((movie) => {
+        //     const movieShows = shows.filter((show) => show?.movieId === movie.id);
+        //     return {
+        //         ...movie,
+        //         shows: movieShows,
+        //     };
+        // });
+        return movies;
     } catch (error) {
         console.error('Error fetching movies with shows:', error);
         throw error;

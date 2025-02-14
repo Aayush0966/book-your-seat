@@ -1,4 +1,4 @@
-import {  MovieDetails, Pricing, Showtime, Status } from "@/types/movie";
+import { MovieWithShows, MovieDetails, Pricing, Showtime, Status } from "@/types/movie";
 import prisma from "@/lib/prisma"; 
 import { Prisma } from "@prisma/client";
 
@@ -87,7 +87,25 @@ export const fetchMovies = async (status: Status) => {
     const movie = await prisma.movie.findMany({
         where: {
             status: status
-        }
+        },
+        
     })
     return movie ? movie: null
+}
+
+export const fetchMovieById = async (movieId: number): Promise<MovieWithShows | null> => {
+    const movie = await prisma.movie.findFirst({
+        where: {
+            id: movieId
+        },
+        include: {
+            shows: {
+                include: {
+                    bookings: true,
+                    screen: true
+                },
+            },
+        },
+    });
+    return movie ? (movie as MovieWithShows) : null;
 }

@@ -1,26 +1,67 @@
 import { Prisma } from "@prisma/client";
+import { JsonValue } from "@prisma/client/runtime/library";
 import { ChangeEvent } from "react";
 
 export interface Movie {
+    id? : number;
     title: string;
-    genres: Prisma.InputJsonValue;
+    genres: string[];
     duration: number;
     description: string;
     director: string;
+    backdropUrl: string;
     posterUrl : string;
     releaseDate: number;
     language: string;
     ageRating: string,
-    casts: Prisma.InputJsonValue;
+    casts: string[];
+    status: Status;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
+export interface Show {
+  id: number;
+  endDate: number;
+  startDate: number;
+  screenId: number;
+  movieId: number;
+  showTime: number;
+  updatedAt: Date;
+  createdAt: Date;
+  bookings?: Booking[];
+  screen?: Screen;
+}
+
+export interface MovieWithShows extends Movie {
+  shows: Show[];
+}
+
+export interface Booking {
+  id: number;
+  userId: number;
+  showId: number;
+  seatsBooked: string[];
+  totalPrice: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Screen {
+  id: number;
+  screenNumber: number;
+  totalSeats: number;
+  type: string
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export interface Store {
     items: Movie[]
     isLoading: boolean
     error: string | null
     fetchItems: () => void
-  }
+}
 
 export interface Pricing {
   platinum: number;
@@ -73,3 +114,4 @@ export interface StepProps {
   handleCastChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   handlePriceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+

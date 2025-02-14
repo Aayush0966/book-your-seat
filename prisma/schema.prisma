@@ -59,6 +59,7 @@ model Movie {
 
 model Screen {
   id           Int      @id @default(autoincrement())
+  type         String   @db.Text
   screenNumber Int      @unique @map("screen_number")
   totalSeats   Int      @map("total_seats") @db.Integer
   shows        Show[]
