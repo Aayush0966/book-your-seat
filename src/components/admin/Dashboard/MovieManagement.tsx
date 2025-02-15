@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +9,7 @@ import React, { useState } from 'react';
 import MovieForm from '../MovieForm';
 import { StatCard } from "../StatCard";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import MovieListing from "./MovieListing";
 
 
 const MovieManagement = () => {
@@ -56,16 +56,7 @@ const MovieManagement = () => {
         ))}
       </div>
 
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>Movie Listings</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-muted-foreground text-center py-8">
-            Movie listing content will go here
-          </div>
-        </CardContent>
-      </Card>
+      <MovieListing />
     </div>
   );
 };

@@ -4,7 +4,11 @@ import Image from 'next/image';
 import { Movie } from '@/types/movie';
 import { useRouter } from 'next/navigation';
 
-const MovieCard = ( movie: Movie) => {
+interface MovieCardProps {
+  movie: Movie;
+}
+
+const MovieCard = ({ movie }: MovieCardProps) => {
   const { title, posterUrl } = movie;
   const router = useRouter()
 

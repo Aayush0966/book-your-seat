@@ -83,7 +83,7 @@ export const fetchShows = async (movieId: number) => {
     return shows ? shows : null;
 }
 
-export const fetchMovies = async (status: Status) => {
+export const fetchMoviesByStatus = async (status: Status) => {
     const movie = await prisma.movie.findMany({
         where: {
             status: status
@@ -91,6 +91,11 @@ export const fetchMovies = async (status: Status) => {
         
     })
     return movie ? movie: null
+}
+
+export const fetchMovies = async () => {
+    const movies = await prisma.movie.findMany();
+    return movies ? movies : null;
 }
 
 export const fetchMovieById = async (movieId: number): Promise<MovieWithShows | null> => {

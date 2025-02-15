@@ -56,6 +56,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
     setDateRange(dates);
   };
 
+  
   const updateAvailableShows = (date: Date, screenType: string = selectedScreenType) => {
     let shows = movie.shows.filter(show => {
       const showStart = new Date(show.startDate * 1000);
