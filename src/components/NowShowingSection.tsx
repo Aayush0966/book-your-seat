@@ -45,7 +45,7 @@ const NowShowingSection = async () => {
                 }}
               >
                 <div className="rounded-xl" />
-                <MovieCard {...show as Movie} />
+                <MovieCard movie={show as Movie} />
                
               </div>
             ))}

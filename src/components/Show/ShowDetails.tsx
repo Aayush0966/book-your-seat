@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Calendar, Clock, Monitor } from 'lucide-react';
+import { FileType, Monitor } from 'lucide-react';
 import ShowInfo from './showInfo';
+import DateTimeSelector from './DateTimeSelector';
 import { MovieWithShows } from '@/types/movie';
+import { cn } from '@/lib/utils';
 
 interface ShowDetailsProps {
   movie: MovieWithShows;
@@ -29,11 +31,12 @@ const SCREEN_TYPES: ScreenType[] = [
 ];
 
 const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dateRange, setDateRange] = useState<DateRange[]>([]);
   const [availableShows, setAvailableShows] = useState<typeof movie.shows>([]);
   const [selectedTime, setSelectedTime] = useState<number>();
-  const [selectedScreenType, setSelectedScreenType] = useState<string>('All');
+  const [selectedScreenType, setSelectedScreenType] = useState<string>('Standard');
+  const [error, setError] = useState<string>('');
 
   const generateDateRange = () => {
     const dates: DateRange[] = [];
@@ -45,8 +48,10 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
     while (currentDate <= endDate) {
       dates.push({
         date: new Date(currentDate),
-        isSelected: currentDate.getDate() === selectedDate.getDate() &&
-                   currentDate.getMonth() === selectedDate.getMonth(),
+        isSelected: selectedDate ? (
+          currentDate.getDate() === selectedDate.getDate() &&
+          currentDate.getMonth() === selectedDate.getMonth()
+        ) : false,
         isToday: currentDate.getDate() === new Date().getDate() &&
                  currentDate.getMonth() === new Date().getMonth()
       });
@@ -56,196 +61,132 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
     setDateRange(dates);
   };
 
-  
-  const updateAvailableShows = (date: Date, screenType: string = selectedScreenType) => {
-    let shows = movie.shows.filter(show => {
-      const showStart = new Date(show.startDate * 1000);
-      const showEnd = new Date(show.endDate * 1000);
-      return showStart <= date && showEnd >= date;
+  const updateAvailableShows = (date: Date | null, screenType: string) => {
+    if (!date) {
+      setAvailableShows([]);
+      return;
+    }
+
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    let filteredShows = movie.shows.filter(show => {
+      return show.screen?.type === screenType;
     });
 
-    if (screenType !== 'All') {
-      shows = shows.filter(show => show.screen?.type === screenType);
-    }
+    filteredShows.sort((a, b) => a.showTime - b.showTime);
     
-    setAvailableShows(shows);
-    setSelectedTime(undefined);
+    setAvailableShows(filteredShows);
+    
+    if (filteredShows.length === 0) {
+      setError(`No shows available for ${screenType} screen on selected date. Please try another date or screen type.`);
+    } else {
+      setError('');
+    }
   };
 
   useEffect(() => {
     generateDateRange();
-    updateAvailableShows(selectedDate);
-  }, []);
+  }, [selectedDate]);
 
   useEffect(() => {
-    updateAvailableShows(selectedDate, selectedScreenType);
+    if (selectedDate) {
+      updateAvailableShows(selectedDate, selectedScreenType);
+    }
   }, [selectedDate, selectedScreenType]);
 
-  const formatTime = (timestamp: number) => {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true
-    }).format(new Date(timestamp * 1000));
+  const handleScreenTypeChange = (screenType: string) => {
+    setSelectedScreenType(screenType);
+    setSelectedTime(undefined);
+    if (selectedDate) {
+      updateAvailableShows(selectedDate, screenType);
+    }
   };
 
-  const formatDateDisplay = (date: Date) => {
-    return {
-      dayName: date.toLocaleString('default', { weekday: 'short' }),
-      month: date.toLocaleString('default', { month: 'short' }),
-      day: date.getDate()
-    };
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+    setError('');
+    setSelectedTime(undefined);
+    updateAvailableShows(date, selectedScreenType);
+  };
+
+  const handleTimeSelect = (time: number) => {
+    setSelectedTime(time);
+    setError('');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="pt-16">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <ShowInfo movie={movie} />
-            
-            <div className="lg:col-span-8">
-              <Card className="bg-white shadow-lg">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                    <Calendar className="w-6 h-6" />
-                    Select Show Date & Time
-                  </h2>
-
-                  <div className="flex gap-3 mb-8 overflow-x-auto pb-4 scrollbar-hide">
-                    {dateRange.map((dateItem, i) => {
-                      const formattedDate = formatDateDisplay(dateItem.date);
-                      
-                      return (
-                        <button
-                          onClick={() => setSelectedDate(dateItem.date)}
-                          key={i}
-                          className={`
-                            flex flex-col items-center min-w-[100px] p-4 rounded-lg
-                            transition-all duration-200 
-                            ${dateItem.isSelected 
-                              ? 'bg-blue-600 text-white shadow-lg scale-105' 
-                              : 'bg-white border border-gray-200 hover:border-blue-400'}
-                            ${dateItem.isToday ? 'ring-2 ring-blue-400 ring-offset-2' : ''}
-                          `}
-                        >
-                          <span className="text-sm font-medium">{formattedDate.dayName}</span>
-                          <span className="text-2xl font-bold my-1">{formattedDate.day}</span>
-                          <span className="text-sm">{formattedDate.month}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <div className="mb-8">
-                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                      <Monitor className="w-5 h-5" />
-                      Select Screen Type
-                    </h3>
-                    <div className="flex gap-3 flex-wrap">
-                      <Button
-                        onClick={() => setSelectedScreenType('All')}
-                        variant={selectedScreenType === 'All' ? 'default' : 'outline'}
-                        className={`
-                          py-6 px-6
-                          ${selectedScreenType === 'All' 
-                            ? 'bg-blue-600 hover:bg-blue-700' 
-                            : 'hover:border-blue-400'}
-                        `}
-                      >
-                        All Screens
-                      </Button>
-                      {SCREEN_TYPES.map((screen) => (
-                        <Button
-                          key={screen.screenId}
-                          onClick={() => setSelectedScreenType(screen.type)}
-                          variant={selectedScreenType === screen.type ? 'default' : 'outline'}
-                          className={`
-                            py-6 px-6 relative
-                            ${selectedScreenType === screen.type 
-                              ? 'bg-blue-600 hover:bg-blue-700' 
-                              : 'hover:border-blue-400'}
-                          `}
-                        >
-                          {screen.type}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-8">
-                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                      <Clock className="w-5 h-5" />
-                      Available Shows {selectedScreenType !== 'All' && `(${selectedScreenType})`}
-                    </h3>
-                    
-                    {availableShows.length > 0 ? (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {availableShows.map((show) => (
-                          <Button
-                            onClick={() => setSelectedTime(show.showTime)}
-                            key={show.id}
-                            variant="outline"
-                            className={`
-                              h-16 text-lg transition-all relative group
-                              ${selectedTime === show.showTime 
-                                ? "bg-blue-600 text-white border-blue-600 hover:bg-blue-700" 
-                                : "hover:border-blue-400 hover:bg-blue-50"}
-                            `}
-                          >
-                            {formatTime(show.showTime)}
-                            {show && (
-                              <>
-                                <span className={`
-                                  absolute -top-2 -right-2 text-xs px-2 py-1 rounded-full
-                                  ${selectedTime === show.showTime 
-                                    ? 'bg-white text-blue-600' 
-                                    : 'bg-blue-100 text-blue-800'}
-                                `}>
-                                  {show.screen?.totalSeats} seats
-                                </span>
-                                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-xs">
-                                  {show.screen?.type}
-                                </span>
-                              </>
-                            )}
-                          </Button>
-                        ))}
-                      </div>
-                    ) : (
-                      <Alert className="bg-amber-50 border-amber-200">
-                        <AlertDescription className="text-amber-700">
-                          No {selectedScreenType !== 'All' ? `${selectedScreenType} ` : ''}shows available for this date. Please select another date or screen type.
-                        </AlertDescription>
-                      </Alert>
-                    )}
-                  </div>
-                  
-                  {selectedTime && (
-                    <Alert className="mt-6 bg-green-50 border-green-500">
-                      <AlertDescription className="text-green-700 font-medium">
-                        Selected: {formatTime(selectedTime)} on {formatDateDisplay(selectedDate).month} {selectedDate.getDate()}
-                        {selectedScreenType !== 'All' && ` (${selectedScreenType})`}
-                      </AlertDescription>
-                    </Alert>
-                  )}
-
-                  <div className="mt-8 flex justify-end">
-                    <Button 
-                      className={`
-                        text-lg px-8 py-6 transition-all duration-200
-                        ${selectedTime 
-                          ? 'bg-blue-600 hover:bg-blue-700' 
-                          : 'bg-gray-200 text-gray-500 cursor-not-allowed'}
-                      `}
-                      disabled={!selectedTime}
+    <div 
+      className="min-h-screen pt-24 pb-8 px-4 sm:px-6 lg:px-8"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${movie.backdropUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backdropFilter: 'blur(10px)',
+      }}
+    >
+      <div className="max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-12 gap-8">
+          <ShowInfo movie={movie} />
+          
+          <div className="lg:col-span-8 space-y-6">
+            <Card className="bg-white/50 backdrop-blur-sm border-none shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Monitor className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Select Screen Type</h3>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {SCREEN_TYPES.map((screen) => (
+                    <button
+                      key={screen.screenId}
+                      onClick={() => handleScreenTypeChange(screen.type)}
+                      className={cn(
+                        "px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105",
+                        "border-2 focus:outline-none focus:ring-2 focus:ring-primary/50",
+                        selectedScreenType === screen.type
+                          ? "bg-primary text-white border-primary shadow-lg"
+                          : "bg-white/50 backdrop-blur-sm border-transparent hover:border-primary/30"
+                      )}
                     >
-                      Continue to Booking
-                    </Button>
-                  </div> 
-                </CardContent>
-              </Card>
-            </div>
+                      {screen.type}
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <DateTimeSelector
+              dateRange={dateRange}
+              availableShows={availableShows}
+              selectedDate={selectedDate}
+              selectedTime={selectedTime}
+              onDateSelect={handleDateSelect}
+              onTimeSelect={handleTimeSelect}
+            />
+
+            {error && (
+              <Alert className="bg-red-50/50 backdrop-blur-sm border-red-200">
+                <AlertDescription className="text-red-700">
+                  {error}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {selectedTime && (
+              <div className="flex justify-end">
+                <Button
+                  size="lg"
+                  className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:scale-105 transition-all duration-200"
+                >
+                  Book Tickets
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

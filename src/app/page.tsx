@@ -1,8 +1,5 @@
+import { redirect } from 'next/navigation'
 
 export default function Home() {
-  return (
-    <div className="min-h-screen bg-background">
-      Hi
-    </div>
-  )
+  redirect('/home')
 }

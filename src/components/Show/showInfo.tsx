@@ -1,55 +1,86 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Clock } from "lucide-react";
+import { Heart, Clock, Star, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Movie, MovieWithShows } from "@/types/movie";
+import { MovieWithShows } from "@/types/movie";
 
 const ShowInfo = ({ movie }: { movie: MovieWithShows }) => {
+  return (
+    <div className="lg:col-span-4">
+      <Card className="bg-white/50 backdrop-blur-sm border-none shadow-lg overflow-hidden">
+        <CardContent className="p-0">
+          <div className="aspect-[2/3] relative overflow-hidden">
+            <img
+              src={movie.posterUrl}
+              alt={movie.title}
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+            <button className="absolute top-4 right-4 p-2 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors duration-200">
+              <Heart className="w-6 h-6 text-white hover:text-red-500 transition-colors duration-200" />
+            </button>
+            <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+              <h1 className="text-3xl font-bold mb-2">{movie.title}</h1>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {movie.genres?.map((genre: String, index: number) => (
+                  <Badge
+                    key={index}
+                    className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+                  >
+                    {genre}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
 
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center p-3 rounded-xl bg-white/50 backdrop-blur-sm">
+                <Clock className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <span className="text-sm font-medium text-gray-700">{movie.duration}</span>
+              </div>
+              {/* <div className="text-center p-3 rounded-xl bg-white/50 backdrop-blur-sm">
+                <Star className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <span className="text-sm font-medium text-gray-700">
+                  {movie.rating || "N/A"}
+                </span>
+              </div> */}
+              <div className="text-center p-3 rounded-xl bg-white/50 backdrop-blur-sm">
+                <Calendar className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <span className="text-sm font-medium text-gray-700">
+                  {new Date(movie.releaseDate).getFullYear()}
+                </span>
+              </div>
+            </div>
 
-    return (
-        <div className="lg:col-span-4">
-            <Card className="bg-white shadow-lg">
-                <CardContent className="p-6">
-                    <div className="aspect-[2/3] relative overflow-hidden rounded-lg mb-6">
-                        <img
-                            src={movie.posterUrl}
-                            alt={movie.title}
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Synopsis</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                {movie.description}
+              </p>
+            </div>
 
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <h1 className="text-2xl font-bold">{movie.title}</h1>
-                            <Heart className="w-6 h-6 text-gray-400 hover:text-red-500 cursor-pointer" />
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                            {movie.genres?.map((genre: String, index: number) => (
-                                <Badge
-                                    key={index}
-                                    className="bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                >
-                                    {genre}
-                                </Badge>
-                            ))}
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
-                            <div className="text-center">
-                                <Clock className="w-5 h-5 mx-auto mb-1 text-gray-600" />
-                                <span className="text-sm text-gray-600">{movie.duration}</span>
-                            </div>
-                        </div>
-
-                        <p className="text-gray-600 text-sm leading-relaxed">
-                            {movie.description}
-                        </p>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-    )
+            {movie.casts && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Cast</h3>
+                <div className="flex flex-wrap gap-2">
+                  {movie.casts.map((actor, index) => (
+                    <Badge
+                      key={index}
+                      variant="outline"
+                      className="bg-white/50 backdrop-blur-sm border-primary/20 text-gray-700"
+                    >
+                      {actor}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 };
 
 export default ShowInfo;

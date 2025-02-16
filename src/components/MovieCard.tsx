@@ -9,6 +9,10 @@ interface MovieCardProps {
 }
 
 const MovieCard = ({ movie }: MovieCardProps) => {
+  if (!movie) {
+    return null; 
+  }
+
   const { title, posterUrl } = movie;
   const router = useRouter()
 
