@@ -18,6 +18,8 @@ const MovieListing = () => {
         getAllMovies();
     }, [])
 
+    console.log(movieList)
+
     return (
         <Card className="mt-6">
             <CardHeader>
@@ -57,8 +59,8 @@ const MovieListing = () => {
                                 </div>
 
                                 <div className="mt-3">
-                                    <Badge variant={movie.status == "NOW_SHOWING" as Status ? 'default' : 'secondary'}>
-                                        {movie.status == "NOW_SHOWING" as Status ? 'Now Showing' : 'Coming Soon'}
+                                    <Badge variant={movie.status == "ACTIVE" as Status ? 'default' : 'secondary'}>
+                                        {movie.status == "ACTIVE" as Status ? 'Now Showing' : 'Coming Soon'}
                                     </Badge>
                                 </div>
                             </div>

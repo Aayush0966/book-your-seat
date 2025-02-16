@@ -109,7 +109,7 @@ const Hero = () => {
             )}
             
             <Image
-              src={currentMovie.posterUrl}
+              src={currentMovie.backdropUrl}
               alt={currentMovie.title}
               fill
               priority

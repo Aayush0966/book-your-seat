@@ -8,6 +8,7 @@ import ShowInfo from './showInfo';
 import DateTimeSelector from './DateTimeSelector';
 import { MovieWithShows } from '@/types/movie';
 import { cn } from '@/lib/utils';
+import BookingHall from '../Booking/BookingHall';
 
 interface ShowDetailsProps {
   movie: MovieWithShows;
@@ -37,6 +38,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
   const [selectedTime, setSelectedTime] = useState<number>();
   const [selectedScreenType, setSelectedScreenType] = useState<string>('Standard');
   const [error, setError] = useState<string>('');
+  const [showSeatLayout, setShowSeatLayout] = useState<boolean>(false);
 
   const generateDateRange = () => {
     const dates: DateRange[] = [];
@@ -118,6 +120,10 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
     setError('');
   };
 
+  const handleBook = () => {
+
+  }
+
   return (
     <div 
       className="min-h-screen pt-24 pb-8 px-4 sm:px-6 lg:px-8"
@@ -129,7 +135,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
         backdropFilter: 'blur(10px)',
       }}
     >
-      <div className="max-w-7xl mx-auto">
+    {!showSeatLayout &&  <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-8">
           <ShowInfo movie={movie} />
           
@@ -180,6 +186,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
             {selectedTime && (
               <div className="flex justify-end">
                 <Button
+                onClick={() => setShowSeatLayout(true)}
                   size="lg"
                   className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:scale-105 transition-all duration-200"
                 >
@@ -189,7 +196,13 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
             )}
           </div>
         </div>
-      </div>
+      </div>}
+      {
+          showSeatLayout &&
+           <BookingHall
+           
+            />
+        }
     </div>
   );
 };
