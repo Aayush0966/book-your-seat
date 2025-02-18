@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FileType, Monitor } from 'lucide-react';
+import { FileType, Monitor, Timer } from 'lucide-react';
 import ShowInfo from './showInfo';
 import DateTimeSelector from './DateTimeSelector';
 import { MovieWithShows } from '@/types/movie';
@@ -39,6 +39,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
   const [selectedScreenType, setSelectedScreenType] = useState<string>('Standard');
   const [error, setError] = useState<string>('');
   const [showSeatLayout, setShowSeatLayout] = useState<boolean>(false);
+
 
   const generateDateRange = () => {
     const dates: DateRange[] = [];
@@ -139,7 +140,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
         <div className="grid lg:grid-cols-12 gap-8">
           <ShowInfo movie={movie} />
           
-          <div className="lg:col-span-8 space-y-6">
+          { movie.status === 'ACTIVE' && <div className="lg:col-span-8 space-y-6">
             <Card className="bg-white/50 backdrop-blur-sm border-none shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-4">
@@ -194,7 +195,19 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
                 </Button>
               </div>
             )}
-          </div>
+          </div>}
+          {
+            movie.status === 'UPCOMING' && <div className="lg:col-span-8 space-y-6">
+            <Card className="bg-white/50 backdrop-blur-sm border-none shadow-lg">
+            <CardContent>
+            <div className="flex items-center gap-2 justify-center">
+                  <Timer className="w-5 mt-4 h-5 text-primary" />
+                  <h3 className="text-lg mt-4 font-semibold">Movie is coming soon</h3>
+                </div>            
+                </CardContent>
+            </Card>
+            </div>
+          }
         </div>
       </div>}
       {

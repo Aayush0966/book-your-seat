@@ -33,15 +33,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       },
     }),
-  ],
-  pages: {
+    ],
+    pages: {
     signIn: "/auth",
-  },
-  session: {
+    },
+    session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
-  },
-  callbacks: {
+    maxAge: 30 * 60, // 30 mins
+    },
+    callbacks: {
     async jwt({token, user}) {
       if (user) {
         token.id = user.id;

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Status } from '@/types/movie';
 
 const Bookings = () => {
   const [timeFilter, setTimeFilter] = useState('7days');
@@ -20,23 +21,22 @@ const Bookings = () => {
     { title: 'Revenue Today', value: '$2,840', Icon: DollarSign }
   ];
 
-
   const recentBookings = [
-    { id: 'BK001', customer: 'John Doe', service: 'Premium Package', date: '2024-01-16', status: 'confirmed', amount: '$120' },
-    { id: 'BK002', customer: 'Jane Smith', service: 'Basic Package', date: '2024-01-16', status: 'pending', amount: '$80' },
-    { id: 'BK003', customer: 'Mike Johnson', service: 'Deluxe Package', date: '2024-01-15', status: 'completed', amount: '$200' },
-    { id: 'BK004', customer: 'Sarah Williams', service: 'Premium Package', date: '2024-01-15', status: 'cancelled', amount: '$120' },
+    { id: 'BK001', customer: 'John Doe', service: 'Premium Package', date: '2024-01-16', status: 'confirmed' as Status, amount: '$120' },
+    { id: 'BK002', customer: 'Jane Smith', service: 'Basic Package', date: '2024-01-16', status: 'pending' as Status, amount: '$80' },
+    { id: 'BK003', customer: 'Mike Johnson', service: 'Deluxe Package', date: '2024-01-15', status: 'completed' as Status, amount: '$200' },
+    { id: 'BK004', customer: 'Sarah Williams', service: 'Premium Package', date: '2024-01-15', status: 'cancelled' as Status, amount: '$120' },
   ];
 
-  const getStatusBadge = (status: 'confirmed' | 'pending' | 'completed' | 'cancelled') => {
-    const styles = {
-      confirmed: 'bg-green-100 text-green-800',
-      pending: 'bg-yellow-100 text-yellow-800',
-      completed: 'bg-blue-100 text-blue-800',
-      cancelled: 'bg-red-100 text-red-800'
+  const getStatusBadge = (status: Status) => {
+      const styles = {
+        confirmed: 'bg-green-100 text-green-800',
+        pending: 'bg-yellow-100 text-yellow-800',
+        completed: 'bg-blue-100 text-blue-800',
+        cancelled: 'bg-red-100 text-red-800'
+      };
+      return <Badge className={styles[status as keyof typeof styles]}>{status}</Badge>;
     };
-    return <Badge className={styles[status]}>{status}</Badge>;
-  };
 
   return (
     <div className="p-6 space-y-6">

@@ -1,14 +1,25 @@
+'use client'
 import { FC } from 'react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { User, Settings } from 'lucide-react';
+import { User, Settings, LogOut } from 'lucide-react';
 import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface ProfileDropdownProps {
   session: Session;
 }
 
 const ProfileDropdown: FC<ProfileDropdownProps> = ({ session }) => {
+
+const navigate = useRouter();
+  
+  const handleLogout = async () => {
+    await signOut();
+    navigate.push('/auth');
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,6 +42,10 @@ const ProfileDropdown: FC<ProfileDropdownProps> = ({ session }) => {
           <DropdownMenuItem>
             <Settings />
             <span>Settings</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleLogout()}>
+            <LogOut />
+            <span>Log out</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
