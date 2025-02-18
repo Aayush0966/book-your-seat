@@ -6,6 +6,7 @@ import { User, Settings, LogOut } from 'lucide-react';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { handleLogout } from '@/lib/utils';
 
 interface ProfileDropdownProps {
   session: Session;
@@ -14,11 +15,6 @@ interface ProfileDropdownProps {
 const ProfileDropdown: FC<ProfileDropdownProps> = ({ session }) => {
 
 const navigate = useRouter();
-  
-  const handleLogout = async () => {
-    await signOut();
-    navigate.push('/auth');
-  }
 
   return (
     <DropdownMenu>
@@ -43,7 +39,7 @@ const navigate = useRouter();
             <Settings />
             <span>Settings</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleLogout()}>
+          <DropdownMenuItem onClick={() => handleLogout(navigate)}>
             <LogOut />
             <span>Log out</span>
           </DropdownMenuItem>

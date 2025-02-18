@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FileType, Monitor, Timer } from 'lucide-react';
 import ShowInfo from './showInfo';
 import DateTimeSelector from './DateTimeSelector';
-import { MovieWithShows } from '@/types/movie';
+import { MovieWithShows, Show } from '@/types/movie';
 import { cn } from '@/lib/utils';
 import BookingHall from '../Booking/BookingHall';
 
@@ -39,7 +39,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
   const [selectedScreenType, setSelectedScreenType] = useState<string>('Standard');
   const [error, setError] = useState<string>('');
   const [showSeatLayout, setShowSeatLayout] = useState<boolean>(false);
-
+  const [selectedShow, setSelectedShow] = useState<Show>();
 
   const generateDateRange = () => {
     const dates: DateRange[] = [];
@@ -122,7 +122,9 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
   };
 
   const handleBook = () => {
-
+    const show = movie.shows.find((show) => show.screen?.type === selectedScreenType && show.showTime === selectedTime)
+    setSelectedShow(show)
+    setShowSeatLayout(true)
   }
 
   return (
@@ -187,7 +189,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
             {selectedTime && (
               <div className="flex justify-end">
                 <Button
-                onClick={() => setShowSeatLayout(true)}
+                onClick={() => handleBook()}
                   size="lg"
                   className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:scale-105 transition-all duration-200"
                 >
@@ -211,8 +213,8 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
         </div>
       </div>}
       {
-          showSeatLayout &&
-           <BookingHall
+          showSeatLayout && selectedShow &&
+           <BookingHall onClose={() => setShowSeatLayout(false)} selectedShow={selectedShow} movie={movie}
            
             />
         }

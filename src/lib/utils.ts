@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
+import { signOut } from "next-auth/react"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -13,3 +14,16 @@ export const genOTP = async () => {
   }
   return parseInt(otp);
 }
+
+export const handleLogout = async (navigate: { push: (path: string) => void }) => {
+    await signOut();
+    navigate.push('/auth');
+  }
+
+export const formatTime = (timestamp: number) => {
+  return new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  }).format(new Date(timestamp * 1000));
+};

@@ -1,14 +1,21 @@
-import { useState } from 'react';
+import { FC } from 'react';
 
-const Seat = ({ seatNumber, isBooked }) => {
-  const [isSelected, setIsSelected] = useState(false);
+interface SeatProps {
+  seatNumber: string;
+  isBooked: boolean;
+  selectedSeats: string[];
+  handleSelectSeats: (seatNumber: string) => void;
+}
+const Seat: FC<SeatProps> = ({ seatNumber, isBooked, handleSelectSeats, selectedSeats }) => {
 
+  const isSelected = selectedSeats.find((seat) =>  seat === seatNumber)
+  console.log(selectedSeats)
   return (
     <button
       disabled={isBooked}
-      onClick={() => !isBooked && setIsSelected(!isSelected)}
+      onClick={() => !isBooked && handleSelectSeats(seatNumber)}
       className={`
-        w-6 h-6 rounded-md transition-all duration-300 transform hover:scale-110
+        w-12 h-12 rounded-md transition-all duration-300 transform hover:scale-110
         flex items-center justify-center text-xs font-medium
         ${isBooked 
           ? 'bg-gradient-to-r from-rose-400 to-rose-500 shadow-lg shadow-rose-500/30 cursor-not-allowed' 
@@ -19,7 +26,7 @@ const Seat = ({ seatNumber, isBooked }) => {
       `}
       title={`Seat ${seatNumber}`}
     >
-      <span className="sr-only">Seat {seatNumber}</span>
+      <span className="p-4">{seatNumber}</span>
     </button>
   );
 };

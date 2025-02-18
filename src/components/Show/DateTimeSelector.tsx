@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Clock } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, formatTime } from '@/lib/utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Show } from '@/types/movie';
 
@@ -29,13 +29,7 @@ const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
   onDateSelect,
   onTimeSelect,
 }) => {
-  const formatTime = (timestamp: number) => {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true
-    }).format(new Date(timestamp * 1000));
-  };
+
 
   const formatDateDisplay = (date: Date) => ({
     dayName: date.toLocaleString('default', { weekday: 'short' }),

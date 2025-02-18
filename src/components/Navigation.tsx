@@ -1,24 +1,37 @@
+'use client'
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { auth } from "../auth"; // Assuming you have auth function set up
 import { Button } from '@/components/ui/button';
 import logo from "@/assets/logo.png";
-import { User, X, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import ProfileDropdown from './ProfileDropdown';
+import { getSession } from 'next-auth/react';
+import { Session } from 'next-auth';
+import { useRouter } from 'next/navigation';
+import { handleLogout } from '@/lib/utils';
 
 interface NavItem {
   name: string;
   path: string;
 }
 
-const Navigation = async () => {
-  const session = await auth(); 
+const Navigation = () => {
+  const [mobileDropdown, setMobileDropdown] = React.useState<boolean>(false);
   const navItems: NavItem[] = [
-    { name: 'Home', path: '/home' },
-    { name: 'Contact', path: '/contact' },
-    { name: 'Ticket rate', path: '/ticket-rate'}
-  ];
+    {name:'Home', path:'/home'},
+    {name: 'Contact', path: '/contact'},
+    {name: 'Ticket rate', path: 'ticket-rate'}
+  ]
+  const [session, setSession] = React.useState<Session | null>(null);
+  const navigate = useRouter()
+  React.useEffect(() => {
+    const fetchSession = async () => {
+      const sessionData = await getSession();
+      setSession(sessionData);
+    };
+    fetchSession();
+  }, []);
 
   return (
     <header className="w-full fixed top-0 z-50 border-b bg-background shadow-sm">
@@ -74,12 +87,13 @@ const Navigation = async () => {
             aria-expanded="false"
             aria-controls="mobile-menu"
             aria-label="Open menu"
+            onClick={() => setMobileDropdown(!mobileDropdown)}
           >
             <Menu className="h-6 w-6" />
           </Button>
         </div>
 
-        <div id="mobile-menu" className="md:hidden">
+        {mobileDropdown && <div id="mobile-menu" className="md:hidden">
           <div className="px-4 pt-2 pb-3 space-y-1 bg-background-secondary/5">
             {navItems.map(item => (
               <Link
@@ -95,8 +109,11 @@ const Navigation = async () => {
                 Log in
               </Button>
             )}
+            <Button onClick={() => handleLogout(navigate)} className="w-full mt-4 bg-primary hover:bg-primary/90 transition-colors duration-200">
+                Log Out
+              </Button>
           </div>
-        </div>
+        </div>}
       </nav>
     </header>
   );
