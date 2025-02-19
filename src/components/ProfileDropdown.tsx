@@ -7,6 +7,7 @@ import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { handleLogout } from '@/lib/utils';
+import Link from 'next/link';
 
 interface ProfileDropdownProps {
   session: Session;
@@ -33,11 +34,7 @@ const navigate = useRouter();
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <User />
-            <span>Profile</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Settings />
-            <span>Settings</span>
+            <Link href='/profile'>Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleLogout(navigate)}>
             <LogOut />
