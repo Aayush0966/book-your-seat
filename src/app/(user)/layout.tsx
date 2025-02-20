@@ -23,17 +23,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`antialiased`}
-      >
         <SessionProvider>
         <TooltipProvider>
         <Navigation />
         {children}
         </TooltipProvider>
         </SessionProvider>
-      </body>
-    </html>
   );
 }

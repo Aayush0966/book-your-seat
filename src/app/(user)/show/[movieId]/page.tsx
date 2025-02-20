@@ -1,4 +1,4 @@
-import ShowDetails from "@/components/Show/ShowDetails"
+import BookingWrapper from "@/components/Show/BookingWrapper"
 import { fetchShowsByMovieId } from "@/services/showServices";
 import NoMovieFound from "@/components/NoMovieFound";
 
@@ -7,7 +7,7 @@ const page = async ({params}: {params: Promise<{movieId: number}>}) => {
     const movie = await fetchShowsByMovieId(Number(movieId));
     if (!movie) return <NoMovieFound />
     return (
-        <ShowDetails movie={movie} />
+        <BookingWrapper movie={movie} />
     )
 }
 

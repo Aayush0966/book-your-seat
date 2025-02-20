@@ -27,3 +27,10 @@ export const formatTime = (timestamp: number) => {
     hour12: true
   }).format(new Date(timestamp * 1000));
 };
+
+export const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-NP', {
+      style: 'currency',
+      currency: 'NPR'
+  }).format(amount);
+};
