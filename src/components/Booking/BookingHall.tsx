@@ -4,16 +4,14 @@ import Seat from "./Seat";
 import { Movie, Show } from "@/types/movie";
 import { FC } from "react";
 import { formatTime } from "@/lib/utils";
+import { useBooking } from "@/context/bookingContext";
 
 interface BookingHallProps {
   movie: Movie;
-  selectedShow: Show;
-  onClose: () => void;
 }
 
-const BookingHall: FC<BookingHallProps> = ({ movie, selectedShow, onClose }) => {
-  const [isSelected, setIsSelected] = useState(false);
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+const BookingHall: FC<BookingHallProps> = ({ movie }) => {
+  const {step, setStep, selectedShow, selectedSeats, setSelectedSeats} = useBooking();
   const requiredRows = Math.ceil((selectedShow?.screen?.totalSeats ?? 0) / 10);
   const seats = Array.from({ length: requiredRows }, (_, i) => String.fromCharCode(65 + i)); // Generate seat rows dynamically
 
@@ -24,6 +22,8 @@ const BookingHall: FC<BookingHallProps> = ({ movie, selectedShow, onClose }) => 
       setSelectedSeats([...selectedSeats, seatNumber]);
     }
   };
+
+
 
   return (
     <div className="min-h-screen rounded-lg bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 py-8">
@@ -37,7 +37,7 @@ const BookingHall: FC<BookingHallProps> = ({ movie, selectedShow, onClose }) => 
             <p className="text-gray-400 text-lg">Choose your preferred seats for an optimal viewing experience</p>
           </div>
           <button className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-all duration-300 group">
-            <Cross onClick={() => onClose()} className="h-6 w-6 text-gray-400 group-hover:text-white transition-colors" />
+            <Cross onClick={() => setStep('DateBook')} className="h-6 w-6 text-gray-400 group-hover:text-white transition-colors" />
           </button>
         </div>
 
@@ -64,7 +64,7 @@ const BookingHall: FC<BookingHallProps> = ({ movie, selectedShow, onClose }) => 
               </p>
               <p className="text-gray-200 font-medium">
                 <span className="text-gray-400 text-sm block">Show Time</span>
-                {formatTime(selectedShow.showTime)}
+                {selectedShow ? formatTime(selectedShow.showTime) : 'N/A'}
               </p>
               <p className="text-gray-200 font-medium">
                 <span className="text-gray-400 text-sm block">Duration</span>
@@ -86,7 +86,7 @@ const BookingHall: FC<BookingHallProps> = ({ movie, selectedShow, onClose }) => 
             </div>
             
             {selectedSeats.length > 0 && (
-              <button className="w-full mt-4 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg shadow-purple-500/30 transform hover:scale-[1.02] duration-300">
+              <button onClick={() => setStep('Payment')} className="w-full mt-4 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg shadow-purple-500/30 transform hover:scale-[1.02] duration-300">
                 Continue to Payment
               </button>
             )}

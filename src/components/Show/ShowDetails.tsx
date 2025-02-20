@@ -9,6 +9,8 @@ import DateTimeSelector from './DateTimeSelector';
 import { MovieWithShows, Show } from '@/types/movie';
 import { cn } from '@/lib/utils';
 import BookingHall from '../Booking/BookingHall';
+import { useBooking } from '@/context/bookingContext';
+import Payment from '../Booking/Payment';
 
 interface ShowDetailsProps {
   movie: MovieWithShows;
@@ -38,8 +40,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
   const [selectedTime, setSelectedTime] = useState<number>();
   const [selectedScreenType, setSelectedScreenType] = useState<string>('Standard');
   const [error, setError] = useState<string>('');
-  const [showSeatLayout, setShowSeatLayout] = useState<boolean>(false);
-  const [selectedShow, setSelectedShow] = useState<Show>();
+  const {step, setStep, setSelectedShow} = useBooking();
 
   const generateDateRange = () => {
     const dates: DateRange[] = [];
@@ -123,8 +124,10 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
 
   const handleBook = () => {
     const show = movie.shows.find((show) => show.screen?.type === selectedScreenType && show.showTime === selectedTime)
-    setSelectedShow(show)
-    setShowSeatLayout(true)
+    if (show) {
+      setSelectedShow(show)
+    }
+    setStep('SeatBook');
   }
 
   return (
@@ -138,7 +141,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
         backdropFilter: 'blur(10px)',
       }}
     >
-    {!showSeatLayout &&  <div className="max-w-7xl mx-auto">
+    {step === 'DateBook' &&  <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-8">
           <ShowInfo movie={movie} />
           
@@ -213,10 +216,14 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ movie }) => {
         </div>
       </div>}
       {
-          showSeatLayout && selectedShow &&
-           <BookingHall onClose={() => setShowSeatLayout(false)} selectedShow={selectedShow} movie={movie}
+          step === 'SeatBook'  &&
+           <BookingHall movie={movie}
            
             />
+        }
+        {
+          step === 'Payment' && 
+          <Payment />
         }
     </div>
   );
