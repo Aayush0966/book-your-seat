@@ -3,118 +3,108 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useBooking } from "@/context/bookingContext";
 import { CreditCard, Wallet, Clock, CalendarDays, ChevronLeft, Lock } from "lucide-react";
-import { formatCurrency, formatTime } from "@/lib/utils";
+import { formatCurrency, formatTime, getTotalPrice } from "@/lib/utils";
 import { MovieWithShows } from "@/types/movie";
 
 const Payment = ({ movie }: { movie: MovieWithShows }) => {
-  const { selectedShow, selectedSeats, setStep } = useBooking();
-  const [selectedMethod, setSelectedMethod] = useState<'card' | 'wallet' | null>(null);
-  const basePrice = 150;
-  const totalAmount = selectedSeats.length * basePrice;
-  const convenience = totalAmount * 0.02; 
+  const { selectedShow, selectedSeats, setStep, selectedDate } = useBooking();
+  const [selectedMethod, setSelectedMethod] = useState<'esewa' | 'khalti' | null>(null);
+  
+  const seatPrices = selectedShow?.pricing?.find((price) => price.screenId === 1)?.prices  ;
+  const totalAmount = seatPrices ? getTotalPrice(selectedSeats, seatPrices) : 0;
+  const convenience = totalAmount * 0.02;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
-      {/* Movie Details Banner */}
-      <div className="bg-gradient-to-r from-dark-background to-dark-background-secondary p-4 rounded-lg shadow-lg">
-        <div className="flex items-center gap-4">
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-primary">{movie?.title}</h2>
-            <div className="flex gap-4 mt-2 text-sm text-text-secondary">
-              <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                <span>{selectedShow && formatTime(selectedShow?.showTime)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <CalendarDays className="h-4 w-4" />
-                <span>{selectedShow && formatTime(selectedShow?.showTime)}</span>
-              </div>
-            </div>
+    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in">
+      {/* Movie Details */}
+      <Card className="bg-gradient-to-r from-dark-background to-dark-background-secondary text-text border border-dark-background-secondary">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold">{movie?.title}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-between items-center">
+          <div className="flex items-center gap-3 text-sm text-text-secondary">
+            <Clock className="h-4 w-4" />
+            <span>{selectedShow && formatTime(selectedShow?.showTime)}</span>
           </div>
-          <div className="text-right">
-            <p className="text-sm text-text-secondary">Booking ID</p>
-            <p className="font-mono text-primary">#BK{Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
+          <div className="flex items-center gap-3 text-sm text-text-secondary">
+            <CalendarDays className="h-4 w-4" />
+            <span>{selectedDate ? selectedDate.toDateString() : ''}</span>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Order Summary */}
-      <Card className="bg-dark-background text-text border-2 border-dark-background-secondary">
+      <Card className="bg-dark-background text-text border border-dark-background-secondary">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold flex items-center gap-2">
-            Order Summary
-            <div className="text-sm font-normal text-text-secondary">
-              ({selectedSeats.length} {selectedSeats.length === 1 ? 'ticket' : 'tickets'})
-            </div>
-          </CardTitle>
+          <CardTitle className="text-xl font-bold">Order Summary</CardTitle>
+          <p className="text-sm text-text-secondary">({selectedSeats.length} {selectedSeats.length === 1 ? 'ticket' : 'tickets'})</p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex justify-between items-start p-4 bg-dark-background-secondary rounded-lg">
-            <div className="space-y-2">
-              <p className="text-sm text-text-secondary">Screen {selectedShow?.screenId}</p>
-              <div className="space-y-1">
-                <p className="text-sm text-text-secondary">Selected Seats</p>
-                <p className="font-medium">{selectedSeats.join(", ")}</p>
+          {selectedSeats.map((seat) => {
+            const [category, seatNumber] = seat.split('/');
+            const seatPrice = seatPrices && seatPrices[category as keyof typeof seatPrices] || 0;
+
+            return (
+              <div key={seat} className="flex justify-between items-center p-3 bg-dark-background-secondary rounded-lg">
+                <div className="flex gap-2">
+                  <span className={`px-2 py-1 rounded-md text-xs font-semibold 
+                    ${category === 'silver' ? 'bg-gray-500 text-gray-100' : 
+                      category === 'gold' ? 'bg-yellow-500 text-yellow-900' : 
+                      'bg-blue-500 text-blue-900'}`}>
+                    {category.toUpperCase()}
+                  </span>
+                  <p className="text-sm text-text-secondary">{seatNumber}</p>
+                </div>
+                <p className="font-medium">{formatCurrency(seatPrice)}</p>
               </div>
-            </div>
-            <div className="text-right space-y-2">
-              <div>
-                <p className="text-sm text-text-secondary">Ticket Price</p>
-                <p className="font-medium">{formatCurrency(basePrice)} × {selectedSeats.length}</p>
-              </div>
-              <div>
-                <p className="text-sm text-text-secondary">Convenience Fee</p>
-                <p className="font-medium">{formatCurrency(convenience)}</p>
-              </div>
-            </div>
-          </div>
+            );
+          })}
           
-          <div className="border-t border-dark-background-secondary pt-4">
-            <div className="flex justify-between items-center">
-              <p className="text-lg font-semibold">Total Amount</p>
-              <p className="text-2xl font-bold text-primary">{formatCurrency(totalAmount + convenience)}</p>
-            </div>
+          {/* Convenience Fee */}
+          <div className="flex justify-between items-center border-t border-dark-background-secondary pt-3">
+            <p className="text-sm text-text-secondary">Convenience Fee</p>
+            <p className="font-medium">{formatCurrency(convenience)}</p>
+          </div>
+
+          {/* Total Amount */}
+          <div className="flex justify-between items-center border-t border-dark-background-secondary pt-4">
+            <p className="text-lg font-semibold">Total Amount</p>
+            <p className="text-2xl font-bold text-primary">{formatCurrency(totalAmount + convenience)}</p>
           </div>
         </CardContent>
       </Card>
 
       {/* Payment Methods */}
-      <Card className="bg-dark-background text-text border-2 border-dark-background-secondary">
+      <Card className="bg-dark-background text-text border border-dark-background-secondary">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Choose Payment Method</CardTitle>
+          <CardTitle className="text-xl font-bold">Choose Payment Method</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <button
-              className={`h-28 rounded-lg border-2 transition-all duration-300 flex flex-col items-center justify-center gap-3 group
-                ${selectedMethod === 'card' 
+              className={`h-24 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-2 group
+                ${selectedMethod === 'esewa' 
                   ? 'border-primary bg-dark-background-secondary' 
                   : 'border-dark-background-secondary hover:border-primary/50'}`}
-              onClick={() => setSelectedMethod('card')}
+              onClick={() => setSelectedMethod('esewa')}
             >
-              <CreditCard className={`h-6 w-6 transition-colors duration-300 ${
-                selectedMethod === 'card' ? 'text-primary' : 'text-text-secondary group-hover:text-primary/70'
+              <CreditCard className={`h-6 w-6 transition-all ${
+                selectedMethod === 'esewa' ? 'text-primary' : 'text-text-secondary group-hover:text-primary/70'
               }`} />
-              <div className="text-center">
-                <p className="font-medium">Credit/Debit Card</p>
-                <p className="text-sm text-text-secondary">All major cards accepted</p>
-              </div>
+              <p className="font-medium">Esewa</p>
             </button>
 
             <button
-              className={`h-28 rounded-lg border-2 transition-all duration-300 flex flex-col items-center justify-center gap-3 group
-                ${selectedMethod === 'wallet' 
+              className={`h-24 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-2 group
+                ${selectedMethod === 'khalti' 
                   ? 'border-primary bg-dark-background-secondary' 
                   : 'border-dark-background-secondary hover:border-primary/50'}`}
-              onClick={() => setSelectedMethod('wallet')}
+              onClick={() => setSelectedMethod('khalti')}
             >
-              <Wallet className={`h-6 w-6 transition-colors duration-300 ${
-                selectedMethod === 'wallet' ? 'text-primary' : 'text-text-secondary group-hover:text-primary/70'
+              <Wallet className={`h-6 w-6 transition-all ${
+                selectedMethod === 'khalti' ? 'text-primary' : 'text-text-secondary group-hover:text-primary/70'
               }`} />
-              <div className="text-center">
-                <p className="font-medium">Digital Wallet</p>
-                <p className="text-sm text-text-secondary">Quick & secure payment</p>
-              </div>
+              <p className="font-medium">Khalti</p>
             </button>
           </div>
         </CardContent>
@@ -131,7 +121,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
           Back
         </Button>
         <Button
-          className={`w-2/3 h-12 flex items-center justify-center gap-2 transition-all duration-300
+          className={`w-2/3 h-12 flex items-center justify-center gap-2 transition-all
             ${selectedMethod 
               ? 'bg-gradient-to-r from-primary to-secondary hover:from-dark-primary hover:to-dark-secondary' 
               : 'bg-text-secondary cursor-not-allowed'}`}

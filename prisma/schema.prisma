@@ -63,28 +63,12 @@ model Screen {
   screenNumber Int      @unique @map("screen_number")
   totalSeats   Int      @map("total_seats") @db.Integer
   shows        Show[]
-  prices       Price[]
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@index([screenNumber])
 }
 
-model Price {
-  id         Int     @id @default(autoincrement())
-  showId     Int     @map("show_id")
-  screenId   Int     @map("screen_id")
-  seatType   String  @map("seat_type") @db.VarChar(50)
-  price      Float   @db.DoublePrecision
-  show       Show    @relation(fields: [showId], references: [id], onDelete: Cascade)
-  screen     Screen  @relation(fields: [screenId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-
-  @@index([showId])
-  @@index([screenId])
-  @@index([seatType])
-}
 
 model Show {
   id        Int       @id @default(autoincrement())
@@ -93,7 +77,7 @@ model Show {
   showTime  Int       @map("show_time")
   startDate Int       @map("start_date")
   endDate   Int       @map("end_date")
-  price     Price[]   
+  pricing   Json      @db.Json
   movie     Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
   screen    Screen    @relation(fields: [screenId], references: [id], onDelete: Cascade)
   bookings  Booking[]

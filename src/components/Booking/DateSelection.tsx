@@ -27,8 +27,7 @@ const SCREEN_TYPES: ScreenType[] = [
 ];
 
 const DateSelection = ({movie}: {movie: MovieWithShows}) => {
-    const {step, setStep, setSelectedShow} = useBooking();
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const {step, setStep, setSelectedShow, selectedDate, setSelectedDate} = useBooking();
     const [dateRange, setDateRange] = useState<DateRange[]>([]);
     const [availableShows, setAvailableShows] = useState<Show[]>([]);
     const [selectedTime, setSelectedTime] = useState<number>();
@@ -146,6 +145,7 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
         if (show) {
             setSelectedShow(show)
         }
+        
         setStep('SeatBook');
     }
 

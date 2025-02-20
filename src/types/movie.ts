@@ -31,6 +31,7 @@ export interface Show {
   createdAt: Date;
   bookings?: Booking[];
   screen?: Screen;
+  pricing?: Price[];
 }
 
 export interface MovieWithShows extends Movie {
@@ -114,4 +115,6 @@ export interface StepProps {
   handleCastChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   handlePriceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+export type SeatType = 'silver' | 'gold' | 'platinum';
 

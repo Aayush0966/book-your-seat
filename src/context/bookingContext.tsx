@@ -9,6 +9,8 @@ interface BookingContextType {
     setSelectedShow: (show: Show) => void;
     selectedSeats: string[];
     setSelectedSeats: (seats: string[]) => void;
+    selectedDate: Date | null;
+    setSelectedDate: (date: Date) => void;
 }
 
 type Step = "DateBook" | "SeatBook" | "Payment";
@@ -31,6 +33,7 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
     const [step, setStep] = useState<Step>("DateBook");
     const [selectedShow, setSelectedShow] = useState<Show>();
     const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     useEffect(() => {
         if (step === 'DateBook') {
@@ -38,7 +41,7 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
         }
     }, [step])
     return (
-        <BookingContext.Provider value={{ step, setStep, setSelectedSeats, selectedSeats, selectedShow, setSelectedShow }}>
+        <BookingContext.Provider value={{ step, selectedDate, setSelectedDate, setStep, setSelectedSeats, selectedSeats, selectedShow, setSelectedShow }}>
             {children}
         </BookingContext.Provider>
     );

@@ -1,3 +1,4 @@
+import { Price, Pricing } from "@/types/movie"
 import { clsx, type ClassValue } from "clsx"
 import { signOut } from "next-auth/react"
 import { twMerge } from "tailwind-merge"
@@ -33,4 +34,22 @@ export const formatCurrency = (amount: number) => {
       style: 'currency',
       currency: 'NPR'
   }).format(amount);
+};
+
+const getPrice = (category: string, showPrices:Pricing) => {
+  switch (category) {
+    case 'silver':
+      return showPrices?.silver;
+    case 'gold':
+      return showPrices?.gold;
+    case 'platinum':
+      return showPrices?.platinum;
+    default:
+      return 150;
+  }
+};
+
+export const getTotalPrice = (selectedSeats: string[], showPrices: Pricing) => {
+  const prices = selectedSeats.map((seat) => getPrice(seat.split('/')[0], showPrices));
+  return prices.reduce((total, price) => total! + (price || 0), 0);
 };

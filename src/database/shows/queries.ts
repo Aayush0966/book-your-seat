@@ -1,4 +1,4 @@
-import { MovieWithShows, MovieDetails, Pricing, Showtime, Status } from "@/types/movie";
+import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price } from "@/types/movie";
 import prisma from "@/lib/prisma"; 
 import { Prisma } from "@prisma/client";
 
@@ -33,8 +33,10 @@ export const checkExistingShow = async (screenId: number, showTime: number) => {
     });
 };
 
-export const createShow = async (movieId: number, showtime: Showtime, showStartDate: number, showEndDate: number) => {
+export const createShow = async (movieId: number, prices: Price[], showtime: Showtime, showStartDate: number, showEndDate: number) => {
     try {
+        console.log('createShow called with:', { movieId, prices, showtime, showStartDate, showEndDate });
+
         if (!movieId || !showtime.screenId || !showtime.showTime || !showStartDate || !showEndDate) {
             throw new Error('Missing required fields for show creation');
         }
@@ -42,36 +44,26 @@ export const createShow = async (movieId: number, showtime: Showtime, showStartD
         const showData = {
             movieId,
             screenId: showtime.screenId,
-            showTime: showtime.showTime ,
-            startDate: showStartDate ,
+            showTime: showtime.showTime,
+            startDate: showStartDate,
             endDate: showEndDate,
+            pricing: prices as unknown as Prisma.InputJsonValue
         };
 
+        console.log('showData:', showData);
 
         const createdShow = await prisma.show.create({
             data: showData
         });
+
+        console.log('createdShow:', createdShow);
+
         return createdShow;
 
     } catch (error) {
         console.error("Error in createShow:", error);
         throw error;
     }
-};
-
-export const createPricing = async (showId: number, screenId: number, prices: Pricing) => {
-    await Promise.all(
-        Object.entries(prices).map(([seatType, price]) =>
-            prisma.price.create({
-                data: {
-                    showId,
-                    screenId,
-                    seatType,
-                    price: Number(price),
-                },
-            })
-        )
-    );
 };
 
 export const fetchShows = async (movieId: number) => {
@@ -107,10 +99,11 @@ export const fetchMovieById = async (movieId: number): Promise<MovieWithShows | 
             shows: {
                 include: {
                     bookings: true,
-                    screen: true
+                    screen: true,
                 },
             },
         },
     });
+
     return movie ? (movie as MovieWithShows) : null;
 }

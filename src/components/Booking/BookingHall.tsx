@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Seat from "./Seat";
 import { Movie, Show } from "@/types/movie";
 import { FC } from "react";
-import { formatTime } from "@/lib/utils";
+import { formatTime, getTotalPrice } from "@/lib/utils";
 import { useBooking } from "@/context/bookingContext";
 
 interface BookingHallProps {
@@ -14,6 +14,16 @@ const BookingHall: FC<BookingHallProps> = ({ movie }) => {
   const {step, setStep, selectedShow, selectedSeats, setSelectedSeats} = useBooking();
   const requiredRows = Math.ceil((selectedShow?.screen?.totalSeats ?? 0) / 10);
   const seats = Array.from({ length: requiredRows }, (_, i) => String.fromCharCode(65 + i)); // Generate seat rows dynamically
+  const totalRows = requiredRows;
+  const middleStart = Math.floor(totalRows / 3); // Start of Platinum
+  const middleEnd = Math.ceil((2 * totalRows) / 3); // End of Platinum
+  const showPrices = selectedShow && selectedShow.pricing?.filter((price) => price.screenId === selectedShow.screenId)[0].prices
+
+  const getSeatCategory = (rowIndex: number) => {
+    if (rowIndex < middleStart) return "gold"; // Top rows
+    if (rowIndex >= middleStart && rowIndex < middleEnd) return "platinum"; // Middle rows
+    return "silver"; // Bottom rows
+  };
 
   const handleSelectSeats = (seatNumber: string) => {
     if (selectedSeats.includes(seatNumber)) {
@@ -74,15 +84,19 @@ const BookingHall: FC<BookingHallProps> = ({ movie }) => {
               <div className="pt-3 border-t border-gray-700 mt-4">
                 <p className="text-gray-400 text-sm mb-2">Selected Seats:</p>
                 {selectedSeats.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {selectedSeats.map(seat => (
-                      <span key={seat} className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded-md text-sm">{seat}</span>
-                    ))}
-                  </div>
+                  <>
+                    <p className="text-gray-400 text-sm mb-2">Total: {showPrices && getTotalPrice(selectedSeats, showPrices)}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedSeats.map(seat => (
+                        <span key={seat} className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded-md text-sm">{seat.split('/')[1]}</span>
+                      ))}
+                    </div>
+                  </>
                 ) : (
                   <p className="text-gray-500 italic text-sm">No seats selected</p>
                 )}
               </div>
+              
             </div>
             
             {selectedSeats.length > 0 && (
@@ -96,47 +110,70 @@ const BookingHall: FC<BookingHallProps> = ({ movie }) => {
         {/* Enhanced seating layout */}
         <div className="bg-gray-800/40 backdrop-blur-md rounded-2xl p-6 mb-12 shadow-xl border border-gray-700/50 overflow-auto">
           <div className="grid grid-cols-10 gap-4 md:gap-6 justify-items-center">
-            {seats.map((seat) => (
+            {seats.map((seat, rowIndex) => (
               <React.Fragment key={seat}>
-                {Array.from({ length: 10 }, (_, index) => (
-                  <div className="relative group" key={`${seat}-${index + 1}`}>
-                    {index === 0 && (
-                      <span className="absolute -left-8 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">
-                        {seat}
-                      </span>
-                    )}
-                    <Seat
-                      seatNumber={`${seat}-${index + 1}`}
-                      handleSelectSeats={(seatNumber: string) => handleSelectSeats(seatNumber)}
-                      selectedSeats={selectedSeats}
-                      isBooked={false}
-                    />
-                    {seat === seats[0] && (
-                      <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-gray-500 text-xs">
-                        {index + 1}
-                      </span>
-                    )}
-                  </div>
-                ))}
+                {Array.from({ length: 10 }, (_, index) => {
+                  const seatCategory = getSeatCategory(rowIndex);
+                  return (
+                    <div className="relative group" key={`${seat}-${index + 1}`}>
+                      {index === 0 && (
+                        <span className="absolute -left-8 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">
+                          {seat}
+                        </span>
+                      )}
+                      <Seat
+                        seatNumber={`${seat}-${index + 1}`}
+                        handleSelectSeats={handleSelectSeats}
+                        selectedSeats={selectedSeats}
+                        isBooked={false}
+                        category={seatCategory} // Pass category to Seat component
+                      />
+                      {seat === seats[0] && (
+                        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-gray-500 text-xs">
+                          {index + 1}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </React.Fragment>
             ))}
           </div>
+
         </div>
 
         {/* Improved legend */}
         <div className="flex flex-col sm:flex-row justify-center gap-6 py-6 px-8 bg-gray-800/60 backdrop-blur-lg rounded-xl w-fit mx-auto border border-gray-700/50 shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="w-5 h-5 rounded-md bg-gradient-to-r from-emerald-400 to-emerald-500 shadow-lg shadow-emerald-500/30"></div>
-            <span className="text-gray-300">Available</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-5 h-5 rounded-md bg-gradient-to-r from-rose-400 to-rose-500 shadow-lg shadow-rose-500/30"></div>
-            <span className="text-gray-300">Booked</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-5 h-5 rounded-md bg-gradient-to-r from-blue-400 to-blue-500 shadow-lg shadow-blue-500/30"></div>
-            <span className="text-gray-300">Selected</span>
-          </div>
+
+            {/* Booked */}
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 rounded-md bg-gradient-to-r from-rose-400 to-rose-500 shadow-lg shadow-rose-500/30"></div>
+              <span className="text-gray-300">Booked</span>
+            </div>
+
+            {/* Selected */}
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 rounded-md bg-gradient-to-r from-green-400 to-green-500 shadow-lg shadow-green-500/30"></div>
+              <span className="text-gray-300">Selected</span>
+            </div>
+
+            {/* Silver Category */}
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 rounded-md bg-gradient-to-r from-gray-400 to-gray-500 shadow-lg shadow-gray-500/30"></div>
+              <span className="text-gray-300">Silver Class</span>
+            </div>
+
+            {/* Gold Category */}
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 rounded-md bg-gradient-to-r from-yellow-400 to-yellow-500 shadow-lg shadow-yellow-500/30"></div>
+              <span className="text-gray-300">Gold Class</span>
+            </div>
+
+            {/* Platinum Category */}
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 rounded-md bg-gradient-to-r from-blue-400 to-blue-500 shadow-lg shadow-blue-500/30"></div>
+              <span className="text-gray-300">Platinum Class</span>
+            </div>
         </div>
       </div>
     </div>

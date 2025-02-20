@@ -22,6 +22,7 @@ export const addMovieAndShow = async (movieDetails: MovieDetails) => {
 
                 const newShow = await showQueries.createShow(
                     newMovie.id,
+                    movieDetails.pricing,
                     showtime,
                     movieDetails.showStartDate,
                     movieDetails.showEndDate
@@ -29,22 +30,6 @@ export const addMovieAndShow = async (movieDetails: MovieDetails) => {
                 return newShow;
             })
         );
-
-        console.log('New shows created:', newShows);
-
-        if (movieDetails.pricing && movieDetails.pricing.length > 0) {
-            for (const priceGroup of movieDetails.pricing) {
-            const show = newShows.find((show) => show.screenId === priceGroup.screenId);
-            if (show) {
-                console.log('Creating pricing for show:', show.id, 'with price group:', priceGroup);
-                await showQueries.createPricing(show.id, priceGroup.screenId, priceGroup.prices);
-            } else {
-                console.log('No matching show found for screenId:', priceGroup.screenId);
-            }
-            }
-        } else {
-            console.log('No pricing details provided');
-        }
 
         console.log('New movie created:', newMovie);
         return newMovie;
