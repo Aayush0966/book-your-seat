@@ -39,14 +39,20 @@ export interface MovieWithShows extends Movie {
 }
 
 export interface Booking {
-  id: number;
+  id?: number;
   userId: number;
   showId: number;
   seatsBooked: string[];
   totalPrice: number;
-  createdAt: Date;
-  updatedAt: Date;
+  showDate: number;
+  bookingDate: number;
+  bookingStatus: BookingStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
+
+export type BookingRequest = Omit<Booking, "id" | "userId" | "createdAt" | "updatedAt" | "bookingStatus">;
+
 
 export interface Screen {
   id: number;
@@ -106,6 +112,7 @@ export interface AuthProps {
 }
 
 export type Status = "ACTIVE" | "COMPLETED" | "UPCOMING";
+export type BookingStatus = "CONFIRMED" | "CANCELLED";
 
 export interface StepProps {
   movieDetails: MovieDetails;

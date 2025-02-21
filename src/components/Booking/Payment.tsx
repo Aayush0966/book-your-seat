@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { useBooking } from "@/context/bookingContext";
 import { CreditCard, Wallet, Clock, CalendarDays, ChevronLeft, Lock } from "lucide-react";
 import { formatCurrency, formatTime, getTotalPrice } from "@/lib/utils";
-import { MovieWithShows } from "@/types/movie";
+import { Booking, BookingRequest, MovieWithShows } from "@/types/movie";
+import axios from 'axios';
+import { getSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const Payment = ({ movie }: { movie: MovieWithShows }) => {
   const { selectedShow, selectedSeats, setStep, selectedDate } = useBooking();
@@ -13,6 +17,35 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
   const seatPrices = selectedShow?.pricing?.find((price) => price.screenId === 1)?.prices  ;
   const totalAmount = seatPrices ? getTotalPrice(selectedSeats, seatPrices) : 0;
   const convenience = totalAmount * 0.02;
+  const router = useRouter()
+
+  const handleBooking = async () => {
+    try {
+      const bookingDetails: BookingRequest = {
+        showId: selectedShow!.id,
+        seatsBooked: selectedSeats,
+        showDate: Math.floor(selectedDate!.getTime() / 1000),
+        bookingDate: Math.floor(Date.now() / 1000),
+        totalPrice: totalAmount + convenience,
+      }
+        const response = await axios.post('/api/booking', bookingDetails)
+        if (response.statusText == 'Created') {
+          toast.success("Show booked successfully")
+          setTimeout(() => {
+            router.push("/ticket")
+          }, 2000)
+          
+        } else {
+          toast.error(`Something went wrong: ${response.data.error}`)
+          setTimeout(() => {
+            router.push("/home")
+          }, 2000)
+          
+        }
+    } catch (error) {
+      console.log("Error: ", error)
+    }
+  }
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-fade-in">
@@ -121,6 +154,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
           Back
         </Button>
         <Button
+        onClick={() => handleBooking()}
           className={`w-2/3 h-12 flex items-center justify-center gap-2 transition-all
             ${selectedMethod 
               ? 'bg-gradient-to-r from-primary to-secondary hover:from-dark-primary hover:to-dark-secondary' 

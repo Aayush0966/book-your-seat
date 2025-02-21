@@ -25,8 +25,6 @@ export const getUserByEmailWithPassword = async (email:string) => {
      return existingUser ? existingUser : null
 }
 
-
-
 export const createAccount = async (data: SignupDetails) => {
     const user = await prisma.user.create({
         data: {

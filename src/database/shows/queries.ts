@@ -1,6 +1,6 @@
-import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price } from "@/types/movie";
+import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price, Booking } from "@/types/movie";
 import prisma from "@/lib/prisma"; 
-import { Prisma } from "@prisma/client";
+import { Prisma, BookingStatus } from "@prisma/client"; // Import the BookingStatus enum
 
 export const createMovie = async (movieDetails: MovieDetails) => {
     const movieData = {
@@ -105,5 +105,12 @@ export const fetchMovieById = async (movieId: number): Promise<MovieWithShows | 
         },
     });
 
-    return movie ? (movie as MovieWithShows) : null;
+    return movie ? (movie as unknown as MovieWithShows) : null;
+}
+
+export const createBooking = async (bookingDetail: Booking) => {
+    const booking = await prisma.booking.create({
+        data: bookingDetail
+    })
+    return booking ?? null
 }

@@ -1,5 +1,6 @@
-import {MovieDetails, Showtime, Status } from "@/types/movie";
+import {Booking, BookingRequest, MovieDetails, Showtime, Status } from "@/types/movie";
 import * as showQueries from "@/database/shows/queries"
+import { auth } from "@/auth";
 
 
 export const addMovieAndShow = async (movieDetails: MovieDetails) => {
@@ -84,3 +85,14 @@ export const fetchMoviesWithShows = async (status: Status) => {
         throw error;
     }
 };
+
+export const bookShow = async (bookingDetails: BookingRequest) => {
+    const session = await auth();
+    const bookingDetail:Booking = {
+        ...bookingDetails,
+        userId: session?.user?.id ? parseInt(session.user.id) : 0,
+        bookingStatus: "CONFIRMED",
+    }
+    const newBooking = await showQueries.createBooking(bookingDetail)
+    return newBooking ?? null;
+}

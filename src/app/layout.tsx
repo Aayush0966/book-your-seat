@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 import '@/app/styles/globals.css';
 import { SessionProvider } from 'next-auth/react';
+import { Toaster } from 'react-hot-toast';
 
 
 // const roboto = Roboto({
@@ -25,6 +26,7 @@ export default function RootLayout({
         className={`antialiased`}
       >
         <SessionProvider>
+          <Toaster position="top-right" />
         {children}
         </SessionProvider>
       </body>
