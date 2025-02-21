@@ -37,27 +37,28 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
     const generateDateRange = () => {
         const dates: DateRange[] = [];
         if (movie) {
-            const startDate = new Date(Math.min(...movie.shows.map(show => show.startDate * 1000)));
+            const actualStart = new Date(Math.min(...movie.shows.map(show => show.startDate * 1000)));
             const endDate = new Date(Math.max(...movie.shows.map(show => show.endDate * 1000)));
             
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const startDate = today > actualStart ? today : actualStart;
             const currentDate = new Date(startDate);
-            
+          
             while (currentDate <= endDate) {
                 dates.push({
                     date: new Date(currentDate),
-                    isSelected: selectedDate ? (
-                        currentDate.getDate() === selectedDate.getDate() &&
-                        currentDate.getMonth() === selectedDate.getMonth()
-                    ) : false,
-                    isToday: currentDate.getDate() === new Date().getDate() &&
-                            currentDate.getMonth() === new Date().getMonth()
+                    isSelected: selectedDate
+                        ? currentDate.getDate() === selectedDate.getDate() &&
+                          currentDate.getMonth() === selectedDate.getMonth()
+                        : false,
+                    isToday: currentDate.getTime() === today.getTime()
                 });
                 currentDate.setDate(currentDate.getDate() + 1);
             }
             
             setDateRange(dates);
         }
-      
     };
 
     const updateAvailableShows = (date: Date | null, screenType: string) => {

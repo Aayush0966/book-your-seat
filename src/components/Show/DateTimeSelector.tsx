@@ -30,13 +30,27 @@ const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
   onTimeSelect,
 }) => {
 
+  const calculateAvailableSeats = (show: Show): number => {
+    if (!selectedDate) return show.screen?.totalSeats || 0;
+    console.log(selectedDate)
+    console.log(selectedDate.getTime() / 1000)
+    console.log(show.bookings)
+    
+    const totalSeats = show.screen?.totalSeats || 0;
+    const selectedDateTimestamp = Math.floor(selectedDate.getTime() / 1000);
+    const bookedSeats = show.bookings?.reduce((acc, booking) => {
+      return booking.showDate === selectedDateTimestamp 
+        ? acc + booking.seatsBooked.length 
+        : acc;
+    }, 0) || 0;
+    return totalSeats - bookedSeats;
+  };
 
   const formatDateDisplay = (date: Date) => ({
     dayName: date.toLocaleString('default', { weekday: 'short' }),
     month: date.toLocaleString('default', { month: 'short' }),
     day: date.getDate()
   });
-
 
   return (
     <div className="space-y-6">
@@ -108,7 +122,7 @@ const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
                         {formatTime(show.showTime)}
                       </span>
                       <span className="block text-xs mt-2 opacity-75">
-                        {show.screen?.totalSeats || 0} seats available
+                        {calculateAvailableSeats(show)} seats available
                       </span>
                     </div>
                   </button>

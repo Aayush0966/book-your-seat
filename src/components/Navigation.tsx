@@ -8,7 +8,7 @@ import { Menu, X } from 'lucide-react';
 import ProfileDropdown from './ProfileDropdown';
 import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { handleLogout } from '@/lib/utils';
 
 interface NavItem {
@@ -19,10 +19,11 @@ interface NavItem {
 const Navigation = () => {
   const [mobileDropdown, setMobileDropdown] = React.useState<boolean>(false);
   const [scrolled, setScrolled] = React.useState(false);
+  const pathname = usePathname();
   const navItems: NavItem[] = [
     {name:'Home', path:'/home'},
     {name: 'Contact', path: '/contact'},
-    {name: 'Ticket rate', path: 'ticket-rate'}
+    {name: 'Ticket rate', path: '/ticket-rate'}
   ];
   const [session, setSession] = React.useState<Session | null>(null);
   const navigate = useRouter();
@@ -43,7 +44,7 @@ const Navigation = () => {
   }, []);
 
   return (
-    <header className={`w-full fixed top-0 z-50 transition-all duration-300 ${
+    <header className={`w-full shadow-lg fixed top-0 z-50 transition-all duration-300 ${
       scrolled 
         ? 'bg-background/80 backdrop-blur-lg shadow-lg' 
         : 'bg-background'
@@ -71,17 +72,25 @@ const Navigation = () => {
               <Link 
                 key={item.path}
                 href={item.path}
-                className="relative text-dark-text group px-2 py-2"
+                className={`relative text-dark-text group px-2 py-2 ${
+                  pathname === item.path ? 'text-primary' : ''
+                }`}
               >
-                <span className="relative z-10 transition-colors duration-300 group-hover:text-primary">
+                <span className={`relative z-10 transition-colors duration-300 group-hover:text-primary ${
+                  pathname === item.path ? 'text-primary' : ''
+                }`}>
                   {item.name}
                 </span>
                 <span 
-                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary rounded-full transition-all duration-300 group-hover:w-full opacity-0 group-hover:opacity-100"
+                  className={`absolute bottom-0 left-0 h-0.5 bg-primary rounded-full transition-all duration-300 ${
+                    pathname === item.path ? 'w-full opacity-100' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-100'
+                  }`}
                   aria-hidden="true"
                 />
                 <span 
-                  className="absolute inset-0 w-full h-full bg-primary/5 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"
+                  className={`absolute inset-0 w-full h-full bg-primary/5 rounded-lg transition-transform duration-300 ${
+                    pathname === item.path ? 'scale-100' : 'scale-0 group-hover:scale-100'
+                  }`}
                   aria-hidden="true"
                 />
               </Link>
@@ -129,12 +138,19 @@ const Navigation = () => {
               <Link
                 key={item.path}
                 href={item.path}
-                className="block px-4 py-2 rounded-lg transition-all duration-300 text-dark-text hover:text-primary 
-                  hover:bg-primary/5 relative overflow-hidden group"
+                className={`block px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group ${
+                  pathname === item.path 
+                    ? 'text-primary bg-primary/5' 
+                    : 'text-dark-text hover:text-primary hover:bg-primary/5'
+                }`}
                 onClick={() => setMobileDropdown(false)}
               >
                 <span className="relative z-10">{item.name}</span>
-                <div className="absolute inset-0 bg-primary/5 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
+                <div className={`absolute inset-0 bg-primary/5 transform transition-transform duration-300 ${
+                  pathname === item.path 
+                    ? 'translate-x-0' 
+                    : '-translate-x-full group-hover:translate-x-0'
+                }`} />
               </Link>
             ))}
             {!session ? (

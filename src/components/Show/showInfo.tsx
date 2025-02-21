@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Clock, Star, Calendar } from "lucide-react";
+import { Heart, Clock, Star, Calendar, Film } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { MovieWithShows } from "@/types/movie";
 
@@ -34,31 +34,46 @@ const ShowInfo = ({ movie }: { movie: MovieWithShows }) => {
           </div>
 
           <div className="p-6 space-y-6">
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-3 rounded-xl bg-white/50 backdrop-blur-sm">
+            <div className="grid grid-cols-4 gap-4">
+              <div className="text-center p-3 rounded-xl bg-white/50 backdrop-blur-sm hover:bg-white/60 transition-all">
                 <Clock className="w-5 h-5 mx-auto mb-1 text-primary" />
                 <span className="text-sm font-medium text-gray-700">{movie.duration}</span>
               </div>
-              {/* <div className="text-center p-3 rounded-xl bg-white/50 backdrop-blur-sm">
-                <Star className="w-5 h-5 mx-auto mb-1 text-primary" />
-                <span className="text-sm font-medium text-gray-700">
-                  {movie.rating || "N/A"}
-                </span>
-              </div> */}
-              <div className="text-center p-3 rounded-xl bg-white/50 backdrop-blur-sm">
+              
+              <div className="text-center p-3 rounded-xl bg-white/50 backdrop-blur-sm hover:bg-white/60 transition-all">
                 <Calendar className="w-5 h-5 mx-auto mb-1 text-primary" />
                 <span className="text-sm font-medium text-gray-700">
-                  {new Date(movie.releaseDate).getFullYear()}
+                  {new Date(movie.releaseDate * 1000).getFullYear()}
+                </span>
+              </div>
+
+
+              <div className="text-center p-3 rounded-xl bg-white/50 backdrop-blur-sm hover:bg-white/60 transition-all">
+                <Film className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <span className="text-sm font-medium text-gray-700">
+                  {movie.language || 'N/A'}
                 </span>
               </div>
             </div>
 
             <div>
               <h3 className="text-lg font-semibold mb-2">Synopsis</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-700 hover:text-gray-900 text-base leading-relaxed bg-white/30 hover:bg-white/60 backdrop-blur-sm p-4 rounded-lg">
                 {movie.description}
               </p>
             </div>
+
+            {movie.director && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Director</h3>
+                <Badge
+                  variant="outline"
+                  className="bg-white/50 backdrop-blur-sm border-primary/20 text-gray-700 text-sm"
+                >
+                  {movie.director}
+                </Badge>
+              </div>
+            )}
 
             {movie.casts && (
               <div>
@@ -68,7 +83,7 @@ const ShowInfo = ({ movie }: { movie: MovieWithShows }) => {
                     <Badge
                       key={index}
                       variant="outline"
-                      className="bg-white/50 backdrop-blur-sm border-primary/20 text-gray-700"
+                      className="bg-white/50 backdrop-blur-sm border-primary/20 text-gray-700 hover:bg-white/60 transition-all"
                     >
                       {actor}
                     </Badge>

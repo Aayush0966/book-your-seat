@@ -27,18 +27,18 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
     pricing: [
       {
         screenId: 1,
-        type: "Standard",
-        prices: { platinum: 150, gold: 200, silver: 300 }
+        type: "Standard", 
+        prices: { platinum: 300, gold: 200, silver: 150 }
       },
       {
         screenId: 2,
         type: "3D",
-        prices: { platinum: 250, gold: 300, silver: 400 }
+        prices: { platinum: 400, gold: 300, silver: 250 }
       },
       {
         screenId: 3,
-        type: "IMAX",
-        prices: { platinum: 300, gold: 400, silver: 600 }
+        type: "IMAX", 
+        prices: { platinum: 600, gold: 400, silver: 300 }
       }
     ],
     cast: [],
