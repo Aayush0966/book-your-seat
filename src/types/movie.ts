@@ -27,7 +27,7 @@ export interface Show {
   screenId: number;
   movieId: number;
   showTime: number;
-  updatedAt: Date;
+  updatedAt: number;
   createdAt: Date;
   bookings?: Booking[];
   screen?: Screen;
@@ -43,6 +43,7 @@ export interface Booking {
   userId: number;
   showId: number;
   seatsBooked: string[];
+  seatsCount: number;
   totalPrice: number;
   showDate: number;
   bookingDate: number;

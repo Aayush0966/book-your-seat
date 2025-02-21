@@ -26,7 +26,7 @@ export default function RootLayout({
         className={`antialiased`}
       >
         <SessionProvider>
-          <Toaster position="top-right" />
+        <Toaster position="top-right" />
         {children}
         </SessionProvider>
       </body>

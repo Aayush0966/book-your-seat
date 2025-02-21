@@ -28,7 +28,7 @@ const Seat: FC<SeatProps> = ({
   return (
     <button
       disabled={isBooked}
-      onClick={() => !isBooked && handleSelectSeats(`${category}/${seatNumber}`)}
+      onClick={() => !isBooked && handleSelectSeats(`${seatNumber}`)}
       className={clsx(
         "w-12 h-12 rounded-md transition-all duration-300 transform hover:scale-110 flex items-center justify-center text-xs font-medium shadow-lg",
         isBooked
@@ -39,7 +39,7 @@ const Seat: FC<SeatProps> = ({
       )}
       title={`Seat ${seatNumber} (${category.toUpperCase()} ${isBooked ? " - Booked" : ""})`}
     >
-      <span className="p-4">{seatNumber}</span>
+      <span className="p-4">{seatNumber.split('/')[1]}</span>
     </button>
   );
 };

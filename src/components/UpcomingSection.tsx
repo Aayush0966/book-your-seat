@@ -1,11 +1,11 @@
-import { fetchMoviesWithShows } from "@/services/showServices";
+import { fetchMovies } from "@/services/showServices";
 import MovieCard from "./MovieCard";
 import { Film, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Movie } from "@/types/movie";
 
 const UpcomingSection = async () => {
-  const shows = await fetchMoviesWithShows('UPCOMING');
+  const shows = await fetchMovies('UPCOMING');
   
   return (
     <section className="bg-gradient-to-b from-background to-background/80 dark:from-dark-background dark:to-dark-background/90 py-24 px-4 md:px-8">

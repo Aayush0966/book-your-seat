@@ -19,13 +19,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`antialiased`}
-      >
-        <Toaster position="top-right" />
         {children}
-      </body>
-    </html>
   );
 }

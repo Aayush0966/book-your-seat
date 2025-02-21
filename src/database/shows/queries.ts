@@ -35,7 +35,6 @@ export const checkExistingShow = async (screenId: number, showTime: number) => {
 
 export const createShow = async (movieId: number, prices: Price[], showtime: Showtime, showStartDate: number, showEndDate: number) => {
     try {
-        console.log('createShow called with:', { movieId, prices, showtime, showStartDate, showEndDate });
 
         if (!movieId || !showtime.screenId || !showtime.showTime || !showStartDate || !showEndDate) {
             throw new Error('Missing required fields for show creation');
@@ -50,13 +49,11 @@ export const createShow = async (movieId: number, prices: Price[], showtime: Sho
             pricing: prices as unknown as Prisma.InputJsonValue
         };
 
-        console.log('showData:', showData);
 
         const createdShow = await prisma.show.create({
             data: showData
         });
 
-        console.log('createdShow:', createdShow);
 
         return createdShow;
 
@@ -75,6 +72,16 @@ export const fetchShows = async (movieId: number) => {
     return shows ? shows : null;
 }
 
+export const fetchScreenById = (screenId: number) => {
+    const screen = prisma.screen.findUnique({
+        where: {
+            id: screenId
+        }
+    })
+    return screen ?? null;
+}
+
+
 export const fetchMoviesByStatus = async (status: Status) => {
     const movie = await prisma.movie.findMany({
         where: {
@@ -90,7 +97,7 @@ export const fetchMovies = async () => {
     return movies ? movies : null;
 }
 
-export const fetchMovieById = async (movieId: number): Promise<MovieWithShows | null> => {
+export const fetchMovieWithShowsById = async (movieId: number): Promise<MovieWithShows | null> => {
     const movie = await prisma.movie.findFirst({
         where: {
             id: movieId
@@ -107,6 +114,7 @@ export const fetchMovieById = async (movieId: number): Promise<MovieWithShows | 
 
     return movie ? (movie as unknown as MovieWithShows) : null;
 }
+
 
 export const createBooking = async (bookingDetail: Booking) => {
     const booking = await prisma.booking.create({

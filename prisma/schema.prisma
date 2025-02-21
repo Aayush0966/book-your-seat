@@ -94,6 +94,7 @@ model Booking {
   userId      Int      @map("user_id")
   showId      Int      @map("show_id")
   showDate    Int      @map("show_date") 
+  seatsCount  Int      @map("seats_count")
   seatsBooked String[] @map("seats_booked")
   totalPrice  Float    @map("total_price") @db.DoublePrecision
   bookingDate Int      @map("booking_date")
@@ -107,6 +108,7 @@ model Booking {
   @@index([showId])
   @@index([bookingStatus])
   @@index([showDate])
+  @@index([seatsCount])
 }
 
 enum Role {

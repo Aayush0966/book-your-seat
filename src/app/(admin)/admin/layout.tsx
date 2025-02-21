@@ -21,15 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`antialiased`}
-      >
         <SessionProvider>
-        <Toaster position="top-right" />
         {children}
         </SessionProvider>
-      </body>
-    </html>
+
   );
 }

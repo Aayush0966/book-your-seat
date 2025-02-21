@@ -33,6 +33,10 @@ const BookingHall: FC<BookingHallProps> = ({ movie }) => {
     }
   };
 
+  const checkIsBooked = (seatNumber: string): boolean => {
+    return !!(selectedShow?.bookings && selectedShow?.bookings.find((booking) => booking.seatsBooked.includes(seatNumber)));
+  }
+
 
 
   return (
@@ -122,11 +126,11 @@ const BookingHall: FC<BookingHallProps> = ({ movie }) => {
                         </span>
                       )}
                       <Seat
-                        seatNumber={`${seat}-${index + 1}`}
+                        seatNumber={`${seatCategory}/${seat}-${index + 1}`}
                         handleSelectSeats={handleSelectSeats}
                         selectedSeats={selectedSeats}
-                        isBooked={false}
-                        category={seatCategory} // Pass category to Seat component
+                        isBooked={checkIsBooked(`${seatCategory}/${seat}-${index + 1}`)}
+                        category={seatCategory}
                       />
                       {seat === seats[0] && (
                         <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-gray-500 text-xs">

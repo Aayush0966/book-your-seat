@@ -67,7 +67,7 @@ export const addMovieAndShow = async (movieDetails: MovieDetails) => {
 
 export const fetchShowsByMovieId = async (movieId: number) => {
     try {
-        const movie = await showQueries.fetchMovieById(movieId)
+        const movie = await showQueries.fetchMovieWithShowsById(movieId)
         if (!movie) return null;
         return movie
     } catch (error) {
@@ -75,7 +75,9 @@ export const fetchShowsByMovieId = async (movieId: number) => {
     }
 }
 
-export const fetchMoviesWithShows = async (status: Status) => {
+
+
+export const fetchMovies = async (status: Status) => {
     try {
         const movies = await showQueries.fetchMoviesByStatus(status);
         if (!movies) return null;
@@ -88,10 +90,12 @@ export const fetchMoviesWithShows = async (status: Status) => {
 
 export const bookShow = async (bookingDetails: BookingRequest) => {
     const session = await auth();
+    const seatsCount = bookingDetails.seatsBooked.length;
     const bookingDetail:Booking = {
         ...bookingDetails,
         userId: session?.user?.id ? parseInt(session.user.id) : 0,
         bookingStatus: "CONFIRMED",
+        seatsCount,
     }
     const newBooking = await showQueries.createBooking(bookingDetail)
     return newBooking ?? null;
