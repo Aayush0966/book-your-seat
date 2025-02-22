@@ -1,7 +1,7 @@
-import {Booking, BookingRequest, MovieDetails, Showtime, Status, Ticket } from "@/types/movie";
+import {Booking, BookingRequest, MovieDetails, SeatWithPrice, Showtime, Status, Ticket, TicketDetails, Price, BookingDetails } from "@/types/movie";
 import * as showQueries from "@/database/shows/queries"
 import { auth } from "@/auth";
-import { generateTicketId } from "@/lib/utils";
+import { generateBookingId, generateTicketId } from "@/lib/utils";
 
 
 export const addMovieAndShow = async (movieDetails: MovieDetails) => {
@@ -94,6 +94,7 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
     const seatsCount = bookingDetails.seatsBooked.length;
     
     const bookingDetail: Booking = {
+        id: generateBookingId(),
         userId: session?.user?.id ? parseInt(session.user.id) : 0,
         showId: bookingDetails.showId,
         showDate: bookingDetails.showDate,
@@ -128,3 +129,44 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
     return null;
 }
 
+export const fetchBookingDetails = async (bookingId: string): Promise<BookingDetails | null> => {
+    const booking = await showQueries.fetchBookingById(bookingId);
+    if (!booking) return null;
+
+    const showDetails = await showQueries.fetchBookingWithShowById(booking.id);
+    if (!showDetails) return null;
+
+    const tickets = await showQueries.fetchTicketsByBookingId(bookingId);
+    if (!tickets) return null;
+
+    return {
+        ...booking,
+        seatsBooked: booking.seatsBooked as unknown as SeatWithPrice[],
+        movieName: showDetails.movieName!,
+        time: showDetails.time,
+        hallNumber: showDetails.hallNumber,
+        tickets
+    };
+}
+
+export const fetchShowDetailsByTicketId = async (ticketId: string) => {
+    const ticket = await showQueries.fetchTicketById(ticketId);
+    if (!ticket) return null;
+    const booking = await showQueries.fetchBookingWithShowById(ticket.bookingId);
+    if (!booking) return null;
+
+    const ticketDetails: TicketDetails = {
+        ...ticket,
+        movieName: booking.movieName!,
+        date: booking.date,
+        time: booking.time,
+        hallNumber: booking.hallNumber,
+        seats: [
+            {
+                seat: ticket.seatNumber,
+                price: ticket.price
+            }
+        ]
+    }
+    return ticketDetails;
+}

@@ -13,5 +13,5 @@ export async function POST (request: Request)  {
     if (!booking) {
         return NextResponse.json({error: "Something went wrong"}, {status: 500})
     }
-    return NextResponse.json({success: true}, {status: 201})
+    return NextResponse.json({bookingId: booking.booking.id}, {status: 201})
 }

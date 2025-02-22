@@ -1,4 +1,4 @@
-import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price, Booking, Ticket, TicketStatus } from "@/types/movie";
+import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price, Booking, Ticket, TicketStatus, SeatWithPrice } from "@/types/movie";
 import prisma from "@/lib/prisma"; 
 import { Prisma, BookingStatus } from "@prisma/client"; // Import the BookingStatus enum
 
@@ -119,6 +119,7 @@ export const fetchMovieWithShowsById = async (movieId: number): Promise<MovieWit
 export const createBooking = async (bookingDetail: Booking) => {
     const booking = await prisma.booking.create({
         data: {
+            id: bookingDetail.id,
             userId: bookingDetail.userId,
             showId: bookingDetail.showId,
             showDate: bookingDetail.showDate,
@@ -145,4 +146,56 @@ export const createTicket = async (ticketDetails: Ticket) => {
         }
     })
     return ticket ?? null
+}
+
+export const fetchTicketById = async (ticketId: string) => {
+    const ticket = await prisma.ticket.findUnique({
+        where: {
+            ticketId: ticketId
+        }
+    })
+    return ticket ?? null;
+}
+
+export const fetchBookingById = async (bookingId: string) => {
+    const booking = await prisma.booking.findUnique({
+        where: {
+            id: bookingId
+        }
+    });
+    return booking ?? null;
+}
+
+export const fetchTicketsByBookingId = async (bookingId: string) => {
+    const tickets = await prisma.ticket.findMany({
+        where: {
+            bookingId: bookingId
+        }
+    });
+    return tickets ?? null;
+}
+
+export const fetchBookingWithShowById = async(bookingId: string) => {
+    const booking = await prisma.booking.findUnique({
+        where: {
+            id: bookingId
+        },
+        include: {
+            show: {
+                include: {
+                    movie: true
+                }
+            }
+        }
+    });
+
+    if (!booking) return null;
+
+    const bookingDetails = {
+        movieName: booking.show.movie.title,
+        time: booking.show.showTime,
+        hallNumber: booking.show.screenId,
+        date: booking.show.startDate
+    };
+    return bookingDetails;
 }

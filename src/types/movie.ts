@@ -27,7 +27,7 @@ export interface Show {
   screenId: number;
   movieId: number;
   showTime: number;
-  updatedAt: number;
+  updatedAt: Date;
   createdAt: Date;
   bookings?: Booking[];
   screen?: Screen;
@@ -36,6 +36,14 @@ export interface Show {
 
 export interface MovieWithShows extends Movie {
   shows: Show[];
+}
+
+export interface TicketDetails extends Ticket {
+  movieName: string;
+  date: number;
+  time: number;
+  hallNumber: number;
+  seats: SeatWithPrice[];
 }
 
 export interface SeatWithPrice {
@@ -52,23 +60,33 @@ export interface BookingRequest {
 }
 
 export interface Booking {
+    id?: string;
     userId: number;
     showId: number;
     showDate: number;
     seatsCount: number;
+    show?: Show;
     seatsBooked: SeatWithPrice[];
     totalPrice: number;
     bookingDate: number;
-    bookingStatus: string;
+    bookingStatus: BookingStatus;
+    tickets?: Ticket[];
 }
 
 export interface Ticket {
     ticketId: string;
-    bookingId: number;
+    bookingId: string;
     seatNumber: string;
     seatCategory: string;
     price: number;
-    status: string;
+    status: TicketStatus;
+}
+
+export interface BookingDetails extends Booking {
+    movieName: string;
+    time: number;
+    hallNumber: number;
+    tickets: Ticket[];
 }
 
 export interface Screen {

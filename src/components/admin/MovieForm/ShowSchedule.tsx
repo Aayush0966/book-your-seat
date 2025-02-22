@@ -28,7 +28,7 @@ export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeCha
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
-    return date.toISOString().split('T')[0]; // Return date in 'YYYY-MM-DD' format
+    return date.toISOString().split('T')[0]; 
   };
 
   return (

@@ -90,11 +90,11 @@ model Show {
 }
 
 model Booking {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @map("user_id")
-  showId      Int      @map("show_id")
-  showDate    Int      @map("show_date") 
-  seatsCount  Int      @map("seats_count")
+  id          String    @id @default(cuid()) @map("id")
+  userId      Int       @map("user_id")
+  showId      Int       @map("show_id")
+  showDate    Int       @map("show_date") 
+  seatsCount  Int       @map("seats_count")
   seatsBooked Json     @map("seats_booked")
   totalPrice  Float    @map("total_price") @db.DoublePrecision
   bookingDate Int      @map("booking_date")
@@ -114,7 +114,7 @@ model Booking {
 
 model Ticket {
   ticketId    String   @id @default(cuid()) @map("ticket_id")
-  bookingId   Int      @map("booking_id")
+  bookingId   String   @map("booking_id")
   seatNumber  String   @map("seat_number")
   seatCategory String  @map("seat_category")
   price       Float    @map("price") @db.DoublePrecision

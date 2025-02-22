@@ -29,6 +29,14 @@ export const formatTime = (timestamp: number) => {
   }).format(new Date(timestamp * 1000));
 };
 
+export const formatDate = (timestamp: number) => {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }).format(new Date(timestamp * 1000));
+};
+
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-NP', {
       style: 'currency',
@@ -56,4 +64,9 @@ export const getTotalPrice = (selectedSeats: string[], showPrices: Pricing) => {
 
 export const generateTicketId = () => {
   return "T" + Math.random().toString(16).slice(2)
+}
+
+export const generateBookingId = () => {
+  return "B" + Math.random().toString(16).slice(2)
+
 }
