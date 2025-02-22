@@ -21,29 +21,35 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
   const handleBooking = async () => {
     try {
+      const seatsWithPrices = selectedSeats.map((seat) => {
+        const [category, seatNumber] = seat.split('/');
+        const seatPrice = seatPrices && seatPrices[category as keyof typeof seatPrices] || 0;
+        return { seat, price: seatPrice };
+      });
+      
+
       const bookingDetails: BookingRequest = {
         showId: selectedShow!.id,
-        seatsBooked: selectedSeats,
+        seatsBooked: seatsWithPrices,
         showDate: Math.floor(selectedDate!.getTime() / 1000),
         bookingDate: Math.floor(Date.now() / 1000),
-        totalPrice: totalAmount + convenience,
+        totalPrice: totalAmount,
+      };
+
+      const response = await axios.post('/api/booking', bookingDetails);
+      if (response.statusText == 'Created') {
+        toast.success("Show booked successfully");
+        setTimeout(() => {
+          router.push("/ticket");
+        }, 2000);
+      } else {
+        toast.error(`Something went wrong: ${response.data.error}`);
+        setTimeout(() => {
+          router.push("/home");
+        }, 2000);
       }
-        const response = await axios.post('/api/booking', bookingDetails)
-        if (response.statusText == 'Created') {
-          toast.success("Show booked successfully")
-          setTimeout(() => {
-            router.push("/ticket")
-          }, 2000)
-          
-        } else {
-          toast.error(`Something went wrong: ${response.data.error}`)
-          setTimeout(() => {
-            router.push("/home")
-          }, 2000)
-          
-        }
     } catch (error) {
-      console.log("Error: ", error)
+      console.log("Error: ", error);
     }
   }
 

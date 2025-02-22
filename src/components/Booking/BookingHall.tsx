@@ -34,7 +34,8 @@ const BookingHall: FC<BookingHallProps> = ({ movie }) => {
   };
 
   const checkIsBooked = (seatNumber: string): boolean => {
-    return !!(selectedShow?.bookings && selectedShow?.bookings.find((booking) => booking.seatsBooked.includes(seatNumber)));
+    console.log(selectedShow?.bookings)
+      return !!(selectedShow?.bookings && selectedShow?.bookings.find((booking) => booking.seatsBooked.some((seat) => seat.seat === seatNumber)));
   }
 
 

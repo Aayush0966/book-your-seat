@@ -1,4 +1,4 @@
-import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price, Booking } from "@/types/movie";
+import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price, Booking, Ticket, TicketStatus } from "@/types/movie";
 import prisma from "@/lib/prisma"; 
 import { Prisma, BookingStatus } from "@prisma/client"; // Import the BookingStatus enum
 
@@ -118,7 +118,31 @@ export const fetchMovieWithShowsById = async (movieId: number): Promise<MovieWit
 
 export const createBooking = async (bookingDetail: Booking) => {
     const booking = await prisma.booking.create({
-        data: bookingDetail
+        data: {
+            userId: bookingDetail.userId,
+            showId: bookingDetail.showId,
+            showDate: bookingDetail.showDate,
+            seatsCount: bookingDetail.seatsCount,
+            seatsBooked: bookingDetail.seatsBooked as unknown as Prisma.InputJsonValue,
+            totalPrice: bookingDetail.totalPrice,
+            bookingDate: bookingDetail.bookingDate,
+            bookingStatus: bookingDetail.bookingStatus as BookingStatus
+        }
     })
     return booking ?? null
+}
+
+
+export const createTicket = async (ticketDetails: Ticket) => {
+    const ticket = await prisma.ticket.create({
+        data: {
+            ticketId: ticketDetails.ticketId,
+            bookingId: ticketDetails.bookingId,
+            seatNumber: ticketDetails.seatNumber,
+            seatCategory: ticketDetails.seatCategory,
+            price: ticketDetails.price,
+            status: ticketDetails.status as TicketStatus
+        }
+    })
+    return ticket ?? null
 }

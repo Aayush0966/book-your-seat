@@ -53,3 +53,7 @@ export const getTotalPrice = (selectedSeats: string[], showPrices: Pricing) => {
   const prices = selectedSeats.map((seat) => getPrice(seat.split('/')[0], showPrices));
   return prices.reduce((total, price) => total! + (price || 0), 0);
 };
+
+export const generateTicketId = () => {
+  return "T" + Math.random().toString(16).slice(2)
+}

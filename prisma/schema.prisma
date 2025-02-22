@@ -95,12 +95,13 @@ model Booking {
   showId      Int      @map("show_id")
   showDate    Int      @map("show_date") 
   seatsCount  Int      @map("seats_count")
-  seatsBooked String[] @map("seats_booked")
+  seatsBooked Json     @map("seats_booked")
   totalPrice  Float    @map("total_price") @db.DoublePrecision
   bookingDate Int      @map("booking_date")
   bookingStatus BookingStatus @default(CONFIRMED) @map("booking_status")
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   show        Show     @relation(fields: [showId], references: [id], onDelete: Cascade)
+  tickets     Ticket[]
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -109,6 +110,21 @@ model Booking {
   @@index([bookingStatus])
   @@index([showDate])
   @@index([seatsCount])
+}
+
+model Ticket {
+  ticketId    String   @id @default(cuid()) @map("ticket_id")
+  bookingId   Int      @map("booking_id")
+  seatNumber  String   @map("seat_number")
+  seatCategory String  @map("seat_category")
+  price       Float    @map("price") @db.DoublePrecision
+  status      TicketStatus @default(VALID) @map("status")
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([bookingId])
+  @@index([seatNumber])
 }
 
 enum Role {
@@ -125,4 +141,10 @@ enum MovieStatus {
   UPCOMING
   ACTIVE
   COMPLETED
+}
+
+enum TicketStatus {
+  VALID
+  USED
+  CANCELLED
 }

@@ -1,6 +1,7 @@
-import {Booking, BookingRequest, MovieDetails, Showtime, Status } from "@/types/movie";
+import {Booking, BookingRequest, MovieDetails, Showtime, Status, Ticket } from "@/types/movie";
 import * as showQueries from "@/database/shows/queries"
 import { auth } from "@/auth";
+import { generateTicketId } from "@/lib/utils";
 
 
 export const addMovieAndShow = async (movieDetails: MovieDetails) => {
@@ -91,12 +92,39 @@ export const fetchMovies = async (status: Status) => {
 export const bookShow = async (bookingDetails: BookingRequest) => {
     const session = await auth();
     const seatsCount = bookingDetails.seatsBooked.length;
-    const bookingDetail:Booking = {
-        ...bookingDetails,
+    
+    const bookingDetail: Booking = {
         userId: session?.user?.id ? parseInt(session.user.id) : 0,
-        bookingStatus: "CONFIRMED",
+        showId: bookingDetails.showId,
+        showDate: bookingDetails.showDate,
         seatsCount,
+        seatsBooked: bookingDetails.seatsBooked,
+        totalPrice: bookingDetails.totalPrice,
+        bookingDate: bookingDetails.bookingDate,
+        bookingStatus: "CONFIRMED"
     }
-    const newBooking = await showQueries.createBooking(bookingDetail)
-    return newBooking ?? null;
+
+    const newBooking = await showQueries.createBooking(bookingDetail);
+
+    if (newBooking) {
+        const tickets = await Promise.all(
+            bookingDetails.seatsBooked.map(async (seatInfo) => {
+                const [category, number] = seatInfo.seat.split('/');
+                const ticketDetails: Ticket = {
+                    ticketId: generateTicketId(),
+                    bookingId: newBooking.id,
+                    seatNumber: number,
+                    seatCategory: category,
+                    price: seatInfo.price,
+                    status: "VALID"
+                };
+                return await showQueries.createTicket(ticketDetails);
+            })
+        );
+        
+        return { booking: newBooking, tickets };
+    }
+    
+    return null;
 }
+
