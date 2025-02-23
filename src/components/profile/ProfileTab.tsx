@@ -1,13 +1,7 @@
 import React from 'react';
-import { Calendar, Film } from 'lucide-react';
+import { Calendar, Ticket } from 'lucide-react';
 
-const ProfileTab = () => {
-  // Mock user data
-  const user = {
-    memberSince: "January 2023",
-    preferredLocation: "Downtown Cineplex",
-  };
-
+const ProfileTab = ({memberSince, ticketsCount}: {memberSince: Date, ticketsCount: () => number}) => {
   return (
     <div className="grid md:grid-cols-2 gap-6 animate-fade-in">
       <div className="bg-white dark:bg-dark-background-secondary rounded-xl p-6">
@@ -19,14 +13,14 @@ const ProfileTab = () => {
             <Calendar className="w-5 h-5 text-primary" />
             <div>
               <p className="text-sm text-text-secondary dark:text-dark-text-secondary">Member Since</p>
-              <p className="text-dark-text dark:text-text">{user.memberSince}</p>
+              <p className="text-dark-text dark:text-text">{new Date(memberSince).toDateString()}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Film className="w-5 h-5 text-primary" />
+            <Ticket className="w-5 h-5 text-primary" />
             <div>
-              <p className="text-sm text-text-secondary dark:text-dark-text-secondary">Preferred Cinema</p>
-              <p className="text-dark-text dark:text-text">{user.preferredLocation}</p>
+              <p className="text-sm text-text-secondary dark:text-dark-text-secondary">Total Bookings</p>
+              <p className="text-dark-text dark:text-text">{ticketsCount()} tickets</p>
             </div>
           </div>
         </div>
@@ -55,4 +49,4 @@ const ProfileTab = () => {
   );
 };
 
-export default ProfileTab; 
+export default ProfileTab;

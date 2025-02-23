@@ -30,3 +30,8 @@ export const handleLogin = async (email: string, password: string) => {
     const { password: _, otp: __, otpExpiresAt: ___, ...user } = existingUser;
     return user;
 }
+
+export const fetchUserDetails = async (userId:number) => {
+    const user = await userQueries.getUserByIdWithBookings(userId);
+    return user ?? null;
+}

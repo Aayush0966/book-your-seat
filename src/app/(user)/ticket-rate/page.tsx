@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react';
 import { Star, Film, Clapperboard, Info } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const TicketPricingPage = () => {
   const pricing = [
@@ -10,7 +9,6 @@ const TicketPricingPage = () => {
       type: "Standard",
       prices: { platinum: 300, gold: 200, silver: 150 },
       icon: Film,
-      emoji: "🎬",
       description: "Classic digital projection with crystal clear sound",
       features: [
         "2K Digital Projection",
@@ -24,7 +22,6 @@ const TicketPricingPage = () => {
       type: "3D",
       prices: { platinum: 400, gold: 300, silver: 250 },
       icon: Clapperboard,
-      emoji: "🔮",
       description: "Immersive 3D experience with depth-enhanced visuals",
       features: [
         "RealD 3D Technology",
@@ -38,7 +35,6 @@ const TicketPricingPage = () => {
       type: "IMAX",
       prices: { platinum: 600, gold: 400, silver: 300 },
       icon: Star,
-      emoji: "✨",
       description: "Ultimate movie experience with massive screen and precision audio",
       features: [
         "IMAX Screen",
@@ -51,7 +47,7 @@ const TicketPricingPage = () => {
 
   const seatTiers = {
     platinum: {
-      emoji: "👑",
+      title: "Premium",
       features: [
         "Best viewing angle",
         "Extra leg room",
@@ -60,7 +56,7 @@ const TicketPricingPage = () => {
       ]
     },
     gold: {
-      emoji: "⭐",
+      title: "Preferred",
       features: [
         "Optimal distance",
         "Comfortable seating",
@@ -69,7 +65,7 @@ const TicketPricingPage = () => {
       ]
     },
     silver: {
-      emoji: "🎫",
+      title: "Standard",
       features: [
         "Standard view",
         "Regular seating",
@@ -80,155 +76,97 @@ const TicketPricingPage = () => {
   };
 
   const [selectedScreen, setSelectedScreen] = useState(pricing[0]);
-  const [showTooltip, setShowTooltip] = useState('');
 
   return (
-    <div className="min-h-screen mt-20 bg-background dark:bg-dark-background p-6">
-      <div className="max-w-6xl mx-auto">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl font-bold text-dark-text dark:text-text mb-4">
-            Movie Ticket Pricing
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-16 px-4 mt-16">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-light text-gray-900 dark:text-gray-100 mb-4">
+            Cinema Experience
           </h1>
-          <p className="text-text-secondary dark:text-dark-text-secondary text-lg">
-            Choose your preferred screen type and seating tier
+          <p className="text-gray-600 dark:text-gray-400 text-lg font-light">
+            Select your preferred viewing experience
           </p>
-        </motion.div>
-
-        {/* Screen Type Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {pricing.map((screen, index) => {
-            const Icon = screen.icon;
-            return (
-              <motion.button
-                key={screen.screenId}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                onClick={() => setSelectedScreen(screen)}
-                className={`p-6 rounded-xl transition-all duration-300 transform hover:scale-105 ${
-                  selectedScreen.screenId === screen.screenId
-                    ? 'bg-primary text-white shadow-lg scale-105'
-                    : 'bg-white dark:bg-dark-background-secondary hover:bg-background-secondary dark:hover:bg-dark-background text-dark-text dark:text-text'
-                }`}
-              >
-                <div className="text-3xl mb-4">{screen.emoji}</div>
-                <h3 className="text-xl font-bold mb-2">{screen.type}</h3>
-                <p className="text-sm opacity-80">{screen.description}</p>
-                <div className="mt-4 pt-4 border-t border-white/20">
-                  <ul className="text-sm space-y-2">
-                    {screen.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-current" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.button>
-            )}
-          )}
         </div>
 
-        {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {Object.entries(seatTiers).map(([tier, details], index) => (
-            <motion.div
-              key={tier}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + index * 0.1 }}
-              className="bg-white dark:bg-dark-background-secondary rounded-xl overflow-hidden shadow-lg relative group"
-              onMouseEnter={() => setShowTooltip(tier)}
-              onMouseLeave={() => setShowTooltip('')}
-            >
-              <div className={`p-4 ${
-                tier === 'platinum' ? 'bg-primary/10' :
-                tier === 'gold' ? 'bg-secondary/10' :
-                'bg-accent/10'
-              }`}>
-                <div className="text-center mb-2 text-3xl">{details.emoji}</div>
-                <h3 className={`text-xl font-bold text-center ${
-                  tier === 'platinum' ? 'text-primary' :
-                  tier === 'gold' ? 'text-secondary' :
-                  'text-accent'
-                }`}>
-                  {tier.charAt(0).toUpperCase() + tier.slice(1)}
-                </h3>
-              </div>
-              <div className="p-6">
-                <div className="text-center mb-4">
-                  <div className="text-4xl font-bold text-dark-text dark:text-text">
-                    NPR {selectedScreen.prices[tier as keyof typeof selectedScreen.prices]}
-                  </div>
-                  <p className="text-text-secondary dark:text-dark-text-secondary mt-2">
-                    {tier === 'platinum' ? 'Premium Seating' :
-                     tier === 'gold' ? 'Mid-tier Seating' :
-                     'Standard Seating'}
-                  </p>
-                </div>
-                <ul className="text-text-secondary dark:text-dark-text-secondary space-y-2">
-                  {details.features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${
-                        tier === 'platinum' ? 'bg-primary' :
-                        tier === 'gold' ? 'bg-secondary' :
-                        'bg-accent'
-                      }`} />
+        {/* Screen Type Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          {pricing.map((screen) => {
+            const Icon = screen.icon;
+            return (
+              <button
+                key={screen.screenId}
+                onClick={() => setSelectedScreen(screen)}
+                className={`p-8 rounded-lg transition-all duration-300 ${
+                  selectedScreen.screenId === screen.screenId
+                    ? 'bg-gray-900 text-white shadow-xl'
+                    : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:shadow-lg'
+                }`}
+              >
+                <Icon className="w-6 h-6 mb-4" />
+                <h3 className="text-xl font-light mb-3">{screen.type}</h3>
+                <p className="text-sm opacity-80 mb-6">{screen.description}</p>
+                <ul className="space-y-3 text-sm">
+                  {screen.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center gap-3">
+                      <div className="w-1 h-1 rounded-full bg-current" />
                       {feature}
                     </li>
                   ))}
                 </ul>
-                <button className={`mt-6 w-full py-2 rounded-lg font-medium transition-all duration-200 ${
-                  tier === 'platinum' ? 'bg-primary text-white hover:bg-primary/90' :
-                  tier === 'gold' ? 'bg-secondary text-white hover:bg-secondary/90' :
-                  'bg-accent text-white hover:bg-accent/90'
-                }`}>
-                  Book Now
-                </button>
-              </div>
-              {showTooltip === tier && (
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-sm py-1 px-3 rounded shadow-lg z-10">
-                  Click to book
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {Object.entries(seatTiers).map(([tier, details]) => (
+            <div
+              key={tier}
+              className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg"
+            >
+              <div className="p-6 border-b border-gray-100 dark:border-gray-700">
+                <h3 className="text-xl font-light text-center text-gray-900 dark:text-gray-100">
+                  {details.title}
+                </h3>
+                <div className="text-center mt-4">
+                  <div className="text-3xl font-light text-gray-900 dark:text-gray-100">
+                    NPR {selectedScreen.prices[tier as keyof typeof selectedScreen.prices]}
+                  </div>
                 </div>
-              )}
-            </motion.div>
+              </div>
+              <div className="p-6">
+                <ul className="space-y-3 text-gray-600 dark:text-gray-400">
+                  {details.features.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-3">
+                      <div className="w-1 h-1 rounded-full bg-gray-400" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 italic">
+                  *Prices may vary based on show timing
+                </p>
+              
+              </div>
+            </div>
           ))}
         </div>
 
         {/* Additional Info */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-12 bg-white dark:bg-dark-background-secondary rounded-xl p-6"
-        >
-          <div className="flex items-center gap-2 text-dark-text dark:text-text mb-4">
-            <Info className="w-5 h-5" />
-            <h4 className="font-bold">Important Information</h4>
+        <div className="mt-16 bg-white dark:bg-gray-800 rounded-lg p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <Info className="w-5 h-5 text-gray-400" />
+            <h4 className="text-lg font-light text-gray-900 dark:text-gray-100">Additional Information</h4>
           </div>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-text-secondary dark:text-dark-text-secondary">
-            <li className="flex items-center gap-2">
-              <span className="text-lg">🎯</span>
-              Prices include all applicable taxes
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-lg">☀️</span>
-              Special rates for morning shows (20% off)
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-lg">📚</span>
-              Student discounts available (15% off with ID)
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-lg">👴</span>
-              Senior citizen discounts (25% off)
-            </li>
-          </ul>
-        </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-600 dark:text-gray-400">
+            <p>All prices include applicable taxes</p>
+            <p>Morning shows: 20% discount</p>
+            <p>Student discount: 15% with valid ID</p>
+            <p>Senior citizen discount: 25%</p>
+          </div>
+        </div>
       </div>
     </div>
   );

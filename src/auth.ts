@@ -1,4 +1,4 @@
-import NextAuth, { CredentialsSignin } from "next-auth";
+import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { handleLogin } from './services/userService';
@@ -35,7 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
     ],
     pages: {
-    signIn: "/auth",
+    signIn: "/auth"
     },
     session: {
     strategy: "jwt",

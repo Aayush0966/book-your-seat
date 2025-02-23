@@ -44,3 +44,24 @@ export const createAccount = async (data: SignupDetails) => {
     )
     return user? user : null;
 }
+
+
+export const getUserByIdWithBookings = async (userId: number) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            id: userId
+        },
+        include: {
+            bookings: {
+                include: {
+                    show: {
+                        include: {
+                            movie: true
+                        }
+                    }
+                }
+            }
+        }
+    })
+    return user ?? null;
+}

@@ -70,3 +70,11 @@ export const generateBookingId = () => {
   return "B" + Math.random().toString(16).slice(2)
 
 }
+
+
+
+export const SCREEN_TYPES = [
+  { screenId: 1, type: "Standard" },
+  { screenId: 2, type: "3D" },
+  { screenId: 3, type: "IMAX" }
+];

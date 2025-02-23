@@ -10,6 +10,7 @@ import {
   LogOut,
   ChevronRight
 } from 'lucide-react';
+import { logoutUser } from '@/app/auth/actions';
 
 const SettingsTab = () => {
   return (
@@ -93,7 +94,7 @@ const SettingsTab = () => {
         </div>
 
         {/* Logout Button */}
-        <div className="mt-8">
+        <div onClick={() => logoutUser()} className="mt-8">
           <button className="w-full flex items-center justify-center gap-2 p-3 rounded-lg bg-error/10 text-error hover:bg-error/20 transition-colors">
             <LogOut className="w-5 h-5" />
             <span>Log Out</span>

@@ -1,4 +1,5 @@
 import { Role } from "@prisma/client";
+import { Booking } from "./movie";
 
 
 export type UserType = {
@@ -11,4 +12,8 @@ export type UserType = {
     otpExpiresAt?: bigint | null;
     createdAt?: Date;
     updatedAt?: Date;
+}
+
+export interface userDetails extends UserType {
+    bookings: Booking[];
 }

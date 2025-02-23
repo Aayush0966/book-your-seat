@@ -5,7 +5,7 @@ import { ChangeEvent } from "react";
 export interface Movie {
     id? : number;
     title: string;
-    genres: string[];
+    genres: JsonValue;
     duration: number;
     description: string;
     director: string;
@@ -14,7 +14,7 @@ export interface Movie {
     releaseDate: number;
     language: string;
     ageRating: string,
-    casts: string[];
+    casts: JsonValue;
     status: Status;
     createdAt: Date;
     updatedAt: Date;
@@ -30,8 +30,9 @@ export interface Show {
   updatedAt: Date;
   createdAt: Date;
   bookings?: Booking[];
+  movie?: Movie;
   screen?: Screen;
-  pricing?: Price[];
+  pricing?: Price[] | JsonValue;
 }
 
 export interface MovieWithShows extends Movie {
@@ -43,7 +44,7 @@ export interface TicketDetails extends Ticket {
   date: number;
   time: number;
   hallNumber: number;
-  seats: SeatWithPrice[];
+  seats: SeatWithPrice[] | JsonValue;
 }
 
 export interface SeatWithPrice {
@@ -66,7 +67,7 @@ export interface Booking {
     showDate: number;
     seatsCount: number;
     show?: Show;
-    seatsBooked: SeatWithPrice[];
+    seatsBooked: SeatWithPrice[] | JsonValue; // Modified this line
     totalPrice: number;
     bookingDate: number;
     bookingStatus: BookingStatus;

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import {
   User,
   Mail,
@@ -13,8 +13,15 @@ import ProfileTab from './ProfileTab';
 import BookingsTab from './BookingsTab';
 import PreferencesTab from './PreferencesTab';
 import SettingsTab from './SettingsTab';
+import { userDetails } from '@/types/user';
 
-const ProfilePage = () => {
+
+
+interface ProfilePageProps {
+  userDetails: userDetails;
+}
+
+const ProfilePage: FC<ProfilePageProps> = ({ userDetails }) => {
   const [activeTab, setActiveTab] = useState('profile');
   
   // Mock user data
@@ -27,42 +34,35 @@ const ProfilePage = () => {
     points: 2500,
   };
 
+  const getTicketsCount = () => {
+    return userDetails.bookings.reduce((acc, curr) => acc + curr.seatsCount, 0)
+  }
+
   return (
     <div className="min-h-screen pt-24 bg-background dark:bg-dark-background p-6">
       <div className="max-w-7xl relative mx-auto">
         {/* Profile Header */}
         <div className="bg-white dark:bg-dark-background-secondary rounded-xl p-6 mb-6 animate-fade-in">
           <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="relative">
+            <div className="relative group">
               <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-32 h-32 rounded-full object-cover border-4 border-primary"
+              src={'https://img.icons8.com/officel/80/guest-male.png'}
+              alt={userDetails.fullName}
+              className="w-36 h-36 rounded-full object-cover border-4 border-primary"
               />
-              <button className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full">
-                <Edit className="w-4 h-4" />
-              </button>
             </div>
             <div className="flex-1 text-center md:text-left">
               <h1 className="text-3xl font-bold text-dark-text dark:text-text mb-2">
-                {user.name}
+                {userDetails.fullName}
               </h1>
               <div className="flex flex-col md:flex-row gap-4 text-text-secondary dark:text-dark-text-secondary">
                 <span className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  {user.email}
+                  {userDetails.email}
                 </span>
                 <span className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  {user.phone}
-                </span>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-4">
-                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                  {user.membershipTier} Member
-                </span>
-                <span className="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-sm">
-                  {user.points} Points
+                  {userDetails.contactNumber}
                 </span>
               </div>
             </div>
@@ -94,8 +94,8 @@ const ProfilePage = () => {
 
         {/* Main Content */}
         <div className="grid gap-6">
-          {activeTab === 'profile' && <ProfileTab />}
-          {activeTab === 'bookings' && <BookingsTab />}
+          {activeTab === 'profile' && <ProfileTab memberSince={userDetails.createdAt!} ticketsCount={() => getTicketsCount()} />}
+          {activeTab === 'bookings' && <BookingsTab bookings={userDetails.bookings} />}
           {activeTab === 'preferences' && <PreferencesTab />}
           {activeTab === 'settings' && <SettingsTab />}
         </div>

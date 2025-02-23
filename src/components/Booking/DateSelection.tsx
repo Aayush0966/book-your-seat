@@ -5,7 +5,7 @@ import { Monitor, Timer } from 'lucide-react';
 import DateTimeSelector from '../Show/DateTimeSelector';
 import ShowInfo from '../Show/showInfo';
 import React, { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn, SCREEN_TYPES } from '@/lib/utils';
 import { useBooking } from '@/context/bookingContext';
 import {  MovieWithShows, Show } from '@/types/movie';
 
@@ -15,16 +15,7 @@ interface DateRange {
   isToday: boolean;
 }
 
-interface ScreenType {
-  screenId: number;
-  type: string;
-}
 
-const SCREEN_TYPES: ScreenType[] = [
-  { screenId: 1, type: "Standard" },
-  { screenId: 2, type: "3D" },
-  { screenId: 3, type: "IMAX" }
-];
 
 const DateSelection = ({movie}: {movie: MovieWithShows}) => {
     const {step, setStep, setSelectedShow, selectedDate, setSelectedDate} = useBooking();
