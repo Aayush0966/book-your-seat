@@ -97,6 +97,15 @@ export const fetchMovies = async () => {
     return movies ? movies : null;
 }
 
+export const fetchBookings = async () => {
+    const bookings = await prisma.booking.findMany({
+        include: {
+            user: true
+        }
+    });
+    return bookings ?? null;
+}
+
 export const fetchMovieWithShowsById = async (movieId: number): Promise<MovieWithShows | null> => {
     const movie = await prisma.movie.findFirst({
         where: {
@@ -173,6 +182,19 @@ export const fetchTicketsByBookingId = async (bookingId: string) => {
         }
     });
     return tickets ?? null;
+}
+
+export const updateMovieStatus = async (status: Status, movieId: number) => {
+    const movie = await prisma.movie.update({
+        where: {
+            id: movieId
+        },
+        data: {
+            status: status
+        }
+    });
+
+    return movie ?? null;
 }
 
 export const fetchBookingWithShowById = async(bookingId: string) => {

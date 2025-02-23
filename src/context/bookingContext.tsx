@@ -1,5 +1,5 @@
 'use client'
-import { MovieWithShows, Show } from "@/types/movie";
+import { Show } from "@/types/movie";
 import { useContext, createContext, useState, useEffect } from "react";
 
 interface BookingContextType {

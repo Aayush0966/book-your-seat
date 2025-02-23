@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { JsonValue } from "@prisma/client/runtime/library";
 import { ChangeEvent } from "react";
+import { UserType } from "./user";
 
 export interface Movie {
     id? : number;
@@ -70,6 +71,7 @@ export interface Booking {
     seatsBooked: SeatWithPrice[] | JsonValue; // Modified this line
     totalPrice: number;
     bookingDate: number;
+    user?: UserType;
     bookingStatus: BookingStatus;
     tickets?: Ticket[];
 }

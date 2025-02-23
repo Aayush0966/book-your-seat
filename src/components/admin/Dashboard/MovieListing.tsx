@@ -4,7 +4,37 @@ import { fetchMovies } from "./action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Film } from "lucide-react";
+import { AlertCircle, Calendar, Clock, Film, MoreVertical } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
+
+const getStatusLabel = (status: Status) => {
+    switch (status) {
+        case "ACTIVE":
+            return "Now Showing";
+        case "COMPLETED":
+            return "Ended";
+        case "UPCOMING":
+            return "Coming Soon";
+    }
+};
+
+const getStatusVariant = (status: Status) => {
+    switch (status) {
+        case "ACTIVE":
+            return "default";
+        case "COMPLETED":
+            return "destructive";
+        case "UPCOMING":
+            return "secondary";
+    }
+};
 
 const MovieListing = () => {
     const [movieList, setMovieList] = React.useState<Movie[]>([]);
@@ -18,7 +48,33 @@ const MovieListing = () => {
         getAllMovies();
     }, [])
 
-    console.log(movieList)
+    const handleStatusChange = async (movieId: number, newStatus: Status) => {
+        try {
+            const response = await fetch(`/api/admin/movie/${movieId}/status`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+
+            if (response.ok) {
+                setMovieList(prevMovies =>
+                    prevMovies.map(movie =>
+                        movie.id === movieId ? { ...movie, status: newStatus } : movie
+                    )
+                );
+                toast.success(`Movie status changed to ${getStatusLabel(newStatus)}`);
+            }
+        } catch (error) {
+            console.error('Failed to update movie status:', error);
+            toast({
+                title: "Error",
+                description: "Failed to update movie status",
+                variant: "destructive",
+            });
+        }
+    };
 
     return (
         <Card className="mt-6">
@@ -54,14 +110,39 @@ const MovieListing = () => {
                                     </div>
                                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                         <Film className="w-4 h-4" />
-                                        <span>{(movie.genres).join(', ')}</span>
+                                        <span>{Array.isArray(movie.genres) ? movie.genres.join(', ') : 'N/A'}</span>
                                     </div>
                                 </div>
 
-                                <div className="mt-3">
-                                    <Badge variant={movie.status == "ACTIVE" as Status ? 'default' : 'secondary'}>
-                                        {movie.status == "ACTIVE" as Status ? 'Now Showing' : 'Coming Soon'}
+                                <div className="mt-3 flex items-center justify-between">
+                                    <Badge variant={getStatusVariant(movie.status)}>
+                                        {getStatusLabel(movie.status)}
                                     </Badge>
+                                    
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                                <MoreVertical className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            {movie.status !== "ACTIVE" && (
+                                                <DropdownMenuItem onClick={() => handleStatusChange(movie.id!, "ACTIVE")}>
+                                                    Set as Now Showing
+                                                </DropdownMenuItem>
+                                            )}
+                                            {movie.status !== "UPCOMING" && (
+                                                <DropdownMenuItem onClick={() => handleStatusChange(movie.id!, "UPCOMING")}>
+                                                    Set as Coming Soon
+                                                </DropdownMenuItem>
+                                            )}
+                                            {movie.status !== "COMPLETED" && (
+                                                <DropdownMenuItem onClick={() => handleStatusChange(movie.id!, "COMPLETED")}>
+                                                    Set as Ended
+                                                </DropdownMenuItem>
+                                            )}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </div>
                             </div>
                         </div>
