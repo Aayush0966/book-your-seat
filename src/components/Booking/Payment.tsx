@@ -16,7 +16,6 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
   
   const seatPrices = selectedShow?.pricing?.find((price) => price.screenId === 1)?.prices  ;
   const totalAmount = seatPrices ? getTotalPrice(selectedSeats, seatPrices) : 0;
-  const convenience = totalAmount * 0.02;
   const router = useRouter()
 
   const handleBooking = async () => {
@@ -100,16 +99,12 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
             );
           })}
           
-          {/* Convenience Fee */}
-          <div className="flex justify-between items-center border-t border-dark-background-secondary pt-3">
-            <p className="text-sm text-text-secondary">Convenience Fee</p>
-            <p className="font-medium">{formatCurrency(convenience)}</p>
-          </div>
+        
 
           {/* Total Amount */}
           <div className="flex justify-between items-center border-t border-dark-background-secondary pt-4">
             <p className="text-lg font-semibold">Total Amount</p>
-            <p className="text-2xl font-bold text-primary">{formatCurrency(totalAmount + convenience)}</p>
+            <p className="text-2xl font-bold text-primary">{formatCurrency(totalAmount)}</p>
           </div>
         </CardContent>
       </Card>
@@ -169,7 +164,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
           disabled={!selectedMethod}
         >
           <Lock className="h-4 w-4" />
-          Pay {formatCurrency(totalAmount + convenience)}
+          Pay {formatCurrency(totalAmount)}
         </Button>
       </div>
     </div>

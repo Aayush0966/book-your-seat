@@ -33,8 +33,7 @@ const navigate = useRouter();
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <User />
-            <Link href='/profile'>Profile</Link>
+            <Link className='flex gap-2 cursor-pointer' href='/profile'> <User className="h-6 w-6" /> Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleLogout(navigate)}>
             <LogOut />

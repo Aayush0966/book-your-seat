@@ -32,9 +32,6 @@ const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
 
   const calculateAvailableSeats = (show: Show): number => {
     if (!selectedDate) return show.screen?.totalSeats || 0;
-    console.log(selectedDate)
-    console.log(selectedDate.getTime() / 1000)
-    console.log(show.bookings)
     
     const totalSeats = show.screen?.totalSeats || 0;
     const selectedDateTimestamp = Math.floor(selectedDate.getTime() / 1000);
