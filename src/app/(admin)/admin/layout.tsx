@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import '@/app/styles/globals.css';
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
+import { ShowProvider } from '@/context/showContext';
 
 
 // const roboto = Roboto({
@@ -22,7 +23,9 @@ export default function RootLayout({
 }>) {
   return (
         <SessionProvider>
+        <ShowProvider>
         {children}
+        </ShowProvider>
         </SessionProvider>
 
   );

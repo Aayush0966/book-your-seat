@@ -63,13 +63,18 @@ export const createShow = async (movieId: number, prices: Price[], showtime: Sho
     }
 };
 
-export const fetchShows = async (movieId: number) => {
+export const fetchShowsByMovieId = async (movieId: number) => {
     const shows = await prisma.show.findMany({
         where: {
             movieId
         }
     });
     return shows ? shows : null;
+}
+
+export const getAllShows = async () => {
+    const shows = await prisma.show.findMany();
+    return shows ?? null;
 }
 
 export const fetchScreenById = (screenId: number) => {
@@ -100,7 +105,12 @@ export const fetchMovies = async () => {
 export const fetchBookings = async () => {
     const bookings = await prisma.booking.findMany({
         include: {
-            user: true
+            user: true,
+            show: {
+                include: {
+                    movie: true
+                }
+            }
         }
     });
     return bookings ?? null;

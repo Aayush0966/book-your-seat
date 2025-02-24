@@ -65,3 +65,12 @@ export const getUserByIdWithBookings = async (userId: number) => {
     })
     return user ?? null;
 }
+
+export const fetchAllUsers = async () => {
+    const users = await prisma.user.findMany({
+        where: {
+            role: 'USER'
+        }
+    })
+    return users ?? null;
+}
