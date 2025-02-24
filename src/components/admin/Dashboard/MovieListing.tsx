@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { useShow } from "@/context/showContext";
 
 const getStatusLabel = (status: Status) => {
     switch (status) {
@@ -37,16 +38,8 @@ const getStatusVariant = (status: Status) => {
 };
 
 const MovieListing = () => {
-    const [movieList, setMovieList] = React.useState<Movie[]>([]);
+    const {movies} = useShow()
 
-    React.useEffect(() => {
-        const getAllMovies = async () => {
-            const movies = await fetchMovies()
-            if (!movies) return;
-            setMovieList(movies as Movie[]);
-        }
-        getAllMovies();
-    }, [])
 
     const handleStatusChange = async (movieId: number, newStatus: Status) => {
         try {
@@ -59,11 +52,6 @@ const MovieListing = () => {
             });
 
             if (response.ok) {
-                setMovieList(prevMovies =>
-                    prevMovies.map(movie =>
-                        movie.id === movieId ? { ...movie, status: newStatus } : movie
-                    )
-                );
                 toast.success(`Movie status changed to ${getStatusLabel(newStatus)}`);
             }
         } catch (error) {
@@ -83,7 +71,7 @@ const MovieListing = () => {
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {movieList ? movieList.map((movie) => (
+                    {movies ? movies.map((movie) => (
                         <div key={movie.id} className="group relative bg-card rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                             <div className="relative h-[400px] w-full">
                                 <Image 

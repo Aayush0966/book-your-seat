@@ -5,6 +5,7 @@ import DashboardContent from './Dashboard/DashboardContent'; // Assuming you hav
 import Sidebar from './Sidebar';
 import Bookings from './Dashboard/Bookings';
 import Settings from './Dashboard/Settings';
+import Users from './Dashboard/Users';
 
 const Dashboard = () => {
   const [activeItem, setActiveItem] = React.useState<string>('dashboard');
@@ -19,6 +20,8 @@ const Dashboard = () => {
         return <Bookings />
       case 'settings':
         return <Settings />
+      case 'users':
+        return <Users />
       default:
         return <DashboardContent />; // Default case in case no valid activeItem is selected
     }

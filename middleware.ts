@@ -8,6 +8,9 @@ export async function middleware(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname.startsWith('/api')) {
+    if (request.nextUrl.pathname.startsWith('/api/admin')) {
+      return NextResponse.next()
+    }
     if (!token) {
       return new NextResponse(
         JSON.stringify({ error: 'Authentication required' }),

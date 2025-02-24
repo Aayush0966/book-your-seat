@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import StatsCards from "./StatsCards";
 
 const MovieManagement = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,36 +39,6 @@ const MovieManagement = () => {
     setIsOpen(false);
   };
 
-  const stats = [
-    {
-      title: "Total Movies",
-      value: "156",
-      trend: "+12% from last month",
-      icon: Film,
-      color: "text-blue-600"
-    },
-    {
-      title: "Active Shows",
-      value: "48",
-      trend: "Active screenings",
-      icon: Calendar,
-      color: "text-green-600"
-    },
-    {
-      title: "Total Views",
-      value: "25.6K",
-      trend: "+18% from last month",
-      icon: Users,
-      color: "text-purple-600"
-    },
-    {
-      title: "Avg. Rating",
-      value: "4.8",
-      trend: "From 12.4K reviews",
-      icon: Star,
-      color: "text-yellow-600"
-    }
-  ];
 
   return (
     <div className="p-6 space-y-6">
@@ -96,22 +67,7 @@ const MovieManagement = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow duration-200">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-gray-500 mt-1">{stat.trend}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <StatsCards />
 
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4">

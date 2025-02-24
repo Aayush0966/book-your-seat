@@ -10,52 +10,20 @@ import {
   Download,
   Calendar
 } from 'lucide-react';
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Booking, Status } from '@/types/movie';
-import { fetchBookings } from './action';
 import { formatDate } from '@/lib/utils';
 import { BookingStatus } from '@prisma/client';
+import StatsCards from './StatsCards';
+import { useShow } from '@/context/showContext';
 
 const Bookings = () => {
   const [timeFilter, setTimeFilter] = useState('7days');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [bookings, setBookings] = useState<Booking[]>([]);
-
-  const stats = [
-    {
-      title: "Total Bookings",
-      value: "2,856",
-      trend: "+12% from last month",
-      icon: Ticket,
-      color: "text-blue-600"
-    },
-    {
-      title: "Revenue",
-      value: "NPR 286.5K",
-      trend: "+18% from last month",
-      icon: DollarSign,
-      color: "text-green-600"
-    },
-    {
-      title: "Active Users",
-      value: "1.2K",
-      trend: "Monthly active users",
-      icon: Users,
-      color: "text-purple-600"
-    },
-    {
-      title: "Avg. Response",
-      value: "2.4h",
-      trend: "Response time",
-      icon: Clock,
-      color: "text-orange-600"
-    }
-  ];
+  const {bookings} = useShow()
 
   const getStatusBadge = (status: BookingStatus) => {
     const styles = {
@@ -65,17 +33,6 @@ const Bookings = () => {
     };
     return <Badge className={styles[status as keyof typeof styles]}>{status}</Badge>;
   };
-
-  const getBookings = async () => {
-    const bookings = await fetchBookings();
-    if (bookings) {
-      setBookings(bookings);
-    }
-  };
-
-  useEffect(() => {
-    getBookings();
-  }, []);
 
   return (
     <div className="p-6 space-y-6">
@@ -99,22 +56,7 @@ const Bookings = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow duration-200">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-gray-500 mt-1">{stat.trend}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <StatsCards />
 
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
@@ -186,7 +128,7 @@ const Bookings = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {bookings.map((booking) => (
+              {bookings && bookings.map((booking) => (
                 <TableRow key={booking.id} className="hover:bg-muted/50">
                   <TableCell className="font-medium">{booking.id}</TableCell>
                   <TableCell>{booking.user?.fullName}</TableCell>
