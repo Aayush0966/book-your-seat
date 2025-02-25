@@ -1,28 +1,14 @@
-import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  DollarSign, 
-  Ticket, 
-  Clock, 
-  Users,
-  Search,
-  FilterX,
-  Download,
-  Calendar
-} from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from '@/lib/utils';
 import { BookingStatus } from '@prisma/client';
 import StatsCards from './StatsCards';
 import { useShow } from '@/context/showContext';
+import HeaderSection from './HeaderSection';
 
 const Bookings = () => {
-  const [timeFilter, setTimeFilter] = useState('7days');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
   const {bookings} = useShow()
 
   const getStatusBadge = (status: BookingStatus) => {
@@ -36,79 +22,13 @@ const Bookings = () => {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header Section */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent dark:from-gray-100 dark:to-gray-400">
-            Bookings Overview
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Monitor booking activities and analyze revenue metrics
-          </p>
-        </div>
-        <Button 
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-          onClick={() => {/* Handle export */}}
-        >
-          <Download className="h-4 w-4" />
-          Export Report
-        </Button>
-      </div>
+      <HeaderSection 
+        title="Bookings Overview"
+        subtitle="Monitor booking activities and analyze revenue metrics"
+      />
 
       {/* Stats Cards */}
       <StatsCards />
-
-      {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search bookings..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-          />
-        </div>
-        <div className="flex gap-2">
-          <Select value={timeFilter} onValueChange={setTimeFilter}>
-            <SelectTrigger className="w-[180px]">
-              <Calendar className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Select period" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7days">Last 7 days</SelectItem>
-              <SelectItem value="30days">Last 30 days</SelectItem>
-              <SelectItem value="3months">Last 3 months</SelectItem>
-              <SelectItem value="year">This year</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <FilterX className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="confirmed">Confirmed</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="cancelled">Cancelled</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button 
-            variant="outline" 
-            onClick={() => {
-              setSearchQuery('');
-              setStatusFilter('all');
-              setTimeFilter('7days');
-            }}
-            className="flex items-center gap-2"
-          >
-            <FilterX className="h-4 w-4" />
-            Clear
-          </Button>
-        </div>
-      </div>
 
       {/* Bookings Table */}
       <Card className="shadow-lg">

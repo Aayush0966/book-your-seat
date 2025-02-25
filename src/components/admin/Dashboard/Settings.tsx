@@ -42,21 +42,6 @@ const Settings = () => {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              <CardTitle>Security</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button variant="outline" className="w-full md:w-auto">
-              <Key className="mr-2 h-4 w-4" />
-              Change Password
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
               <Bell className="h-5 w-5" />
               <CardTitle>Notifications</CardTitle>
             </div>

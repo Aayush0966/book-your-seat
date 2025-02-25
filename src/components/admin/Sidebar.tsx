@@ -1,7 +1,6 @@
 'use client'
 import { logOutAdmin } from '@/app/(admin)/admin/actions';
 import { 
-  Clock, 
   Film, 
   LayoutDashboard, 
   Settings, 
@@ -10,13 +9,10 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Activity,
-  Calendar,
   HelpCircle
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import LogoutModal from './LogoutModal';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -58,7 +54,6 @@ const Sidebar = ({ activeItem, setActiveItem }: SidebarProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Collapse Toggle Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
         className="absolute -right-3 top-8 bg-white dark:bg-gray-800 rounded-full p-1.5 shadow-md 
@@ -126,21 +121,19 @@ const Sidebar = ({ activeItem, setActiveItem }: SidebarProps) => {
 
         {/* Logout Button */}
         <div className="absolute bottom-8 left-0 right-0 px-3">
-          <div className={`flex items-center px-3 py-3 transition-all duration-200
-            text-gray-600 dark:text-gray-400`}>
-            {isCollapsed ? (
-              <LogoutModal onLogout={handleLogout} />
-            ) : (
-              <button
-                onClick={handleLogout}
-                className="flex items-center w-full text-left hover:text-red-600 dark:hover:text-red-400
-                  transition-colors duration-200"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="ml-3">Logout</span>
-              </button>
-            )}
-          </div>
+          <button
+            onClick={handleLogout}
+            className={`flex items-center w-full px-3 py-3 rounded-lg transition-all duration-200
+              text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 
+              hover:text-red-600 dark:hover:text-red-400 group`}
+          >
+            <LogOut className={`${isCollapsed ? 'w-6 h-6' : 'w-5 h-5'} 
+              transition-all duration-200 group-hover:rotate-12`} />
+            <span className={`ml-3 font-medium transition-opacity duration-200
+              ${isCollapsed ? 'opacity-0 hidden' : 'opacity-100'}`}>
+              Sign Out
+            </span>
+          </button>
         </div>
       </nav>
     </div>

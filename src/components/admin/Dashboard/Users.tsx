@@ -33,10 +33,7 @@ import { Role } from '@prisma/client';
 import { useShow } from '@/context/showContext';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import StatsCards from './StatsCards';
-
-
-
-
+import HeaderSection from './HeaderSection';
 
 const Users = () => {
   const {users, bookings} = useShow();
@@ -52,17 +49,10 @@ const Users = () => {
 
   return (
     <div className="p-4 space-y-6">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Users Dashboard</h1>
-          <p className="text-gray-500">Manage and view all user accounts</p>
-        </div>
-        <Button className="inline-flex items-center gap-2">
-          <PlusCircle size={16} />
-          Add New User
-        </Button>
-      </div>
+      <HeaderSection 
+        title="Users Dashboard"
+        subtitle="Manage and view all user accounts"
+      />
 
       <StatsCards />
 
