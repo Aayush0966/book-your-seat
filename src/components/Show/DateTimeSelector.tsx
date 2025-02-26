@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Clock } from 'lucide-react';
 import { cn, formatTime } from '@/lib/utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Show } from '@/types/movie';
+import { SeatWithPrice, Show } from '@/types/movie';
 
 interface DateRange {
   date: Date;
@@ -37,7 +37,7 @@ const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
     const selectedDateTimestamp = Math.floor(selectedDate.getTime() / 1000);
     const bookedSeats = show.bookings?.reduce((acc, booking) => {
       return booking.showDate === selectedDateTimestamp 
-        ? acc + booking.seatsBooked.length 
+        ? acc + (booking.seatsBooked  ? (booking.seatsBooked as SeatWithPrice[]).length : 0)
         : acc;
     }, 0) || 0;
     return totalSeats - bookedSeats;

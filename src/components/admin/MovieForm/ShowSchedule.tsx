@@ -65,7 +65,6 @@ export const ShowScheduleStep = ({ movieDetails, handleChange, handleShowtimeCha
           </div>
         </div>
 
-        {/* Screen Selection Dropdown */}
         <div>
           <label className="block text-sm font-medium mb-2">Select Screen</label>
           <select

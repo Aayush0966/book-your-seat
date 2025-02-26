@@ -7,9 +7,23 @@ import { BookingStatus } from '@prisma/client';
 import StatsCards from './StatsCards';
 import { useShow } from '@/context/showContext';
 import HeaderSection from './HeaderSection';
+import { useState } from 'react';
+import Pagination from '@/components/ui/Pagination';
 
 const Bookings = () => {
-  const {bookings} = useShow()
+  const {bookings} = useShow();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Number of bookings per page
+
+  // Calculate pagination
+  const totalPages = Math.ceil((bookings?.length || 0) / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentBookings = bookings?.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const getStatusBadge = (status: BookingStatus) => {
     const styles = {
@@ -48,7 +62,7 @@ const Bookings = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {bookings && bookings.map((booking) => (
+              {currentBookings && currentBookings.map((booking) => (
                 <TableRow key={booking.id} className="hover:bg-muted/50">
                   <TableCell className="font-medium">{booking.id}</TableCell>
                   <TableCell>{booking.user?.fullName}</TableCell>
@@ -62,6 +76,15 @@ const Bookings = () => {
               ))}
             </TableBody>
           </Table>
+          
+          {/* Add Pagination */}
+          {bookings && bookings.length > 0 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
         </CardContent>
       </Card>
 

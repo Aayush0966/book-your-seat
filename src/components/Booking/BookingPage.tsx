@@ -93,8 +93,8 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
             <div className="text-center">
               <div className="flex flex-col items-center text-gray-600 dark:text-gray-300">
                 <MapPin className="w-5 h-5 mb-1" />
-                <span className="font-medium">Theater</span>
-                <p className="mt-0.5">Auditorium {bookingDetails.hallNumber}</p>
+                <span className="font-medium">Venue</span>
+                <p className="mt-0.5">Hall {bookingDetails.hallNumber}</p>
               </div>
             </div>
           </div>

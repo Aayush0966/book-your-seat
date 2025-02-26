@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar, Clock, Film } from 'lucide-react';
 import { Booking } from '@/types/movie';
 import { formatDate, formatTime, SCREEN_TYPES } from '@/lib/utils';
 import Link from 'next/link';
+import Pagination from '@/components/ui/Pagination';
+
+const ITEMS_PER_PAGE = 5;
 
 const BookingsTab = ({bookings}: {bookings: Booking[]}) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
+
+  const paginatedBookings = bookings.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   return (
     <div className="bg-white dark:bg-dark-background-secondary rounded-xl p-6 animate-fade-in">
       <h2 className="text-xl font-bold text-dark-text dark:text-text mb-4">
         Booking History
       </h2>
       <div className="space-y-4">
-        {bookings.map(booking => (
+        {paginatedBookings.map(booking => (
           <Link
             href={`/booking/${booking.id}`}
             key={booking.id}
@@ -51,6 +62,14 @@ const BookingsTab = ({bookings}: {bookings: Booking[]}) => {
           </Link>
         ))}
       </div>
+      
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 };

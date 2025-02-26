@@ -98,7 +98,13 @@ export const fetchMoviesByStatus = async (status: Status) => {
 }
 
 export const fetchMovies = async () => {
-    const movies = await prisma.movie.findMany();
+    const movies = await prisma.movie.findMany({
+        where: {
+            status: {
+                in: ['ACTIVE', 'UPCOMING']
+            }
+        }
+    });
     return movies ? movies : null;
 }
 
@@ -230,4 +236,14 @@ export const fetchBookingWithShowById = async(bookingId: string) => {
         date: booking.show.startDate
     };
     return bookingDetails;
+}
+
+export const fetchBookingBySeat = async (seatNumber: string) => {
+    const bookings = await fetchBookings();
+    const booking = bookings.find((booking) => {
+        const seatsBooked: SeatWithPrice[] = booking?.seatsBooked as unknown as SeatWithPrice[];
+        return seatsBooked.find((seat) => seat.seat == seatNumber);
+    });
+    console.debug("Booking found:", booking);
+    return booking ?? null;
 }

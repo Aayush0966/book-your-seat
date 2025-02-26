@@ -8,10 +8,9 @@ export async function POST (request: Request)  {
     if (!bookingDetails) {
         return NextResponse.json({error: "Booking details is required"}, {status: 400})
     }
-    console.log(bookingDetails)
     const booking = await bookShow(bookingDetails);
-    if (!booking) {
-        return NextResponse.json({error: "Something went wrong"}, {status: 500})
+    if (!booking.success) {
+        return NextResponse.json({error: booking.error}, {status: 400})
     }
-    return NextResponse.json({bookingId: booking.booking.id}, {status: 201})
+    return NextResponse.json({message: booking.message, bookingId: booking.booked?.id}, {status: 201})
 }

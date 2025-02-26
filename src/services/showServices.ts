@@ -92,7 +92,24 @@ export const fetchMovies = async (status: Status) => {
 export const bookShow = async (bookingDetails: BookingRequest) => {
     const session = await auth();
     const seatsCount = bookingDetails.seatsBooked.length;
-    
+    console.log('Checking if seats are already booked...');
+    const booked = await Promise.all(
+        bookingDetails.seatsBooked.map(async (seat) => {
+            const booking = await showQueries.fetchBookingBySeat(seat.seat);
+            console.log(`Seat ${seat.seat} booked status: ${!!booking}`);
+            if (booking) return true;
+            return false;
+        })
+    );
+    console.log('Booked seats status:', booked);
+
+    if (booked.includes(true)) {
+        return {
+            success: false,
+            error: 'The seat has been booked already'
+        };
+    }
+
     const bookingDetail: Booking = {
         id: generateBookingId(),
         userId: session?.user?.id ? parseInt(session.user.id) : 0,
@@ -103,12 +120,12 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
         totalPrice: bookingDetails.totalPrice,
         bookingDate: bookingDetails.bookingDate,
         bookingStatus: "CONFIRMED"
-    }
+    };
 
     const newBooking = await showQueries.createBooking(bookingDetail);
 
     if (newBooking) {
-        const tickets = await Promise.all(
+        await Promise.all(
             bookingDetails.seatsBooked.map(async (seatInfo) => {
                 const [category, number] = seatInfo.seat.split('/');
                 const ticketDetails: Ticket = {
@@ -122,11 +139,14 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
                 return await showQueries.createTicket(ticketDetails);
             })
         );
-        
-        return { booking: newBooking, tickets };
+
+        return { success: true, message: "Booked successfully", booked: newBooking };
     }
-    
-    return null;
+
+    return {
+        success: false,
+        error: 'Something went wrong. Please try again later.'
+    };
 }
 
 export const fetchBookingDetails = async (bookingId: string): Promise<BookingDetails | null> => {

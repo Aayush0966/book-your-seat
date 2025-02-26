@@ -15,14 +15,14 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
     title: '',
     description: '',
     genres: [],
-    releaseDate: (Math.floor(new Date().getTime() / 1000)),
-    language: '',
+    releaseDate: Math.floor(new Date().getTime() / 1000),
+    language: 'English',
     duration: 120,
     ageRating: '',
     posterUrl: '',
     backdropUrl: '',
-    showStartDate: (Math.floor(new Date().getTime() / 1000)),
-    showEndDate: (Math.floor(new Date().getTime() / 1000)) + 7 * 24 * 60 * 60,
+    showStartDate: Math.floor(new Date().getTime() / 1000),
+    showEndDate: Math.floor(new Date().getTime() / 1000) + 7 * 24 * 60 * 60,
     showtimes: [],
     pricing: [
       {

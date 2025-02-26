@@ -4,17 +4,15 @@ import { Button } from "@/components/ui/button";
 import { useBooking } from "@/context/bookingContext";
 import { CreditCard, Wallet, Clock, CalendarDays, ChevronLeft, Lock } from "lucide-react";
 import { formatCurrency, formatTime, getTotalPrice } from "@/lib/utils";
-import { Booking, BookingRequest, MovieWithShows } from "@/types/movie";
-import axios from 'axios';
-import { getSession } from 'next-auth/react';
+import { BookingRequest, MovieWithShows, Price } from "@/types/movie";
+import axios, { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 const Payment = ({ movie }: { movie: MovieWithShows }) => {
   const { selectedShow, selectedSeats, setStep, selectedDate } = useBooking();
   const [selectedMethod, setSelectedMethod] = useState<'esewa' | 'khalti' | null>(null);
-  
-  const seatPrices = selectedShow?.pricing?.find((price) => price.screenId === 1)?.prices  ;
+  const seatPrices = Array.isArray(selectedShow?.pricing) ? (selectedShow.pricing as Price[]).find((price: Price) => price.screenId === 1)?.prices : null;
   const totalAmount = seatPrices ? getTotalPrice(selectedSeats, seatPrices) : 0;
   const router = useRouter()
 
@@ -38,20 +36,27 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
       const response = await axios.post('/api/booking', bookingDetails);
       if (response.statusText == 'Created') {
         toast.success("Show booked successfully");
-        console.log(response.data)
         setTimeout(() => {
           router.push(`/booking/${response.data.bookingId}`);
         }, 2000);
       } else {
+        console.log(response)
         toast.error(`Something went wrong: ${response.data.error}`);
         setTimeout(() => {
           router.push("/home");
         }, 2000);
       }
     } catch (error) {
-      console.log("Error: ", error);
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.error);
+      } else {
+        toast.error("Internal Server Error. Please try again later.");
+      }
+      setTimeout(() => {
+      router.push("/home");
+      }, 2000);
     }
-  }
+    }
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-fade-in">

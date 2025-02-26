@@ -1,5 +1,5 @@
 import { Movie, Status } from "@/types/movie";
-import React from "react";
+import React, { useState } from "react";
 import { fetchMovies } from "./action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useShow } from "@/context/showContext";
+import Pagination from "@/components/ui/Pagination";
 
 const getStatusLabel = (status: Status) => {
     switch (status) {
@@ -38,8 +39,19 @@ const getStatusVariant = (status: Status) => {
 };
 
 const MovieListing = () => {
-    const {movies} = useShow()
+    const { movies } = useShow();
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8; // Show 8 movies per page (2x4 grid)
 
+    // Calculate pagination
+    const totalPages = Math.ceil((movies?.length || 0) / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentMovies = movies?.slice(startIndex, endIndex);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
 
     const handleStatusChange = async (movieId: number, newStatus: Status) => {
         try {
@@ -71,7 +83,7 @@ const MovieListing = () => {
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {movies ? movies.map((movie) => (
+                    {currentMovies ? currentMovies.map((movie) => (
                         <div key={movie.id} className="group relative bg-card rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                             <div className="relative h-[400px] w-full">
                                 <Image 
@@ -90,7 +102,7 @@ const MovieListing = () => {
                                 <div className="mt-2 space-y-2">
                                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                         <Calendar className="w-4 h-4" />
-                                        <span>{new Date(movie.releaseDate).toLocaleDateString()}</span>
+                                        <span>{new Date(movie.releaseDate * 1000).toDateString()}</span>
                                     </div>
                                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                         <Clock className="w-4 h-4" />
@@ -138,6 +150,15 @@ const MovieListing = () => {
                         <p className="col-span-full text-center text-muted-foreground">No movies found</p>
                     )}
                 </div>
+
+                {/* Add Pagination */}
+                {movies && movies.length > itemsPerPage && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                )}
             </CardContent>
         </Card>
     );

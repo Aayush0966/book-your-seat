@@ -65,9 +65,8 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
         endOfDay.setHours(23, 59, 59, 999);
 
         let filteredShows = movie.shows.filter(show => {
-            const showDate = new Date(show.showTime * 1000);
-            console.log(showDate, new Date())
-            return show.screen?.type === screenType && showDate <= new Date();
+            const showDate = new Date(show.showTime * 1000).toTimeString();
+            return show.screen?.type === screenType && showDate >= new Date().toTimeString();
         });
 
         filteredShows.sort((a, b) => a.showTime - b.showTime);

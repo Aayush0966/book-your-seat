@@ -31,7 +31,7 @@ export const BasicInfoStep = ({ movieDetails, handleChange, handleGenreChange }:
       const response = await axios.get(
         `${searchMovieByTitleApiUrl}?query=${query}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`
       );
-      setSearchResult(response.data.results.slice(0, 3)); // Show top 3 results
+      setSearchResult(response.data.results.slice(0, 3)); 
       setShowDropdown(true);
     } catch (error) {
       console.error("Error fetching movies:", error);
@@ -40,11 +40,17 @@ export const BasicInfoStep = ({ movieDetails, handleChange, handleGenreChange }:
   };
 
  const handleSelectMovie = (selectedMovie:any) => {
+  const startDate = new Date(selectedMovie.release_date);
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 7);
+  const formattedEndDate = endDate.toISOString().split('T')[0];
+
   handleChange({ target: { name: "title", value: selectedMovie.title } } as any);
   handleChange({ target: { name: "description", value: selectedMovie.overview } } as any);
   handleChange({ target: { name: "releaseDate", value: selectedMovie.release_date } } as any);
   handleChange({ target: { name: "posterUrl", value: `${imageUrl}/${selectedMovie.poster_path}` } } as any);
   handleChange({ target: { name: "showStartDate", value: selectedMovie.release_date } } as any);
+  handleChange({ target: { name: "showEndDate", value: formattedEndDate } } as any);
   handleChange({ target: { name: "backdropUrl", value: `${imageUrl}/${selectedMovie.backdrop_path}` } } as any);
   setShowDropdown(false);
 };
