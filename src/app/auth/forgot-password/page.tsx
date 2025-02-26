@@ -1,12 +1,17 @@
-import ForgetPassword from "@/components/forget-password/ForgotPassword";
+import ForgotPassword from "@/components/forget-password/ForgotPassword";
+import React from "react";
 
-const ForgetPasswordPage: React.FC = () => {
+interface ResetPasswordPageProps {
+  searchParams: { code?: string; email?: string };
+}
 
-    return (
-        <div>
-                <ForgetPassword />
-        </div>
-    );
-};
-
-export default ForgetPasswordPage;
+export default async function ResetPasswordPage({ searchParams }: ResetPasswordPageProps) {
+  const code = (await searchParams).code || null;
+  const email = (await searchParams).email || null;
+ 
+  return (
+    <div>
+      <ForgotPassword data={{code, email }} />
+    </div>
+  );
+}

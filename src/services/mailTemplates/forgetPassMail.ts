@@ -12,9 +12,9 @@ export const sendCodeMailOptions = (email: string, name: string, resetCode: numb
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
     
     :root {
-    --primary: #3b82f6;
-    --primary-dark: #2563eb;
-    --secondary: #4f46e5;
+    --primary: #0f172a;
+    --primary-dark: #1e293b;
+    --secondary: #334155;
     --dark: #1e293b;
     --light: #f8fafc;
     --gray: #64748b;
@@ -69,7 +69,7 @@ export const sendCodeMailOptions = (email: string, name: string, resetCode: numb
     }
     
     .header p {
-    color: rgba(255, 255, 255, 0.9);
+    color: white;
     font-size: 14px;
     margin-top: 5px;
     }
@@ -94,13 +94,14 @@ export const sendCodeMailOptions = (email: string, name: string, resetCode: numb
     }
     
     .reset-code {
-    background: #f1f5f9;
+    background: #f8fafc;
     max-width: 300px;
     margin: 30px auto;
     padding: 20px;
     border-radius: 10px;
-    border: 1px dashed rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(15, 23, 42, 0.1);
     position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
     
     .reset-code::before {
@@ -111,9 +112,9 @@ export const sendCodeMailOptions = (email: string, name: string, resetCode: numb
     transform: translateX(-50%);
     width: 20px;
     height: 20px;
-    background: #f1f5f9;
-    border-top: 1px dashed rgba(99, 102, 241, 0.3);
-    border-left: 1px dashed rgba(99, 102, 241, 0.3);
+    background: #f8fafc;
+    border-top: 1px solid rgba(15, 23, 42, 0.1);
+    border-left: 1px solid rgba(15, 23, 42, 0.1);
     transform: translateX(-50%) rotate(45deg);
     }
     
@@ -170,25 +171,25 @@ export const sendCodeMailOptions = (email: string, name: string, resetCode: numb
     letter-spacing: 0.5px;
     text-align: center;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 5px 15px rgba(15, 23, 42, 0.3);
     }
     
     .cta-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 7px 20px rgba(79, 70, 229, 0.4);
+    box-shadow: 0 7px 20px rgba(15, 23, 42, 0.4);
     }
     
     .security-note {
     margin-top: 30px;
     padding: 15px;
-    background: rgba(236, 253, 245, 0.6);
+    background: rgba(241, 245, 249, 0.6);
     border-radius: 8px;
-    border-left: 3px solid #10b981;
+    border-left: 3px solid #0f172a;
     }
     
     .security-note p {
     font-size: 13px;
-    color: #065f46;
+    color: #334155;
     margin: 0;
     }
     
@@ -206,7 +207,7 @@ export const sendCodeMailOptions = (email: string, name: string, resetCode: numb
     }
     
     .footer a {
-    color: var(--primary);
+    color: var(--dark);
     text-decoration: none;
     }
     
@@ -264,7 +265,7 @@ export const sendCodeMailOptions = (email: string, name: string, resetCode: numb
     
     <div class="alternative">
       <p>Or click the button below to reset your password directly:</p>
-      <a href="https://bookyourseat.vercel.app/reset-password?code=${resetCode}&email=${encodeURIComponent(email)}" class="cta-button">Reset Password</a>
+      <a href="${process.env.NEXTAUTH_URL}/auth/forgot-password?code=${resetCode}&email=${encodeURIComponent(email)}" class="cta-button">Reset Password</a>
     </div>
     
     <div class="security-note">
@@ -282,4 +283,4 @@ export const sendCodeMailOptions = (email: string, name: string, resetCode: numb
   </div>
   </body>
   </html>`
-  });
+});

@@ -18,7 +18,6 @@ async function handleCodeStep(data: any) {
 }
 
 async function handlePasswordStep(data: any) {
-    console.log(data)
     const res = await updateNewPassword(data.email, data.password, data.code);
     if (res.error) {
         return NextResponse.json({ error: res.error }, { status: 400 });
