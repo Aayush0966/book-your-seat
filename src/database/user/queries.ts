@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma"
+import { genOTP } from "@/lib/utils"
 import { SignupDetails } from "@/types/auth"
 
 export const getUserByEmail = async (email: string) => {
@@ -73,4 +74,29 @@ export const fetchAllUsers = async () => {
         }
     })
     return users ?? null;
+}
+
+export const updateOTP = async (email: string, otp: number, otpExpiresAt: number) => {
+    const user = await prisma.user.update({
+        where: {
+            email
+        },
+        data: {
+            otp: otp,
+            otpExpiresAt
+        }
+    })
+    return user;
+}
+
+export const updatePassword = async (email: string, password: string) => {
+    const user = await prisma.user.update({
+        where: {
+            email
+        },
+        data: {
+            password
+        }
+    })
+    return user ?? null;
 }

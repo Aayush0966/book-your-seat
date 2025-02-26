@@ -3,6 +3,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+interface MailOptions {
+    from : string,
+    to : string,
+    subject: string,
+    html: string,
+}
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -38,3 +45,25 @@ export const sendOTP = async (email: string, otp: number): Promise<void> => {
         throw error;
     }
 };
+
+export const sendWelcomeEmail = async (welcomeMailOptions: MailOptions) => {
+    try {
+        const info = await transporter.sendMail(welcomeMailOptions);
+        console.log('Email sent:', info.response);
+        return info;
+    } catch (error) {
+        console.error('Failed to send email:', error);
+        throw error;
+    }
+}
+
+export const sendForgetPasswordCode = async (codeMailOptions: MailOptions) => {
+    try {
+        const info = await transporter.sendMail(codeMailOptions);
+        console.log('Email sent:', info.response);
+        return info;
+    } catch (error) {
+        console.error('Failed to send email:', error);
+        throw error;
+    }
+}

@@ -8,7 +8,9 @@ export async function middleware(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname.startsWith('/api')) {
-    if (request.nextUrl.pathname.startsWith('/api/admin')) {
+    // Skip auth check for /api/admin and /api/auth routes
+    if (request.nextUrl.pathname.startsWith('/api/admin') || 
+        request.nextUrl.pathname.startsWith('/api/auth')) {
       return NextResponse.next()
     }
     if (!token) {

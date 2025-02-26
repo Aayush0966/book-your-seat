@@ -1,8 +1,7 @@
 'use client'
-
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import {  Play, ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
+import {  Play, ChevronLeft, ChevronRight, AlertCircle, Clock } from "lucide-react";
 import { Button } from "./ui/button";
 import {  nowPlayingApiUrl } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -10,6 +9,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import axios from "axios";
 import { Movie } from "@/types/movie";
+import { useShow } from "@/context/showContext";
+import Link from "next/link";
 
 const Hero = () => {
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
@@ -17,6 +18,7 @@ const Hero = () => {
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
   const [moviesData, setMoviesData] = useState<Movie[]>([]);
+  const {shows} = useShow();
 
   const changeSlide = useCallback((direction: 'next' | 'prev') => {
     if (moviesData.length <= 1) return;
@@ -93,7 +95,8 @@ const Hero = () => {
     const day = date.getUTCDate();
     return `${month} ${day}`;
   };
-  
+
+
 
   return (
     <div className="relative w-full h-[calc(100vh-4rem)] overflow-hidden bg-black mt-16">
@@ -150,23 +153,15 @@ const Hero = () => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 animate-slide-up animation-delay-300">
-                  <Button 
-                    size="lg"
-                    className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-8 rounded-full 
-                      group relative overflow-hidden transition-all duration-300 ease-in-out"
+                  <Link
+                    href={`/show/${currentMovie.id}`}
+                    className="w-full sm:w-auto px-8 py-3 bg-white text-primary hover:bg-white/90 rounded-full 
+                      transition-all duration-300 ease-in-out flex items-center justify-center gap-2 
+                      font-semibold shadow-lg hover:shadow-xl"
                   >
-                    <span className="absolute inset-0 bg-white/20 transform -translate-x-full 
-                      group-hover:translate-x-0 transition-transform duration-300" />
-                    <Play className="w-5 h-5 mr-2" fill="currentColor" /> Watch Trailer
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    size="lg"
-                    className="w-full sm:w-auto bg-white/10 text-white hover:bg-white/20 rounded-full 
-                      backdrop-blur-sm border-none transition-all duration-300 ease-in-out"
-                  >
-                    Book Tickets
-                  </Button>
+                    <span>Book Tickets</span>
+                    <ChevronRight className="w-4 h-4" strokeWidth={3} />
+                  </Link>
                 </div>
               </div>
             </div>

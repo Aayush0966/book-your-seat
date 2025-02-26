@@ -1,4 +1,3 @@
-import { updateOTP } from "@/database/admin/queries";
 import * as userQueries from "@/database/user/queries"
 import { sendOTP } from "@/lib/nodeMailer";
 import { genOTP } from "@/lib/utils";
@@ -10,7 +9,7 @@ export const verifyAdmin = async (email: string) => {
     const otpCreationTime = Date.now();
     const expiresAt =  10 * 60 * 1000
     const otpExpiresAt = otpCreationTime + expiresAt;
-    await updateOTP(email, otp, otpExpiresAt)
+    await userQueries.updateOTP(email, otp, otpExpiresAt)
     await sendOTP(email, otp);
     return admin;
 }

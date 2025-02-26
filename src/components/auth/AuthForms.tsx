@@ -6,6 +6,7 @@ import axios, { AxiosError } from 'axios';
 import { verifyUser } from '@/app/auth/actions';
 import { useRouter } from 'next/navigation';
 import { CredentialsType } from '@/types/auth';
+import Link from 'next/link';
 
 
 interface AuthProps {
@@ -92,12 +93,13 @@ const SignInForm = ({ showPassword, setShowPassword }: AuthProps) => {
             Remember me
           </span>
         </label>
-        <button
+        <Link
+        href='/auth/forgot-password'
           type="button"
           className="text-sm text-purple-400 hover:text-purple-300 focus:outline-none focus:text-purple-300 transition-all duration-200"
         >
           Forgot password?
-        </button>
+        </Link>
       </div>
 
       <button

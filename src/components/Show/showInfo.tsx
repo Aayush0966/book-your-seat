@@ -21,7 +21,7 @@ const ShowInfo = ({ movie }: { movie: MovieWithShows }) => {
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
               <h1 className="text-3xl font-bold mb-2">{movie.title}</h1>
               <div className="flex flex-wrap gap-2 mb-4">
-                {movie.genres?.map((genre: String, index: number) => (
+                {(movie.genres as string[])?.map((genre: String, index: number) => (
                   <Badge
                     key={index}
                     className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
@@ -79,7 +79,7 @@ const ShowInfo = ({ movie }: { movie: MovieWithShows }) => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">Cast</h3>
                 <div className="flex flex-wrap gap-2">
-                  {movie.casts.map((actor, index) => (
+                  {(movie.casts as string[]).map((actor, index) => (
                     <Badge
                       key={index}
                       variant="outline"
