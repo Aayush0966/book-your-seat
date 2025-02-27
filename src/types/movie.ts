@@ -56,6 +56,7 @@ export interface SeatWithPrice {
 export interface BookingRequest {
     showId: number;
     seatsBooked: SeatWithPrice[];
+    selectedTime: number
     showDate: number;
     bookingDate: number;
     totalPrice: number;

@@ -95,7 +95,7 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
     console.log('Checking if seats are already booked...');
     const booked = await Promise.all(
         bookingDetails.seatsBooked.map(async (seat) => {
-            const booking = await showQueries.fetchBookingBySeat(seat.seat);
+            const booking = await showQueries.fetchBookingBySeat(seat.seat, bookingDetails.selectedTime, bookingDetails.bookingDate);
             console.log(`Seat ${seat.seat} booked status: ${!!booking}`);
             if (booking) return true;
             return false;

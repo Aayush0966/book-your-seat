@@ -27,6 +27,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
       const bookingDetails: BookingRequest = {
         showId: selectedShow!.id,
+        selectedTime: selectedShow?.showTime!,
         seatsBooked: seatsWithPrices,
         showDate: Math.floor(selectedDate!.getTime() / 1000),
         bookingDate: Math.floor(Date.now() / 1000),

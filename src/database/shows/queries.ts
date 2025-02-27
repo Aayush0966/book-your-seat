@@ -238,9 +238,10 @@ export const fetchBookingWithShowById = async(bookingId: string) => {
     return bookingDetails;
 }
 
-export const fetchBookingBySeat = async (seatNumber: string) => {
+export const fetchBookingBySeat = async (seatNumber: string, showTime: number, bookingDate: number) => {
     const bookings = await fetchBookings();
-    const booking = bookings.find((booking) => {
+    const filteredBookings = bookings.filter((booking) => booking.show.showTime == showTime && booking.bookingDate == bookingDate);
+    const booking = filteredBookings.find((booking) => {
         const seatsBooked: SeatWithPrice[] = booking?.seatsBooked as unknown as SeatWithPrice[];
         return seatsBooked.find((seat) => seat.seat == seatNumber);
     });
