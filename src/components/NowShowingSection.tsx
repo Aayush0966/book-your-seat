@@ -1,74 +1,128 @@
-import { fetchMovies } from "@/services/showServices";
+'use client'
 import MovieCard from "./MovieCard";
-import { Film, ChevronRight } from "lucide-react";
+import { Film, ChevronRight, Popcorn, Clapperboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Movie } from "@/types/movie";
+import { motion } from "framer-motion";
 
-const NowShowingSection = async () => {
-  const shows = await fetchMovies('ACTIVE');
+interface NowShowingSectionProps {
+  shows: Movie[];
+}
+
+const NowShowingSection: React.FC<NowShowingSectionProps> = ({ shows }) => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
   
   return (
-    <section className="bg-gradient-to-b from-background to-background/80 dark:from-dark-background dark:to-dark-background/90 py-24 px-4 md:px-8">
+    <section className="py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-16">
-          <div className="flex items-center space-x-4 mb-8 sm:mb-0 animate-fadeIn">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12"
+        >
+          <div className="flex items-center space-x-4 mb-6 md:mb-0">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-primary to-primary/60 rounded-full blur-md group-hover:blur-lg transition-all duration-300 opacity-75" />
-              <div className="relative">
-                <Film className="w-10 h-10 text-white" />
+              <div className="relative p-2 bg-white rounded-full shadow-xl">
+                <Clapperboard className="w-8 h-8 text-primary" />
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping" />
               </div>
             </div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-dark-text to-primary dark:from-text dark:to-primary bg-clip-text text-transparent">
-              Now Showing
-            </h2>
+            <div>
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Now Showing
+              </h2>
+              <p className="text-gray-600 mt-1">Catch the latest blockbusters in theaters</p>
+            </div>
           </div>
-        </div>
+
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="outline"
+              className="group bg-white border-primary/20 hover:border-primary hover:bg-primary/5 transition-all duration-300"
+            >
+              <Popcorn className="w-4 h-4 mr-2 text-primary group-hover:animate-bounce" />
+              View All Movies
+            </Button>
+          </div>
+        </motion.div>
 
         {/* Shows Grid */}
         {shows && shows.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-            {shows.slice(0, 8).map((show, index) => (
-              <div
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
+          >
+            {shows.map((show, index) => (
+              <motion.div
                 key={show.id}
-                className="group relative transform hover:scale-105 transition-all duration-300 animate-fadeIn hover:z-10"
-                style={{
-                  animationDelay: `${index * 150}ms`,
-                  opacity: 0,
-                  animation: 'fadeIn 0.5s ease-out forwards'
-                }}
+                variants={itemVariants}
+                className="group relative transform hover:z-10"
               >
                 <div className="absolute -inset-2 bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
-                <div className="relative rounded-xl bg-background/50 dark:bg-dark-background/50 backdrop-blur-sm hover:shadow-primary/20 transition-all duration-300">
-                  <MovieCard movie={show as Movie} />
+                <div className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                  <MovieCard movie={show} />
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-96 bg-background/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-primary/10 shadow-xl">
-            <Film className="w-20 h-20 mb-6 text-primary/60 animate-bounce" />
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">No movies available</p>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center justify-center h-96 bg-white rounded-2xl border border-primary/10 shadow-xl"
+          >
+            <Film className="w-20 h-20 text-primary/60 animate-bounce" />
+            <h3 className="text-2xl font-bold text-gray-800 mt-6 mb-2">No Movies Available</h3>
+            <p className="text-gray-600 mb-8">Check back later for new releases</p>
             <Button 
               variant="outline"
-              className="bg-background/50 backdrop-blur-sm border-primary/20 hover:border-primary hover:bg-primary/90 hover:text-white transition-all duration-300 shadow-lg hover:shadow-primary/25"
+              className="bg-white border-primary/20 hover:border-primary hover:bg-primary/5 transition-all duration-300"
             >
-              Check back later
+              Explore Other Shows
             </Button>
-          </div>
+          </motion.div>
         )}
 
         {/* Mobile View All Button */}
-        <div className="mt-16 text-center sm:hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="mt-12 text-center md:hidden"
+        >
           <Button
             variant="outline"
-            className="w-full group bg-background/50 backdrop-blur-sm border-primary/20 hover:border-primary flex items-center justify-center space-x-3 hover:bg-primary/90 hover:text-white transition-all duration-300 shadow-lg hover:shadow-primary/25"
+            className="w-full group bg-white border-primary/20 hover:border-primary flex items-center justify-center space-x-3 hover:bg-primary/5 transition-all duration-300"
           >
             <span className="font-medium">View All Shows</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Button>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

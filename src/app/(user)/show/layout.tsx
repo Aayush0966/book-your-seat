@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import '@/app/styles/globals.css';
+import '@/app/globals.css';
 import { BookingProvider } from '@/context/bookingContext';
 
 

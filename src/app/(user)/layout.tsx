@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import '@/app/styles/globals.css';
+import '@/app/globals.css';
 import Navigation from '@/components/Navigation';
 import {SessionProvider } from 'next-auth/react';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
