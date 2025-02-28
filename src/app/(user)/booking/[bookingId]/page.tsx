@@ -3,7 +3,7 @@ import { fetchBookingDetails } from "@/services/showServices";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 
-const page = async ({ params }: { params: { bookingId: string } }) => {
+const page = async ({ params }: { params: Promise<{ bookingId: string }> }) => {
     const bookingId = (await params).bookingId
     const bookingDetails = await fetchBookingDetails(bookingId);
 

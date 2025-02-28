@@ -2,7 +2,7 @@ import ForgotPassword from "@/components/forget-password/ForgotPassword";
 import React from "react";
 
 interface ResetPasswordPageProps {
-  searchParams: { code?: string; email?: string };
+  searchParams: Promise<{ code?: string; email?: string }>;
 }
 
 export default async function ResetPasswordPage({ searchParams }: ResetPasswordPageProps) {

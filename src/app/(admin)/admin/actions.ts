@@ -14,7 +14,7 @@ export const authenticateOTP = async (email:string, OTP:number) => {
     const oneDay = 24 * 60 * 60 * 1000;
     cookieStore.set('loggedIn', 'true', { 
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
         sameSite: 'strict',
         expires: new Date(Date.now() + oneDay)
     });

@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 import Seat from "./Seat";
-import { Movie, Show } from "@/types/movie";
+import { Movie, Price, SeatWithPrice } from "@/types/movie";
 import { FC } from "react";
 import { formatTime, getTotalPrice } from "@/lib/utils";
 import { useBooking } from "@/context/bookingContext";
@@ -11,13 +11,13 @@ interface BookingHallProps {
 }
 
 const BookingHall: FC<BookingHallProps> = ({ movie }) => {
-  const { step, setStep, selectedShow, selectedSeats, setSelectedSeats, selectedDate } = useBooking();
+  const { setStep, selectedShow, selectedSeats, setSelectedSeats, selectedDate } = useBooking();
   const requiredRows = Math.ceil((selectedShow?.screen?.totalSeats ?? 0) / 10);
   const seats = Array.from({ length: requiredRows }, (_, i) => String.fromCharCode(65 + i));
   const totalRows = requiredRows;
   const middleStart = Math.floor(totalRows / 3);
   const middleEnd = Math.ceil((2 * totalRows) / 3);
-  const showPrices = selectedShow && selectedShow.pricing?.filter((price) => price.screenId === selectedShow.screenId)[0].prices;
+  const showPrices = selectedShow && (selectedShow.pricing as Price[])?.filter((price) => price.screenId === selectedShow.screenId)[0].prices;
 
   const getSeatCategory = (rowIndex: number) => {
     if (rowIndex < middleStart) return "gold";
@@ -38,7 +38,7 @@ const BookingHall: FC<BookingHallProps> = ({ movie }) => {
     const selectedDateTimestamp = Math.floor(new Date(selectedDate).getTime() / 1000);
     return selectedShow.bookings.some(booking => 
       booking.showDate === selectedDateTimestamp && 
-      booking.seatsBooked.some(seat => seat.seat === seatNumber)
+      (booking.seatsBooked as SeatWithPrice[]).some(seat => seat.seat === seatNumber)
     );
   };
 

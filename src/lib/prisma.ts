@@ -4,7 +4,7 @@ let db: PrismaClient | undefined;
 
 let prisma: PrismaClient;
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.APP_ENV === 'production') {
     prisma = new PrismaClient();
 } else {
     if (!db) {

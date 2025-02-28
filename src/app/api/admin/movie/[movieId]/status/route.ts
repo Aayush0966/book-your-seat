@@ -1,9 +1,10 @@
 import { updateMovieStatus } from '@/database/shows/queries';
 import { NextResponse } from 'next/server';
 
-export async function PATCH(req: Request, { params }: { params: { movieId: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ movieId: string }> }) {
     const movieId = (await params).movieId;
     const { status } = await req.json();
+
     console.log(movieId, status)
 
     if (!movieId) {
