@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { Star, Film, Clapperboard, Info } from 'lucide-react';
+import Footer from "@/components/Footer";
 
 const TicketPricingPage = () => {
   const pricing = [
@@ -78,13 +79,21 @@ const TicketPricingPage = () => {
   const [selectedScreen, setSelectedScreen] = useState(pricing[0]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-16 px-4 mt-16">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-100 to-gray-200 text-gray-800 py-16 px-4 mt-16 relative">
+      {/* Decorative elements with white gradients */}
+      <div className="absolute top-0 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-light text-gray-900 dark:text-gray-100 mb-4">
+          <div className="flex items-center gap-2 mb-2 justify-center">
+            <Star className="text-red-500 w-8 h-8" />
+            <h2 className="text-lg font-semibold uppercase tracking-wider text-red-500">Select Your Experience</h2>
+          </div>
+          <h1 className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#ff0000] to-primary">
             Cinema Experience
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg font-light">
+          <p className="text-gray-700 text-xl font-light">
             Select your preferred viewing experience
           </p>
         </div>
@@ -99,17 +108,17 @@ const TicketPricingPage = () => {
                 onClick={() => setSelectedScreen(screen)}
                 className={`p-8 rounded-lg transition-all duration-300 ${
                   selectedScreen.screenId === screen.screenId
-                    ? 'bg-gray-900 text-white shadow-xl'
-                    : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:shadow-lg'
+                    ? 'bg-gradient-to-br from-red-800 to-red-900 text-white shadow-xl'
+                    : 'bg-gray-200 backdrop-blur-sm text-gray-800 hover:shadow-lg hover:bg-gray-300'
                 }`}
               >
-                <Icon className="w-6 h-6 mb-4" />
+                <Icon className={`w-6 h-6 mb-4 ${selectedScreen.screenId === screen.screenId ? 'text-white' : 'text-red-500'}`} />
                 <h3 className="text-xl font-light mb-3">{screen.type}</h3>
                 <p className="text-sm opacity-80 mb-6">{screen.description}</p>
                 <ul className="space-y-3 text-sm">
                   {screen.features.map((feature, idx) => (
                     <li key={idx} className="flex items-center gap-3">
-                      <div className="w-1 h-1 rounded-full bg-current" />
+                      <div className="w-1 h-1 rounded-full bg-red-500" />
                       {feature}
                     </li>
                   ))}
@@ -124,43 +133,42 @@ const TicketPricingPage = () => {
           {Object.entries(seatTiers).map(([tier, details]) => (
             <div
               key={tier}
-              className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg"
+              className="bg-gray-200 backdrop-blur-sm rounded-lg overflow-hidden shadow-lg border border-gray-300"
             >
-              <div className="p-6 border-b border-gray-100 dark:border-gray-700">
-                <h3 className="text-xl font-light text-center text-gray-900 dark:text-gray-100">
+              <div className="p-6 border-b border-gray-300">
+                <h3 className="text-xl font-light text-center text-gray-800">
                   {details.title}
                 </h3>
                 <div className="text-center mt-4">
-                  <div className="text-3xl font-light text-gray-900 dark:text-gray-100">
+                  <div className="text-3xl font-light bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-red-700">
                     NPR {selectedScreen.prices[tier as keyof typeof selectedScreen.prices]}
                   </div>
                 </div>
               </div>
               <div className="p-6">
-                <ul className="space-y-3 text-gray-600 dark:text-gray-400">
+                <ul className="space-y-3 text-gray-700">
                   {details.features.map((feature, index) => (
                     <li key={index} className="flex items-center gap-3">
-                      <div className="w-1 h-1 rounded-full bg-gray-400" />
+                      <div className="w-1 h-1 rounded-full bg-red-500" />
                       {feature}
                     </li>
                   ))}
                 </ul>
-                <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 italic">
+                <p className="mt-4 text-sm text-gray-600 italic">
                   *Prices may vary based on show timing
                 </p>
-              
               </div>
             </div>
           ))}
         </div>
 
         {/* Additional Info */}
-        <div className="mt-16 bg-white dark:bg-gray-800 rounded-lg p-8">
+        <div className="mt-16 bg-gray-200 backdrop-blur-sm rounded-lg p-8 border border-gray-300">
           <div className="flex items-center gap-3 mb-6">
-            <Info className="w-5 h-5 text-gray-400" />
-            <h4 className="text-lg font-light text-gray-900 dark:text-gray-100">Additional Information</h4>
+            <Info className="w-5 h-5 text-red-500" />
+            <h4 className="text-lg font-light text-gray-800">Additional Information</h4>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-600 dark:text-gray-400">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
             <p>All prices include applicable taxes</p>
             <p>Morning shows: 20% discount</p>
             <p>Student discount: 15% with valid ID</p>

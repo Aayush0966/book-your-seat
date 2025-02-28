@@ -92,14 +92,6 @@ export default function Testimonials() {
                   
                   {/* Profile section with enhanced styling */}
                   <div className="flex flex-col items-center">
-                    <div className="relative w-20 h-20 rounded-full overflow-hidden mb-4 ring-4 ring-primary/10 shadow-lg">
-                      <Image
-                        src={testimonial.avatar}
-                        alt={testimonial.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
                     <div className="text-center">
                       <h4 className="font-bold text-lg text-primary">{testimonial.name}</h4>
                       <p className="text-sm text-muted-foreground">{testimonial.position}</p>
@@ -137,10 +129,10 @@ export default function Testimonials() {
             <button
               key={index}
               onClick={() => setActiveIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all transform duration-300 ${
+              className={`w-3 h-3 rounded-full  transition-all transform duration-300 ${
                 index === activeIndex
                   ? "bg-primary scale-125 w-8"
-                  : "bg-muted hover:bg-primary/50"
+                  : "bg-primary/20 hover:bg-primary/50"
               }`}
               aria-label={`View testimonial ${index + 1}`}
             />

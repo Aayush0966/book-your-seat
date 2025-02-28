@@ -5,7 +5,6 @@ import { fetchMovies } from "@/services/showServices";
 import FeaturedSpotlight from "@/components/FeaturedSpotlight";
 import Testimonials from "@/components/Testimonials";
 import { Star } from "lucide-react";
-import Footer from "@/components/Footer";
 
 export default async function Home() {
   const activeShows = await fetchMovies('ACTIVE') || [];
@@ -66,7 +65,6 @@ export default async function Home() {
             <Testimonials />
           </div>
         </section>
-        <Footer />
       </div>
     </ShowProvider>
   );

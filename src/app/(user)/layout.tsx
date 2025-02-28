@@ -4,6 +4,7 @@ import '@/app/globals.css';
 import Navigation from '@/components/Navigation';
 import {SessionProvider } from 'next-auth/react';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
+import Footer from '@/components/Footer';
 
 
 // const roboto = Roboto({
@@ -27,6 +28,7 @@ export default function RootLayout({
         <TooltipProvider>
         <Navigation />
         {children}
+        <Footer />
         </TooltipProvider>
         </SessionProvider>
   );
