@@ -1,22 +1,45 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useBooking } from "@/context/bookingContext";
-import { CreditCard, Wallet, Clock, CalendarDays, ChevronLeft, Lock } from "lucide-react";
+import { 
+  CreditCard, 
+  Wallet, 
+  Clock, 
+  CalendarDays, 
+  ChevronLeft, 
+  Lock, 
+  Shield, 
+  CheckCircle,
+  Tag,
+  RefreshCw
+} from "lucide-react";
 import { formatCurrency, formatTime, getTotalPrice } from "@/lib/utils";
 import { BookingRequest, MovieWithShows, Price } from "@/types/movie";
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 const Payment = ({ movie }: { movie: MovieWithShows }) => {
   const { selectedShow, selectedSeats, setStep, selectedDate } = useBooking();
   const [selectedMethod, setSelectedMethod] = useState<'esewa' | 'khalti' | null>(null);
-  const seatPrices = Array.isArray(selectedShow?.pricing) ? (selectedShow.pricing as Price[]).find((price: Price) => price.screenId === 1)?.prices : null;
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  
+  const seatPrices = Array.isArray(selectedShow?.pricing) 
+    ? (selectedShow.pricing as Price[]).find((price: Price) => price.screenId === 1)?.prices 
+    : null;
   const totalAmount = seatPrices ? getTotalPrice(selectedSeats, seatPrices) : 0;
-  const router = useRouter()
+  const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleBooking = async () => {
+    if (!selectedMethod) return;
+    
+    setIsProcessing(true);
     try {
       const seatsWithPrices = selectedSeats.map((seat) => {
         const [category, seatNumber] = seat.split('/');
@@ -24,7 +47,6 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
         return { seat, price: seatPrice };
       });
       
-
       const bookingDetails: BookingRequest = {
         showId: selectedShow!.id,
         selectedTime: selectedShow?.showTime!,
@@ -35,13 +57,12 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
       };
 
       const response = await axios.post('/api/booking', bookingDetails);
-      if (response.statusText == 'Created') {
+      if (response.statusText === 'Created') {
         toast.success("Show booked successfully");
         setTimeout(() => {
           router.push(`/booking/${response.data.bookingId}`);
         }, 2000);
       } else {
-        console.log(response)
         toast.error(`Something went wrong: ${response.data.error}`);
         setTimeout(() => {
           router.push("/home");
@@ -49,40 +70,58 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.error);
+        toast.error(error.response?.data.error || "Error processing payment");
       } else {
         toast.error("Internal Server Error. Please try again later.");
       }
       setTimeout(() => {
-      router.push("/home");
+        router.push("/home");
       }, 2000);
+    } finally {
+      setIsProcessing(false);
     }
-    }
+  };
+
+  if (!mounted) return null;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in">
-      {/* Movie Details */}
-      <Card className="bg-gradient-to-r from-dark-background to-dark-background-secondary text-text border border-dark-background-secondary">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold">{movie?.title}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex justify-between items-center">
-          <div className="flex items-center gap-3 text-sm text-text-secondary">
-            <Clock className="h-4 w-4" />
-            <span>{selectedShow && formatTime(selectedShow?.showTime)}</span>
+    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-16">
+      {/* Movie Details with Red Theme */}
+      <Card className="bg-white dark:bg-gray-800 border-0 shadow-lg overflow-hidden">
+        <div className="h-2 bg-gradient-to-r from-red-500 to-red-700"></div>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">{movie?.title}</CardTitle>
+          <div className="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
+            Booking in Progress
           </div>
-          <div className="flex items-center gap-3 text-sm text-text-secondary">
-            <CalendarDays className="h-4 w-4" />
-            <span>{selectedDate ? selectedDate.toDateString() : ''}</span>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4 pt-2">
+            <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-50 dark:bg-red-900/20">
+                <Clock className="h-4 w-4 text-red-600 dark:text-red-400" />
+              </div>
+              <span>{selectedShow && formatTime(selectedShow?.showTime)}</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-50 dark:bg-red-900/20">
+                <CalendarDays className="h-4 w-4 text-red-600 dark:text-red-400" />
+              </div>
+              <span>{selectedDate ? selectedDate.toDateString() : ''}</span>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Order Summary */}
-      <Card className="bg-dark-background text-text border border-dark-background-secondary">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold">Order Summary</CardTitle>
-          <p className="text-sm text-text-secondary">({selectedSeats.length} {selectedSeats.length === 1 ? 'ticket' : 'tickets'})</p>
+      {/* Order Summary with Red Theme */}
+      <Card className="bg-white dark:bg-gray-800 border-0 shadow-lg">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            Order Summary
+            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+              ({selectedSeats.length} {selectedSeats.length === 1 ? 'ticket' : 'tickets'})
+            </span>
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {selectedSeats.map((seat) => {
@@ -90,87 +129,136 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
             const seatPrice = seatPrices && seatPrices[category as keyof typeof seatPrices] || 0;
 
             return (
-              <div key={seat} className="flex justify-between items-center p-3 bg-dark-background-secondary rounded-lg">
-                <div className="flex gap-2">
+              <div key={seat} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <div className="flex gap-3 items-center">
                   <span className={`px-2 py-1 rounded-md text-xs font-semibold 
-                    ${category === 'silver' ? 'bg-gray-500 text-gray-100' : 
-                      category === 'gold' ? 'bg-yellow-500 text-yellow-900' : 
-                      'bg-blue-500 text-blue-900'}`}>
+                    ${category === 'silver' ? 'bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-200' : 
+                      category === 'gold' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 
+                      'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'}`}>
                     {category.toUpperCase()}
                   </span>
-                  <p className="text-sm text-text-secondary">{seatNumber}</p>
+                  <p className="font-medium">Seat {seatNumber}</p>
                 </div>
-                <p className="font-medium">{formatCurrency(seatPrice)}</p>
+                <p className="font-medium text-red-600 dark:text-red-400">{formatCurrency(seatPrice)}</p>
               </div>
             );
           })}
-          
-        
+      
 
           {/* Total Amount */}
-          <div className="flex justify-between items-center border-t border-dark-background-secondary pt-4">
-            <p className="text-lg font-semibold">Total Amount</p>
-            <p className="text-2xl font-bold text-primary">{formatCurrency(totalAmount)}</p>
+          <div className="flex justify-between items-center border-t border-gray-200 dark:border-gray-700 pt-4 mt-6">
+            <p className="text-lg font-semibold text-gray-900 dark:text-white">Total Amount</p>
+            <p className="text-2xl font-bold text-red-600 dark:text-red-400">{formatCurrency(totalAmount)}</p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Payment Methods */}
-      <Card className="bg-dark-background text-text border border-dark-background-secondary">
+      {/* Payment Methods with Red Theme */}
+      <Card className="bg-white dark:bg-gray-800 border-0 shadow-lg">
         <CardHeader>
-          <CardTitle className="text-xl font-bold">Choose Payment Method</CardTitle>
+          <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">Choose Payment Method</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
             <button
               className={`h-24 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-2 group
                 ${selectedMethod === 'esewa' 
-                  ? 'border-primary bg-dark-background-secondary' 
-                  : 'border-dark-background-secondary hover:border-primary/50'}`}
+                  ? 'border-red-600 bg-red-50 dark:bg-red-900/20 dark:border-red-500' 
+                  : 'border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700'}`}
               onClick={() => setSelectedMethod('esewa')}
             >
-              <CreditCard className={`h-6 w-6 transition-all ${
-                selectedMethod === 'esewa' ? 'text-primary' : 'text-text-secondary group-hover:text-primary/70'
-              }`} />
-              <p className="font-medium">Esewa</p>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                selectedMethod === 'esewa' 
+                  ? 'bg-red-100 dark:bg-red-900/30' 
+                  : 'bg-gray-100 dark:bg-gray-700 group-hover:bg-red-50 dark:group-hover:bg-red-900/10'
+              }`}>
+                <CreditCard className={`h-6 w-6 transition-all ${
+                  selectedMethod === 'esewa' 
+                    ? 'text-red-600 dark:text-red-400' 
+                    : 'text-gray-500 dark:text-gray-400 group-hover:text-red-500 dark:group-hover:text-red-400'
+                }`} />
+              </div>
+              <p className={`font-medium ${
+                selectedMethod === 'esewa' 
+                  ? 'text-red-600 dark:text-red-400' 
+                  : 'text-gray-700 dark:text-gray-300'
+              }`}>eSewa</p>
             </button>
 
             <button
               className={`h-24 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-2 group
                 ${selectedMethod === 'khalti' 
-                  ? 'border-primary bg-dark-background-secondary' 
-                  : 'border-dark-background-secondary hover:border-primary/50'}`}
+                  ? 'border-red-600 bg-red-50 dark:bg-red-900/20 dark:border-red-500' 
+                  : 'border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700'}`}
               onClick={() => setSelectedMethod('khalti')}
             >
-              <Wallet className={`h-6 w-6 transition-all ${
-                selectedMethod === 'khalti' ? 'text-primary' : 'text-text-secondary group-hover:text-primary/70'
-              }`} />
-              <p className="font-medium">Khalti</p>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                selectedMethod === 'khalti' 
+                  ? 'bg-red-100 dark:bg-red-900/30' 
+                  : 'bg-gray-100 dark:bg-gray-700 group-hover:bg-red-50 dark:group-hover:bg-red-900/10'
+              }`}>
+                <Wallet className={`h-6 w-6 transition-all ${
+                  selectedMethod === 'khalti' 
+                    ? 'text-red-600 dark:text-red-400' 
+                    : 'text-gray-500 dark:text-gray-400 group-hover:text-red-500 dark:group-hover:text-red-400'
+                }`} />
+              </div>
+              <p className={`font-medium ${
+                selectedMethod === 'khalti' 
+                  ? 'text-red-600 dark:text-red-400' 
+                  : 'text-gray-700 dark:text-gray-300'
+              }`}>Khalti</p>
             </button>
           </div>
         </CardContent>
+        <CardFooter className="flex flex-col space-y-4 pt-0">
+          <div className="w-full p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+            <Shield className="h-4 w-4 text-red-600 dark:text-red-400" />
+            <span>Your payment information is encrypted and secure</span>
+          </div>
+          
+          {selectedMethod && (
+            <div className="w-full p-3 bg-red-50 dark:bg-red-900/10 rounded-lg flex items-center gap-2 text-sm text-red-700 dark:text-red-400 border border-red-100 dark:border-red-900/30">
+              <CheckCircle className="h-4 w-4" />
+              <span>{selectedMethod === 'esewa' ? 'eSewa' : 'Khalti'} selected as your payment method</span>
+            </div>
+          )}
+        </CardFooter>
       </Card>
 
-      {/* Action Buttons */}
-      <div className="flex gap-4 pt-4">
+      {/* Action Buttons with Red Theme */}
+      <div className="flex gap-4 pt-6">
         <Button
           variant="outline"
-          className="w-1/3 h-12 flex items-center justify-center gap-2"
+          className="w-1/3 h-12 flex items-center justify-center gap-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
           onClick={() => setStep("SeatBook")}
+          disabled={isProcessing}
         >
           <ChevronLeft className="h-4 w-4" />
           Back
         </Button>
         <Button
-        onClick={() => handleBooking()}
+          onClick={() => handleBooking()}
           className={`w-2/3 h-12 flex items-center justify-center gap-2 transition-all
-            ${selectedMethod 
-              ? 'bg-gradient-to-r from-primary to-secondary hover:from-dark-primary hover:to-dark-secondary' 
-              : 'bg-text-secondary cursor-not-allowed'}`}
-          disabled={!selectedMethod}
+            ${!selectedMethod 
+              ? 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed text-gray-500 dark:text-gray-400' 
+              : isProcessing
+                ? 'bg-red-600 dark:bg-red-700 text-white'
+                : 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white'
+            }`}
+          disabled={!selectedMethod || isProcessing}
         >
-          <Lock className="h-4 w-4" />
-          Pay {formatCurrency(totalAmount)}
+          {isProcessing ? (
+            <>
+              <RefreshCw className="h-4 w-4 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <Lock className="h-4 w-4" />
+              Pay {formatCurrency(totalAmount)}
+            </>
+          )}
         </Button>
       </div>
     </div>

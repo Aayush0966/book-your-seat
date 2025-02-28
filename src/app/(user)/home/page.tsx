@@ -34,7 +34,7 @@ export default async function Home() {
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-[#ff0000]">Featured Spotlight</h2>
               </div>
               <h3 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#ff0000] to-[#8b0000]">
-                Don't Miss This Performance
+                Don't Miss This Cinema
               </h3>
             </div>
             <FeaturedSpotlight show={featuredShow} />

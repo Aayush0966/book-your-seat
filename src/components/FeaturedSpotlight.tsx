@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, Clock, Star } from "lucide-react";
 import { Movie } from "@/types/movie";
+import Link from "next/link";
 
 export default function FeaturedSpotlight({ show }: { show: Movie }) {
   return (
@@ -45,10 +46,12 @@ export default function FeaturedSpotlight({ show }: { show: Movie }) {
               {show.description}
             </p>
             <div className="flex flex-wrap gap-4">
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium">
-                Book Now
-              </Button>
-  
+              <Link href={`/show/${show.id}`}>
+                <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium px-8 py-6 text-lg shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 flex items-center gap-2">
+                  <span>Book Now</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1 transition-transform group-hover:translate-x-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                </Button>
+              </Link>
             </div>
           </div>
           <div className="relative aspect-[2/3] mx-auto max-w-xs md:max-w-none group">

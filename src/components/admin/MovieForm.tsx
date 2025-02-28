@@ -51,7 +51,11 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    const convertedValue = name === 'showStartDate' || name === 'showEndDate' || name === 'releaseDate' ? new Date(value).getTime() / 1000 : value;
+    const convertedValue = name === 'showStartDate' || name === 'showEndDate' || name === 'releaseDate'
+      ? new Date(value).getTime() / 1000
+      : name === 'duration'
+      ? Number(value)
+      : value;
     setMovieDetails((prevData) => ({
       ...prevData,
       [name]: convertedValue
