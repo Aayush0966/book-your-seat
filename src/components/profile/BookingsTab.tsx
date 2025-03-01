@@ -11,10 +11,13 @@ const BookingsTab = ({bookings}: {bookings: Booking[]}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
 
-  const paginatedBookings = bookings.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  const paginatedBookings = bookings
+    .slice()
+    .reverse()
+    .slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    );
 
   return (
     <div className="bg-white dark:bg-dark-background-secondary rounded-xl p-6 animate-fade-in">

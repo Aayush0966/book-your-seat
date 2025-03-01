@@ -1,20 +1,20 @@
 import axios from "axios";
 import { esewaMethod } from "@/lib/constants";
 
-export async function verifyEsewaPayment(orderId: string, amount: string, refId: string) {
+export async function verifyEsewaPayment(transaction_uuid: string, amount: string) {
     try {
-        const response = await axios.post(
+        const response = await axios.get(
             esewaMethod.verifyUrl,
-            new URLSearchParams({
-                amt: amount,
-                scd: esewaMethod.merchantId,
-                pid: orderId,
-                rid: refId
-            }).toString()
+            {
+                params: {
+                    transaction_uuid,
+                    total_amount: amount,
+                    product_code: esewaMethod.merchantId
+                }
+            }
         );
-        console.log(response)
 
-        return response.data.includes("<response_code>Success</response_code>");
+        return response.data;
     } catch (error) {
         console.error("Esewa verification failed:", error);
         return false;

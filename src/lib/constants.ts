@@ -9,7 +9,7 @@ export const esewaMethod = {
     merchantId: process.env.NEXT_PUBLIC_ESEWA_MERCHANT_ID,
     secretKey: process.env.ESEWA_SECRET_KEY,
     paymentUrl: process.env.NEXT_PUBLIC_ESEWA_PAYMENT_URL,
-    successUrl: `${process.env.NEXTAUTH_URL}/api/payment?p=success`,
-    failureUrl: `${process.env.NEXTAUTH_URL}/api/payment?p=failure`,
+    successUrl: `${process.env.NEXTAUTH_URL}/paymentSuccess`,
+    failureUrl: `${process.env.NEXTAUTH_URL}/payment`,
     verifyUrl: process.env.ESEWA_VERIFY_URL
 }

@@ -58,15 +58,8 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
       const response = await axios.post('/api/booking', bookingDetails);
       if (response.status === 200) {
-        toast.success("Show booked successfully");
-        setTimeout(() => {
-          router.push(`/booking/${response.data.bookingId}`);
-        }, 2000);
-      } else {
-        toast.error(`Something went wrong: ${response.data.error}`);
-        setTimeout(() => {
-          router.push("/home");
-        }, 2000);
+        console.log('redirecting....')
+        window.open(response.data.paymentUrl, '_blank')
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -74,9 +67,9 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
       } else {
         toast.error("Internal Server Error. Please try again later.");
       }
-      setTimeout(() => {
-        router.push("/home");
-      }, 2000);
+      // setTimeout(() => {
+      //   router.push("/home");
+      // }, 2000);
     } finally {
       setIsProcessing(false);
     }
