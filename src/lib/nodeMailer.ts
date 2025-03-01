@@ -53,7 +53,7 @@ export const sendWelcomeEmail = async (welcomeMailOptions: MailOptions) => {
         return info;
     } catch (error) {
         console.error('Failed to send email:', error);
-        throw error;
+        return false
     }
 }
 

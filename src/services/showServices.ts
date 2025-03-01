@@ -116,10 +116,11 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
         showId: bookingDetails.showId,
         showDate: bookingDetails.showDate,
         seatsCount,
+        orderId: (Date.now() / 1000).toLocaleString(),
         seatsBooked: bookingDetails.seatsBooked,
         totalPrice: bookingDetails.totalPrice,
         bookingDate: bookingDetails.bookingDate,
-        bookingStatus: "CONFIRMED"
+        bookingStatus: "PENDING"
     };
 
     const newBooking = await showQueries.createBooking(bookingDetail);
@@ -134,7 +135,7 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
                     seatNumber: number,
                     seatCategory: category,
                     price: seatInfo.price,
-                    status: "VALID"
+                    status: "PENDING"
                 };
                 return await showQueries.createTicket(ticketDetails);
             })

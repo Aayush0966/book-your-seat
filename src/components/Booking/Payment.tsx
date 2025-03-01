@@ -57,7 +57,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
       };
 
       const response = await axios.post('/api/booking', bookingDetails);
-      if (response.statusText === 'Created') {
+      if (response.status === 200) {
         toast.success("Show booked successfully");
         setTimeout(() => {
           router.push(`/booking/${response.data.bookingId}`);

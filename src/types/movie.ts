@@ -67,6 +67,8 @@ export interface Booking {
     userId: number;
     showId: number;
     showDate: number;
+    orderId: string;
+    paymentRef?: string;
     seatsCount: number;
     show?: Show;
     seatsBooked: SeatWithPrice[] | JsonValue; // Modified this line
@@ -151,8 +153,8 @@ export interface AuthProps {
 }
 
 export type Status = "ACTIVE" | "COMPLETED" | "UPCOMING";
-export type BookingStatus = "CONFIRMED" | "CANCELLED";
-export type TicketStatus = "VALID" | "USED" | "CANCELLED";
+export type BookingStatus = "CONFIRMED" | "CANCELLED" | "PENDING";
+export type TicketStatus = "VALID" | "USED" | "CANCELLED" | "PENDING";
 
 export interface StepProps {
   movieDetails: MovieDetails;

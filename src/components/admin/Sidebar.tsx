@@ -14,6 +14,7 @@ import {
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
+import { useShow } from '@/context/showContext';
 
 interface SidebarProps {
   activeItem: string;
@@ -24,12 +25,13 @@ const Sidebar = ({ activeItem, setActiveItem }: SidebarProps) => {
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const {bookings, users, movies} = useShow()
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', badge: null },
-    { icon: Film, label: 'Movies', badge: '3 New' },
-    { icon: Ticket, label: 'Bookings', badge: '12' },
-    { icon: Users, label: 'Users', badge: null },
+    { icon: Film, label: 'Movies', badge: movies && movies.length > 0 ? movies.length : null },
+    { icon: Ticket, label: 'Bookings', badge: bookings && bookings.length > 0? bookings.length : null },
+    { icon: Users, label: 'Users', badge: users && users.length },
     { icon: Settings, label: 'Settings', badge: null },
   ];
 

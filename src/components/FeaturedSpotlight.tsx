@@ -35,11 +35,11 @@ export default function FeaturedSpotlight({ show }: { show: Movie }) {
               </div>
               <div className="flex items-center gap-1 bg-blue-700/80 px-3 py-1.5 rounded-full text-blue-50 shadow-md">
                 <Clock className="w-4 h-4" />
-                <span>{show.duration || "120 min"}</span>
+                <span>{show.duration + ' min' || "120 min"}</span>
               </div>
               <div className="flex items-center gap-1 bg-emerald-700/80 px-3 py-1.5 rounded-full text-emerald-50 shadow-md">
                 <CalendarIcon className="w-4 h-4" />
-                <span>{show.releaseDate || "Now Showing"}</span>
+                <span>{new Date(show.releaseDate * 1000).toDateString() || "Now Showing"}</span>
               </div>
             </div>
             <p className="mb-8 text-lg text-gray-100 leading-relaxed backdrop-blur-[2px] bg-black/10 p-4 rounded-md">

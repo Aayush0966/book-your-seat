@@ -23,6 +23,7 @@ export const handleCreateAccount = async (signupDetails: SignupDetails) => {
         return { success: false, error: "Something went wrong" }
 
     }
+    console.log(emailSent)
     return { success: true, data: newUser }
 }
 

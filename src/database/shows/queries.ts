@@ -148,6 +148,7 @@ export const createBooking = async (bookingDetail: Booking) => {
             userId: bookingDetail.userId,
             showId: bookingDetail.showId,
             showDate: bookingDetail.showDate,
+            orderId: bookingDetail.orderId,
             seatsCount: bookingDetail.seatsCount,
             seatsBooked: bookingDetail.seatsBooked as unknown as Prisma.InputJsonValue,
             totalPrice: bookingDetail.totalPrice,
@@ -246,5 +247,37 @@ export const fetchBookingBySeat = async (seatNumber: string, showTime: number, b
         return seatsBooked.find((seat) => seat.seat == seatNumber);
     });
     console.debug("Booking found:", booking);
+    return booking ?? null;
+}
+
+export const fetchBookingByOrderId = async (orderId: string) => {
+    const booking = await prisma.booking.findFirst({
+        where: {
+            orderId
+        }
+    })
+    return booking ?? null;
+}
+
+export const confirmBooking = async (orderId:string, refId: string) => {
+    const booking = await prisma.booking.update({
+        where: {
+            orderId
+        },
+        data : {
+            paymentRef: refId,
+            bookingStatus: "CONFIRMED"
+        }
+    })
+    
+    await prisma.ticket.updateMany({
+        where: {
+            bookingId: booking.id
+        },
+        data: {
+            status: "VALID"
+        }
+    })
+    
     return booking ?? null;
 }
