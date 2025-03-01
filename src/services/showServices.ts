@@ -120,7 +120,8 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
         seatsBooked: bookingDetails.seatsBooked,
         totalPrice: bookingDetails.totalPrice,
         bookingDate: bookingDetails.bookingDate,
-        bookingStatus: "PENDING"
+        bookingStatus: "PENDING",
+        paymentMethod: bookingDetails.paymentMethod
     };
 
     const newBooking = await showQueries.createBooking(bookingDetail);

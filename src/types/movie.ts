@@ -59,7 +59,10 @@ export interface BookingRequest {
     selectedTime: number
     showDate: number;
     bookingDate: number;
+    couponCode: string;
+    discount: number;
     totalPrice: number;
+    paymentMethod: 'ESEWA' | 'KHALTI';
 }
 
 export interface Booking {
@@ -70,6 +73,8 @@ export interface Booking {
     orderId: string;
     paymentRef?: string;
     seatsCount: number;
+    paymentMethod: 'ESEWA' | 'KHALTI';
+    couponId?: string;
     show?: Show;
     seatsBooked: SeatWithPrice[] | JsonValue; // Modified this line
     totalPrice: number;

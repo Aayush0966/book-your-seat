@@ -153,6 +153,7 @@ export const createBooking = async (bookingDetail: Booking) => {
             seatsBooked: bookingDetail.seatsBooked as unknown as Prisma.InputJsonValue,
             totalPrice: bookingDetail.totalPrice,
             bookingDate: bookingDetail.bookingDate,
+            paymentMethod: bookingDetail.paymentMethod,
             bookingStatus: bookingDetail.bookingStatus as BookingStatus
         }
     })
@@ -280,4 +281,13 @@ export const confirmBooking = async (orderId:string, refId: string) => {
     })
     
     return booking ?? null;
+}
+
+export const fetchCouponByCode = async (code: string) => {
+    const coupon = await prisma.coupon.findFirst({
+        where: {
+            code: code
+        }
+    })
+    return coupon ?? null;
 }

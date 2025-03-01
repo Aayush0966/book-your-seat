@@ -33,8 +33,8 @@ const SignInForm = ({ showPassword, setShowPassword }: AuthProps) => {
       return;
     }
     else {
-    setLoading(false)
-    router.push('/home')      
+    router.push('/home')   
+    setLoading(false)   
     }
 
   };
