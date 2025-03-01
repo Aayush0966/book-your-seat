@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -12,7 +12,7 @@ model User {
   id            Int       @id @default(autoincrement())
   fullName      String    @map("full_name") @db.VarChar(100)
   email         String    @unique @db.VarChar(255)
-  password      String?   
+  password      String?
   role          Role      @default(USER)
   contactNumber BigInt?   @map("contact_number")
   otp           Int?      @db.Integer
@@ -21,38 +21,39 @@ model User {
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
   accounts      Account[]
-  
+  Review        Review[]
+
   @@index([email])
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             Int     @map("user_id")
-  provider           String  
-  providerAccountId  String  @map("provider_account_id")
-  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String @id @default(cuid())
+  userId            Int    @map("user_id")
+  provider          String
+  providerAccountId String @map("provider_account_id")
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
 model Movie {
-  id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(255)
-  description String   @db.Text
-  director    String   @db.Text
-  posterUrl   String   @map("poster_url") @db.Text
-  ageRating   String   @map("age_rating") @db.Text
+  id          Int         @id @default(autoincrement())
+  title       String      @db.VarChar(255)
+  description String      @db.Text
+  director    String      @db.Text
+  posterUrl   String      @map("poster_url") @db.Text
+  ageRating   String      @map("age_rating") @db.Text
   genres      Json
-  status    MovieStatus @default(UPCOMING)
+  status      MovieStatus @default(UPCOMING)
   casts       Json
-  language    String   @db.Text
-  duration    Int      @db.Integer
-  releaseDate Int      @map("release_date")
+  language    String      @db.Text
+  duration    Int         @db.Integer
+  releaseDate Int         @map("release_date")
   shows       Show[]
-  backdropUrl String   @map("backdrop_url") @db.Text
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  
+  backdropUrl String      @map("backdrop_url") @db.Text
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
   @@index([status])
   @@index([title])
 }
@@ -68,7 +69,6 @@ model Screen {
 
   @@index([screenNumber])
 }
-
 
 model Show {
   id        Int       @id @default(autoincrement())
@@ -90,20 +90,22 @@ model Show {
 }
 
 model Booking {
-  id          String    @id @default(cuid()) @map("id")
-  userId      Int       @map("user_id")
-  showId      Int       @map("show_id")
-  showDate    Int       @map("show_date") 
-  seatsCount  Int       @map("seats_count")
-  seatsBooked Json     @map("seats_booked")
-  totalPrice  Float    @map("total_price") @db.DoublePrecision
-  bookingDate Int      @map("booking_date")
+  id            String        @id @default(cuid()) @map("id")
+  userId        Int           @map("user_id")
+  showId        Int           @map("show_id")
+  showDate      Int           @map("show_date")
+  orderId       String        @unique
+  paymentRef    String?       
+  seatsCount    Int           @map("seats_count")
+  seatsBooked   Json          @map("seats_booked")
+  totalPrice    Float         @map("total_price") @db.DoublePrecision
+  bookingDate   Int           @map("booking_date")
   bookingStatus BookingStatus @default(CONFIRMED) @map("booking_status")
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  show        Show     @relation(fields: [showId], references: [id], onDelete: Cascade)
-  tickets     Ticket[]
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  show          Show          @relation(fields: [showId], references: [id], onDelete: Cascade)
+  tickets       Ticket[]
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
 
   @@index([userId])
   @@index([showId])
@@ -112,16 +114,28 @@ model Booking {
   @@index([seatsCount])
 }
 
+model Review {
+  reviewId  String   @id @default(cuid()) @map("review_id")
+  userId    Int      @map("user_id")
+  rating    Int
+  comment   String?  @db.Text
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+}
+
 model Ticket {
-  ticketId    String   @id @default(cuid()) @map("ticket_id")
-  bookingId   String   @map("booking_id")
-  seatNumber  String   @map("seat_number")
-  seatCategory String  @map("seat_category")
-  price       Float    @map("price") @db.DoublePrecision
-  status      TicketStatus @default(VALID) @map("status")
-  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  ticketId     String       @id @default(cuid()) @map("ticket_id")
+  bookingId    String       @map("booking_id")
+  seatNumber   String       @map("seat_number")
+  seatCategory String       @map("seat_category")
+  price        Float        @map("price") @db.DoublePrecision
+  status       TicketStatus @default(VALID) @map("status")
+  booking      Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
 
   @@index([bookingId])
   @@index([seatNumber])
@@ -135,6 +149,7 @@ enum Role {
 enum BookingStatus {
   CONFIRMED
   CANCELLED
+  PENDING
 }
 
 enum MovieStatus {
@@ -147,4 +162,5 @@ enum TicketStatus {
   VALID
   USED
   CANCELLED
+  PENDING
 }
