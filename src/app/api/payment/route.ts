@@ -4,14 +4,15 @@ import { NextResponse } from 'next/server';
 
 interface ValidPayment {
     success: boolean;
-    data: {
+    data?: {
         product_code: string;
         transaction_uuid: string;
         total_amount: number;
         status: string;
         ref_id: string;
     };
-    orderId: string;
+    message?: string;
+    orderId?: string;
 }
 
 export const POST = async (request: Request) => {
@@ -20,7 +21,7 @@ export const POST = async (request: Request) => {
     let validPayment: ValidPayment;
 
     if (paymentMethod === "ESEWA") {
-        const validPayment = await verifyEsewaPayment(data);
+        validPayment = await verifyEsewaPayment(data);
         if (!validPayment.success) {
             return NextResponse.json({error:validPayment.message}, {status: 400})  
         }

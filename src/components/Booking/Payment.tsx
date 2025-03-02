@@ -15,7 +15,7 @@ import {
   X
 } from "lucide-react";
 import { formatCurrency, formatTime, getTotalPrice } from "@/lib/utils";
-import { BookingRequest, MovieWithShows, Price } from "@/types/movie";
+import { BookingRequest, Coupon, MovieWithShows, Price } from "@/types/movie";
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -52,29 +52,23 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
     setIsApplyingCoupon(true);
     try {
-      // Simulate API call to validate coupon
-      // In a real app, replace with actual API call
-      // const response = await axios.post('/api/validate-coupon', { code: couponCode });
-      
-      // Simulating validation logic
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Check for DISCORD coupon code (case insensitive)
-      if (couponCode.toUpperCase() === 'DISCORD') {
-        const discountAmount = Math.floor(originalAmount * 0.15); // 15% discount
-        setDiscount(discountAmount);
-        setAppliedCoupon(couponCode);
-        toast.success("Coupon applied! You got 15% off.");
-      } else if (couponCode.toUpperCase() === 'WELCOME') {
-        const discountAmount = Math.floor(originalAmount * 0.10); // 10% discount
-        setDiscount(discountAmount);
-        setAppliedCoupon(couponCode);
-        toast.success("Coupon applied! You got 10% off.");
+      const response = await axios.get(`/api/coupons?code=${couponCode}`)
+      if (response.status == 200) {
+        const discount  = response.data.discount;
+        console.log(discount)
+        const discountAmount = Math.floor(originalAmount * (discount / 100));
+        setDiscount(discountAmount)
+        setAppliedCoupon(couponCode)
+        toast.success("Coupon applied!");
       } else {
         toast.error("Invalid coupon code. Please try again.");
       }
     } catch (error) {
-      toast.error("Error validating coupon. Please try again.");
+      if (axios.isAxiosError(error)) {
+      toast.error(error.response?.data.error || "Error validating coupon. Please try again.");
+      } else {
+      toast.error("Internal Server Error. Please try again later.");
+      }
     } finally {
       setIsApplyingCoupon(false);
     }

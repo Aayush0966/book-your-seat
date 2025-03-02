@@ -57,19 +57,8 @@ const UpcomingSection: React.FC<UpcomingSectionProps> = ({ shows }) => {
               <p className="text-gray-600 mt-1">Exciting releases on the horizon</p>
             </div>
           </div>
-
-          <div className="flex items-center space-x-4">
-            <Button 
-              variant="outline"
-              className="group bg-white border-purple-200 hover:border-purple-600 hover:bg-purple-50 transition-all duration-300"
-            >
-              <Calendar className="w-4 h-4 mr-2 text-purple-600 group-hover:animate-bounce" />
-              View Schedule
-            </Button>
-          </div>
         </motion.div>
 
-        {/* Shows Grid */}
         {shows && shows.length > 0 ? (
           <motion.div
             variants={containerVariants}

@@ -37,9 +37,7 @@ const PaymentProcessor = ({ paymentMethod }: { paymentMethod: PaymentMethod }) =
         }
       } catch (err: any) {
         setError(err.message || 'An error occurred while processing payment');
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
     
     processPayment();

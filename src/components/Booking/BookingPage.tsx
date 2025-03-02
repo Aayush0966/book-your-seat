@@ -1,7 +1,7 @@
 'use client'
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { BookingDetails } from '@/types/movie';
-import { Calendar, MapPin, Ticket, CreditCard, Download, Check, Clock, Share2, ChevronDown, AlertTriangle, X } from 'lucide-react';
+import { Calendar, MapPin, Ticket, CreditCard, Download, Check, Clock, Share2, ChevronDown, AlertTriangle, X, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatDate, formatTime } from '@/lib/utils';
 import QRCode from '../ui/QRCode';
@@ -16,6 +16,20 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
   const bookingRef = useRef<HTMLDivElement>(null);
   const [showShareAlert, setShowShareAlert] = useState(false);
   const [isTicketsExpanded, setIsTicketsExpanded] = useState(true);
+  const [ticketsSubtotal, setTicketsSubtotal] = useState(0);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  
+  // Calculate subtotal and discount on component mount
+  useEffect(() => {
+    const subtotal = bookingDetails.tickets.reduce((sum, ticket) => sum + ticket.price, 0);
+    const discount = subtotal - bookingDetails.totalPrice;
+    const percentage = subtotal > 0 ? Math.round((discount / subtotal) * 100) : 0;
+    
+    setTicketsSubtotal(subtotal);
+    setDiscountAmount(discount);
+    setDiscountPercentage(percentage);
+  }, [bookingDetails]);
   
   const handleDownload = useReactToPrint({
     contentRef: bookingRef,
@@ -170,7 +184,29 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
               </div>
             </div>
           )}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-3 space-y-3">
+            {/* Subtotal section */}
+            <div className="flex justify-between items-center p-2">
+              <span className="text-gray-600 dark:text-gray-300">Subtotal</span>
+              <span className="font-medium">NPR {ticketsSubtotal.toLocaleString()}</span>
+            </div>
+            
+            {/* Discount section - only show if there is a discount */}
+            {discountAmount > 0 && (
+              <div className="flex justify-between items-center p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+                <div className="flex items-center">
+                  <Tag className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mr-2" />
+                  <span className="font-medium text-indigo-600 dark:text-indigo-400">
+                    Discount Applied {discountPercentage > 0 && `(${discountPercentage}%)`}
+                  </span>
+                </div>
+                <span className="font-medium text-indigo-600 dark:text-indigo-400">
+                  - NPR {discountAmount.toLocaleString()}
+                </span>
+              </div>
+            )}
+            
+            {/* Total section */}
             <div className={`flex justify-between items-center bg-${currentStatus.color}-50 dark:bg-${currentStatus.color}-900/30 p-3 rounded-lg`}>
               <div className="flex items-center">
                 <CreditCard className={`w-5 h-5 text-${currentStatus.color}-600 dark:text-${currentStatus.color}-400 mr-2`} />

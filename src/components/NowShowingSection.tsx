@@ -57,15 +57,7 @@ const NowShowingSection: React.FC<NowShowingSectionProps> = ({ shows }) => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <Button 
-              variant="outline"
-              className="group bg-white border-primary/20 hover:border-primary hover:bg-primary/5 transition-all duration-300"
-            >
-              <Popcorn className="w-4 h-4 mr-2 text-primary group-hover:animate-bounce" />
-              View All Movies
-            </Button>
-          </div>
+        
         </motion.div>
 
         {/* Shows Grid */}

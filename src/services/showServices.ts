@@ -119,6 +119,7 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
         orderId: (Date.now() / 1000).toLocaleString(),
         seatsBooked: bookingDetails.seatsBooked,
         totalPrice: bookingDetails.totalPrice,
+        couponId: (await showQueries.fetchCouponByCode(bookingDetails.couponCode)).id,
         bookingDate: bookingDetails.bookingDate,
         bookingStatus: "PENDING",
         paymentMethod: bookingDetails.paymentMethod
@@ -193,3 +194,22 @@ export const fetchShowDetailsByTicketId = async (ticketId: string) => {
     return ticketDetails;
 }
 
+export const validateCoupon = async (couponCode: string) => {
+    const coupon = await showQueries.fetchCouponByCode(couponCode);
+    if (!coupon) {
+        return {
+            success: false,
+            error: "Coupon not found"
+        }
+    }
+    if (coupon.expiryDate < (Date.now() / 1000) || !(coupon.isActive)) {
+        return {
+            success: false,
+            error: "Coupon has expired"
+        }
+    }
+    return {
+        success: true,
+        discount: coupon.discount
+    }
+}

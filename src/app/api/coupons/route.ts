@@ -1,15 +1,27 @@
 import { createCoupon, fetchCoupons, toggleCouponStatus } from "@/database/shows/queries"
+import { validateCoupon } from "@/services/showServices";
 import { NextResponse } from "next/server";
 
+export const GET = async (request: Request) => {
+    const { searchParams } = new URL(request.url);
+    const couponCode = searchParams.get("code");
 
-export const GET = async () => {
-    const coupons = await fetchCoupons();
-    if (!coupons) {
-        return NextResponse.json({error: "No coupons are available"}, {status: 404})
+    if (couponCode) {
+        const response = await validateCoupon(couponCode);
+        if (!response.success) {
+            return NextResponse.json({ error: response.error }, { status: 404 });
+        }
+        return NextResponse.json({ discount:response.discount }, { status: 200 });
     }
 
-    return NextResponse.json({coupons}, {status: 200})
-}
+    const coupons = await fetchCoupons();
+    if (!coupons) {
+        return NextResponse.json({ error: "No coupons are available" }, { status: 404 });
+    }
+
+    return NextResponse.json({ coupons }, { status: 200 });
+};
+
 
 export const POST = async (request: Request) => {
     const {coupon} = await request.json();
@@ -28,7 +40,6 @@ export const POST = async (request: Request) => {
 
 export const PATCH = async (request: Request) => {
     const {couponId, isActive} = await request.json();
-    console.log(couponId, isActive)
     if (!couponId) {
         return NextResponse.json({error: "All fields are required"}, {status: 400})
     }
