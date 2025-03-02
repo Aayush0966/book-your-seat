@@ -11,22 +11,27 @@ const PaymentProcessor = ({ paymentMethod }: { paymentMethod: PaymentMethod }) =
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   
-  const data = searchParams.get('data');
   const router = useRouter();
 
   useEffect(() => {
     const processPayment = async () => {
-      if (!data) return;
-      
+
       try {
         setLoading(true);
         setError(null);
         setSuccess(false);
+        let paymentData;
+
+        if (paymentMethod === 'ESEWA') {
+          const token = searchParams.get('data');
+          paymentData = { data:token, paymentMethod };
+        } else if (paymentMethod === 'KHALTI') {
+          const pidx = searchParams.get('pidx');
+          const purchaseOrderId = searchParams.get('purchase_order_id');
+          paymentData = { data: {pidx, purchaseOrderId}, paymentMethod };
+        }
         
-        const result = await axios.post('/api/payment', {
-          data,
-          paymentMethod
-        });
+        const result = await axios.post('/api/payment', paymentData);
         
         if (result.status === 201) {
           if (result.data.url) {
@@ -36,29 +41,31 @@ const PaymentProcessor = ({ paymentMethod }: { paymentMethod: PaymentMethod }) =
           }
         }
       } catch (err: any) {
+        setLoading(false)
         setError(err.message || 'An error occurred while processing payment');
+        // router.push("/home")
       } 
     };
     
     processPayment();
-  }, [data, paymentMethod, router]);
+  }, [ paymentMethod, router, searchParams]);
   
-  if (!data) {
-    return (
-      <div className="bg-yellow-50 p-4 rounded-md border border-yellow-200">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-yellow-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <p className="text-gray-700">No payment data provided. Please return to checkout.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (!) {
+  //   return (
+  //     <div className="bg-yellow-50 p-4 rounded-md border border-yellow-200">
+  //       <div className="flex">
+  //         <div className="flex-shrink-0">
+  //           <svg className="h-5 w-5 text-yellow-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+  //             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+  //           </svg>
+  //         </div>
+  //         <div className="ml-3">
+  //           <p className="text-gray-700">No payment data provided. Please return to checkout.</p>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   
   return (
     <>

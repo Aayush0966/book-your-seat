@@ -110,6 +110,10 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
         };
     }
 
+    const coupon = await showQueries.fetchCouponByCode(bookingDetails.couponCode);
+    
+    await showQueries.updateCouponUseCount(coupon.id)
+
     const bookingDetail: Booking = {
         id: generateBookingId(),
         userId: session?.user?.id ? parseInt(session.user.id) : 0,
@@ -119,7 +123,7 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
         orderId: (Date.now() / 1000).toLocaleString(),
         seatsBooked: bookingDetails.seatsBooked,
         totalPrice: bookingDetails.totalPrice,
-        couponId: (await showQueries.fetchCouponByCode(bookingDetails.couponCode)).id,
+        couponId: coupon.id,
         bookingDate: bookingDetails.bookingDate,
         bookingStatus: "PENDING",
         paymentMethod: bookingDetails.paymentMethod

@@ -14,7 +14,7 @@ export const getKhaltiPaymentUrl = async (bookingDetails: BookingRequest, orderI
 
     const response = await axios.post(khaltiMethod.paymentUrl, payloadData, {
         headers: {
-            'Authorization': 'key 429a0a6ba0104c4eb32d77b13eae669a',
+            "Authorization": `key ${process.env.KHALTI_LIVE_SECRET_KEY}`
         }
     })
     console.log(response.data)
@@ -30,4 +30,27 @@ export const getKhaltiPaymentUrl = async (bookingDetails: BookingRequest, orderI
             error: "payment failed. please try again later"
         }
     }
+}
+
+export const verifyKhaltiPayment = async (data: string) => {
+    const response = await axios.post(khaltiMethod.verifyUrl, {pidx: data}, {
+        headers: {
+            "Authorization": `key ${process.env.KHALTI_LIVE_SECRET_KEY}`
+        }
+    })
+    console.log(response.data)
+
+    if (response.status == 200) {
+        return {
+            success: true,
+            data: response.data
+        }
+    }
+    else {
+        return {
+            success: false,
+            message: "Error: while verifying payment"
+        }
+    }
+
 }

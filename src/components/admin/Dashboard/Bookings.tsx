@@ -213,78 +213,80 @@ const Bookings = () => {
             </div>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="gap-1">
-                  <PlusCircle className="w-4 h-4" />
-                  New Coupon
-                </Button>
+          <Button className="gap-1">
+            <PlusCircle className="w-4 h-4" />
+            New Coupon
+          </Button>
               </DialogTrigger>
               <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create New Discount Coupon</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="couponCode" className="w-24">Code</Label>
-                    <Input 
-                      id="couponCode" 
-                      value={newCoupon.code}
-                      onChange={(e) => setNewCoupon({...newCoupon, code: e.target.value})}
-                      placeholder="e.g., SUMMER25"
-                      className="flex-1"
-                    />
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={generateCouponCode}
-                      title="Generate random code"
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="discount" className="w-24">Discount (%)</Label>
-                    <Input 
-                      id="discount" 
-                      type="number" 
-                      min="1" 
-                      max="100"
-                      value={newCoupon.discount}
-                      onChange={(e) => setNewCoupon({...newCoupon, discount: parseInt(e.target.value)})}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="expiryDate" className="w-24">Expiry Date</Label>
-                    <Input 
-                      id="expiryDate" 
-                      type="date"
-                      value={newCoupon.expiryDate}
-                      onChange={(e) => setNewCoupon({...newCoupon, expiryDate: e.target.value})}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="isActive" className="w-24">Active</Label>
-                    <Switch 
-                      id="isActive"
-                      checked={newCoupon.isActive}
-                      onCheckedChange={(checked) => setNewCoupon({...newCoupon, isActive: checked})}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" type="button">
-                    Cancel
-                  </Button>
-                  <Button 
-                    type="button"
-                    onClick={createCoupon}
-                    disabled={!newCoupon.code || !newCoupon.discount || !newCoupon.expiryDate || isLoading}
-                  >
-                    {isLoading ? "Creating..." : "Create Coupon"}
-                  </Button>
-                </DialogFooter>
+          <DialogHeader>
+            <DialogTitle>Create New Discount Coupon</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="couponCode" className="w-24">Code</Label>
+              <Input 
+                id="couponCode" 
+                value={newCoupon.code}
+                onChange={(e) => setNewCoupon({...newCoupon, code: e.target.value})}
+                placeholder="e.g., SUMMER25"
+                className="flex-1"
+              />
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={generateCouponCode}
+                title="Generate random code"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Label htmlFor="discount" className="w-24">Discount (%)</Label>
+              <Input 
+                id="discount" 
+                type="number" 
+                min="1" 
+                max="100"
+                value={newCoupon.discount}
+                onChange={(e) => setNewCoupon({...newCoupon, discount: parseInt(e.target.value)})}
+              />
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Label htmlFor="expiryDate" className="w-24">Expiry Date</Label>
+              <Input 
+                id="expiryDate" 
+                type="date"
+                value={newCoupon.expiryDate}
+                onChange={(e) => setNewCoupon({...newCoupon, expiryDate: e.target.value})}
+              />
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Label htmlFor="isActive" className="w-24">Active</Label>
+              <Switch 
+                id="isActive"
+                checked={newCoupon.isActive}
+                onCheckedChange={(checked) => setNewCoupon({...newCoupon, isActive: checked})}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogTrigger asChild>
+              <Button variant="outline" type="button">
+                Cancel
+              </Button>
+            </DialogTrigger>
+            <Button 
+              type="button"
+              onClick={createCoupon}
+              disabled={!newCoupon.code || !newCoupon.discount || !newCoupon.expiryDate || isLoading}
+            >
+              {isLoading ? "Creating..." : "Create Coupon"}
+            </Button>
+          </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
@@ -292,53 +294,53 @@ const Bookings = () => {
           <Card className="shadow-lg">
             <CardContent className="pt-6">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Code</TableHead>
-                    <TableHead>Discount</TableHead>
-                    <TableHead>Expiry Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Used</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading && !coupons.length ? (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8">Loading coupons...</TableCell>
-                    </TableRow>
-                  ) : coupons.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8">No coupons found. Create your first discount coupon.</TableCell>
-                    </TableRow>
-                  ) : (
-                    coupons.map((coupon) => (
-                      <TableRow key={coupon.id} className="hover:bg-muted/50">
-                        <TableCell className="font-medium">{coupon.code}</TableCell>
-                        <TableCell>{coupon.discount}%</TableCell>
-                        <TableCell>{new Date(coupon.expiryDate * 1000).toDateString()}</TableCell>
-                        <TableCell>
-                          <Badge className={coupon.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
-                            {coupon.isActive ? "Active" : "Inactive"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{coupon.usageCount || 0} times</TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => toggleCouponStatus(coupon.id, coupon.isActive)}
-                            >
-                              {coupon.isActive ? "Deactivate" : "Activate"}
-                            </Button>
-                            <Button variant="ghost" size="sm">Edit</Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Code</TableHead>
+              <TableHead>Discount</TableHead>
+              <TableHead>Expiry Date</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Used</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading && !coupons.length ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-8">Loading coupons...</TableCell>
+              </TableRow>
+            ) : coupons.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-8">No coupons found. Create your first discount coupon.</TableCell>
+              </TableRow>
+            ) : (
+              coupons.map((coupon) => (
+                <TableRow key={coupon.id} className="hover:bg-muted/50">
+            <TableCell className="font-medium">{coupon.code}</TableCell>
+            <TableCell>{coupon.discount}%</TableCell>
+            <TableCell>{new Date(coupon.expiryDate * 1000).toDateString()}</TableCell>
+            <TableCell>
+              <Badge className={coupon.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                {coupon.isActive ? "Active" : "Inactive"}
+              </Badge>
+            </TableCell>
+            <TableCell>{coupon.usageCount || 0} times</TableCell>
+            <TableCell>
+              <div className="flex space-x-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => toggleCouponStatus(coupon.id, coupon.isActive)}
+                >
+                  {coupon.isActive ? "Deactivate" : "Activate"}
+                </Button>
+                <Button variant="ghost" size="sm">Edit</Button>
+              </div>
+            </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
               </Table>
             </CardContent>
           </Card>

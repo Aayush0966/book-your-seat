@@ -149,6 +149,7 @@ export const createBooking = async (bookingDetail: Booking) => {
             userId: bookingDetail.userId,
             showId: bookingDetail.showId,
             showDate: bookingDetail.showDate,
+            couponId: bookingDetail.couponId,
             orderId: bookingDetail.orderId,
             seatsCount: bookingDetail.seatsCount,
             seatsBooked: bookingDetail.seatsBooked as unknown as Prisma.InputJsonValue,
@@ -322,4 +323,17 @@ export const toggleCouponStatus = async (couponId: string, isActive: boolean) =>
         }
     })
     return coupon ?? null
+}
+
+export const updateCouponUseCount = async(couponId: string) => {
+    await prisma.coupon.update({
+        where: {
+            id: couponId
+        },
+        data: {
+            usageCount: {
+                increment: 1
+            }
+        }
+    })
 }
