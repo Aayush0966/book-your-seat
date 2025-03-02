@@ -94,9 +94,9 @@ model Booking {
   userId        Int           @map("user_id")
   showId        Int           @map("show_id")
   showDate      Int           @map("show_date")
-  orderId       String        @unique
+  orderId       String        @unique @map("order_id")
   paymentMethod PaymentMethod @default(ESEWA) @map("payment_method")
-  paymentRef    String?
+  paymentRef    String?       @map("payment_ref")
   seatsCount    Int           @map("seats_count")
   seatsBooked   Json          @map("seats_booked")
   totalPrice    Float         @map("total_price") @db.DoublePrecision
@@ -149,7 +149,8 @@ model Coupon {
   id         String    @id @default(cuid()) @map("id")
   code       String    @unique @map("code")
   discount   Float     @map("discount") @db.DoublePrecision
-  expiryDate DateTime  @map("expiry_date")
+  expiryDate Int  @map("expiry_date")
+  usageCount Int       @map("usage_count")
   isActive   Boolean   @default(true) @map("is_active")
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime  @updatedAt @map("updated_at")

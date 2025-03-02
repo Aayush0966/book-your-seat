@@ -68,8 +68,12 @@ export const generateTicketId = () => {
 
 export const generateBookingId = () => {
   return "B" + Math.random().toString(16).slice(2)
-
 }
+
+export const generateCouponId = () => {
+  return "C" + Math.random().toString(16).slice(2)
+}
+
 
 
 

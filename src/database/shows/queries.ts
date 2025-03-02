@@ -1,6 +1,7 @@
-import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price, Booking, Ticket, TicketStatus, SeatWithPrice } from "@/types/movie";
+import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price, Booking, Ticket, TicketStatus, SeatWithPrice, Coupon } from "@/types/movie";
 import prisma from "@/lib/prisma"; 
 import { Prisma, BookingStatus } from "@prisma/client"; // Import the BookingStatus enum
+import { generateBookingId, generateCouponId } from "@/lib/utils";
 
 export const createMovie = async (movieDetails: MovieDetails) => {
     const movieData = {
@@ -279,7 +280,6 @@ export const confirmBooking = async (orderId:string, refId: string) => {
             status: "VALID"
         }
     })
-    
     return booking ?? null;
 }
 
@@ -290,4 +290,36 @@ export const fetchCouponByCode = async (code: string) => {
         }
     })
     return coupon ?? null;
+}
+
+export const fetchCoupons = async () => {
+    const coupons = await prisma.coupon.findMany();
+    
+    return coupons ?? null
+}
+
+export const createCoupon = async (coupon: Coupon) => {    
+    const newCoupon = await prisma.coupon.create({
+        data: {
+            id: generateCouponId(),
+            code: coupon.code,
+            discount: coupon.discount,
+            expiryDate: Math.floor(new Date(coupon.expiryDate).getTime() / 1000), // Convert to UNIX timestamp
+            isActive: coupon.isActive,
+            usageCount: 0
+        }
+    })
+    return newCoupon ?? null;
+}
+
+export const toggleCouponStatus = async (couponId: string, isActive: boolean) => {
+    const coupon = await prisma.coupon.update({
+        where: {
+            id: couponId
+        },
+        data:{
+            isActive: isActive
+        }
+    })
+    return coupon ?? null
 }

@@ -62,7 +62,7 @@ export interface BookingRequest {
     couponCode: string;
     discount: number;
     totalPrice: number;
-    paymentMethod: 'ESEWA' | 'KHALTI';
+    paymentMethod: PaymentMethod;
 }
 
 export interface Booking {
@@ -73,7 +73,7 @@ export interface Booking {
     orderId: string;
     paymentRef?: string;
     seatsCount: number;
-    paymentMethod: 'ESEWA' | 'KHALTI';
+    paymentMethod: PaymentMethod;
     couponId?: string;
     show?: Show;
     seatsBooked: SeatWithPrice[] | JsonValue; // Modified this line
@@ -152,6 +152,16 @@ export interface MovieDetails {
   status: Status;
 }
 
+export interface Coupon {
+  id: string;
+  code: string;
+  discount: number;
+  expiryDate: number;
+  isActive: boolean;
+  createdAt: Date;
+  usageCount: number;
+}
+
 export interface AuthProps {
   showPassword: boolean;
   setShowPassword: (show: boolean) => void;
@@ -160,6 +170,7 @@ export interface AuthProps {
 export type Status = "ACTIVE" | "COMPLETED" | "UPCOMING";
 export type BookingStatus = "CONFIRMED" | "CANCELLED" | "PENDING";
 export type TicketStatus = "VALID" | "USED" | "CANCELLED" | "PENDING";
+export type PaymentMethod = "ESEWA" | "KHALTI";
 
 export interface StepProps {
   movieDetails: MovieDetails;

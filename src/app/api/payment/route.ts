@@ -2,20 +2,36 @@ import { confirmBooking, fetchBookingByOrderId } from '@/database/shows/queries'
 import { verifyEsewaPayment } from '@/services/esewaService';
 import { NextResponse } from 'next/server';
 
-export const POST = async (request: Request) => {
-    const {data} = await request.json();
+interface ValidPayment {
+    success: boolean;
+    data: {
+        product_code: string;
+        transaction_uuid: string;
+        total_amount: number;
+        status: string;
+        ref_id: string;
+    };
+    orderId: string;
+}
 
-    const isPaymentValid = await verifyEsewaPayment(data);
-    if (!isPaymentValid.success) {
-        return NextResponse.json({error:isPaymentValid.message}, {status: 400})  
+export const POST = async (request: Request) => {
+    const {data, paymentMethod} = await request.json();
+
+    let validPayment: ValidPayment;
+
+    if (paymentMethod === "ESEWA") {
+        const validPayment = await verifyEsewaPayment(data);
+        if (!validPayment.success) {
+            return NextResponse.json({error:validPayment.message}, {status: 400})  
+        }
     }
 
-    const booking = await fetchBookingByOrderId(isPaymentValid.orderId);
+    const booking = await fetchBookingByOrderId(validPayment.data.transaction_uuid);
     if (!booking) {
         return NextResponse.json({error: 'Booking failed. please try again later'}, {status: 400})  
     }
 
-    const confirmedBooking = await confirmBooking(isPaymentValid.orderId, isPaymentValid.data.refId);
+    const confirmedBooking = await confirmBooking(validPayment.data.transaction_uuid, validPayment.data.ref_id);
     if (!confirmedBooking) {
         return NextResponse.json({error: 'Booking failed. please try again later'}, {status: 400})  
     }
