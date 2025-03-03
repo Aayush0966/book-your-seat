@@ -7,8 +7,7 @@ import SlideShow from './SlideShow';
 const MovieAuth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
-
-  return (
+ (
     <div className="min-h-screen flex bg-gradient-to-br from-gray-900 to-gray-900">
       <SlideShow />
 
