@@ -14,27 +14,28 @@ interface EsewaData {
 }
 
 export async function verifyTransaction(transaction_uuid: string, amount: string) {
+
     try {
         const response = await axios.get(
             esewaMethod.verifyUrl,
             {
                 params: {
                     transaction_uuid,
-                    total_amount: amount,
+                    total_amount: Math.trunc(parseInt(amount)),
                     product_code: esewaMethod.merchantId
                 }
             }
         );
-
         return response.data;
     } catch (error) {
+        console.log(error.response.data)
         console.error("Esewa verification failed:", error);
         return false;
     }
 }
 
 
-export const verifyEsewaPayment = async (data) => {
+export const verifyEsewaPayment = async (data: string) => {
     const decodedData = JSON.parse(Buffer.from(data, 'base64').toString('utf-8')) as unknown as EsewaData;
 
     const orderId = decodedData.transaction_uuid;

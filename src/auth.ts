@@ -4,8 +4,6 @@ import Credentials from "next-auth/providers/credentials";
 import { handleLogin } from './services/userService';
 import { CredentialsType } from './types/auth';
 
-console.log("Initializing NextAuth...");
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({
@@ -14,15 +12,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
     Credentials({
       async authorize(credentials) {
-        console.log("Authorizing credentials:", credentials);
         try {
           const { email, password } = credentials as unknown as CredentialsType;
           const user = await handleLogin(email, password);
           if (!user) {
-            console.log("User not found");
             return null;
           }
-          console.log("User authorized:", user);
           return {
             id: user.id.toString(),
             email: user.email,
@@ -31,7 +26,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             contactNumber: user.contactNumber,
           };
         } catch (error) {
-          console.error("Detailed auth error:", error);
           return null;
         }
       },
@@ -46,7 +40,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
-      console.log("JWT callback - token:", token, "user:", user);
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -54,7 +47,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      console.log("Session callback - session:", session, "token:", token);
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
@@ -64,5 +56,3 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   secret: process.env.NEXTAUTH_SECRET,
 });
-
-console.log("NextAuth initialized.");
