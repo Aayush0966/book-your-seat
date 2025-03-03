@@ -3,7 +3,8 @@ import { getToken } from "next-auth/jwt"
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
+  console.log(process.env.NEXTAUTH_SECRET, process.env.NEXTAUTH_URL)
+  
   if (request.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/home', request.url))
   }
@@ -35,6 +36,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  runtime: 'nodejs',
   matcher: [
     '/((?!_next/static|_next/image|favicon.ico|public|admin).*)',
   ],
