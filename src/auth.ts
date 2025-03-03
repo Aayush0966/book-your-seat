@@ -4,8 +4,6 @@ import Credentials from "next-auth/providers/credentials";
 import { handleLogin } from './services/userService';
 import { CredentialsType } from './types/auth';
 
-
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({
@@ -28,28 +26,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             contactNumber: user.contactNumber,
           };
         } catch (error) {
-          console.error("Detailed auth error:", error);
           return null;
         }
       },
     }),
-    ],
-    pages: {
+  ],
+  pages: {
     signIn: "/auth"
-    },
-    session: {
+  },
+  session: {
     strategy: "jwt",
     maxAge: 30 * 60, // 30 mins
-    },
-    callbacks: {
-    async jwt({token, user}) {
+  },
+  callbacks: {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
       }
       return token;
     },
-    async session({session, token}) {
+    async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
@@ -57,5 +54,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     }
   },
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
 });

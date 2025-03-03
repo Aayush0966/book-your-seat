@@ -147,7 +147,7 @@ const SignupForm = ({ setLogin, showPassword, setShowPassword }: AuthProps) => {
      const response = await axios.post("/api/auth", signupData);
      console.log(response)
      console.log(response.statusText)
-      if (response.statusText !== "Created") {
+      if (response.status !== 201) {
         toast.error("Something went wrong");
         setLoading(false);
         return;
