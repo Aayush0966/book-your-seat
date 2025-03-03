@@ -3,8 +3,7 @@ import { getToken } from "next-auth/jwt"
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  console.log(process.env.NEXTAUTH_SECRET, process.env.NEXTAUTH_URL)
-  
+  console.log(token);
   if (request.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/home', request.url))
   }
