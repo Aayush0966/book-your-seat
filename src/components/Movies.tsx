@@ -58,7 +58,7 @@ const Movies: React.FC<MoviesProps> = ({ activeShows, upcomingShows }) => {
                     {activeTab === 'nowShowing' ? (
                         <NowShowingSection shows={activeShows} />
                     ) : (
-                        <UpcomingSection shows={upcomingShows} />
+                        <UpcomingSection onClick={() => setActiveTab('nowShowing')} shows={upcomingShows} />
                     )}
                 </motion.div>
             </AnimatePresence>

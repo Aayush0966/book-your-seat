@@ -1,5 +1,4 @@
 'use client'
-import { fetchMovies } from "@/services/showServices";
 import MovieCard from "./MovieCard";
 import { Film, ChevronRight, Calendar, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,9 +7,10 @@ import { motion } from "framer-motion";
 
 interface UpcomingSectionProps {
   shows: Movie[];
+  onClick: () => void;
 }
 
-const UpcomingSection: React.FC<UpcomingSectionProps> = ({ shows }) => {
+const UpcomingSection: React.FC<UpcomingSectionProps> = ({ shows, onClick }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -33,7 +33,7 @@ const UpcomingSection: React.FC<UpcomingSectionProps> = ({ shows }) => {
   };
   
   return (
-    <section className="py-12 px-4 md:px-8">
+    <section className="py-12 px-4 md:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <motion.div 
@@ -66,7 +66,7 @@ const UpcomingSection: React.FC<UpcomingSectionProps> = ({ shows }) => {
             animate="visible"
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
           >
-            {shows.map((show, index) => (
+            {shows.map((show) => (
               <motion.div
                 key={show.id}
                 variants={itemVariants}
@@ -90,8 +90,8 @@ const UpcomingSection: React.FC<UpcomingSectionProps> = ({ shows }) => {
             <h3 className="text-2xl font-bold text-gray-800 mt-6 mb-2">No Upcoming Movies</h3>
             <p className="text-gray-600 mb-8">Stay tuned for future releases</p>
             <Button 
-              variant="outline"
-              className="bg-white border-purple-200 hover:border-purple-600 hover:bg-purple-50 transition-all duration-300"
+              onClick={onClick} 
+              className="bg-purple-600 text-white z-50 hover:bg-purple-700 transition-all duration-300 cursor-pointer"
             >
               Browse Current Shows
             </Button>

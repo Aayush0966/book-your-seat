@@ -10,28 +10,49 @@ import {
     Legend,
     YAxis,
     CartesianGrid,  } from "recharts";
-
+import { useShow } from "@/context/showContext";
 
 const ChartsSection = () => {
+    const { bookings } = useShow();
 
-    const revenueData = [
-        { name: 'Jan', revenue: 45000 },
-        { name: 'Feb', revenue: 52000 },
-        { name: 'Mar', revenue: 48000 },
-        { name: 'Apr', revenue: 61000 },
-        { name: 'May', revenue: 55000 },
-        { name: 'Jun', revenue: 67000 },
-      ];
-    
-      const occupancyData = [
-        { name: 'Mon', occupancy: 65 },
-        { name: 'Tue', occupancy: 58 },
-        { name: 'Wed', occupancy: 72 },
-        { name: 'Thu', occupancy: 75 },
-        { name: 'Fri', occupancy: 89 },
-        { name: 'Sat', occupancy: 95 },
-        { name: 'Sun', occupancy: 92 },
-      ];
+    // Calculate monthly revenue from bookings
+    const calculateMonthlyRevenue = () => {
+        if (!bookings || bookings.length === 0) return [];
+        
+        // Initialize monthly revenue data
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthlyRevenue = months.map(name => ({ name, revenue: 0 }));
+        
+        // Aggregate revenue by month
+        bookings.forEach(booking => {
+            // Convert booking date from timestamp to Date object
+            const date = new Date(booking.bookingDate);
+            const month = date.getMonth(); // 0-11
+            monthlyRevenue[month].revenue += booking.totalPrice;
+        });
+        
+        return monthlyRevenue;
+    };
+
+    // Calculate daily occupancy
+    const calculateDailyOccupancy = () => {
+        if (!bookings || bookings.length === 0) return [];
+        
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const dailyBookings = days.map(name => ({ name, occupancy: 0 }));
+        
+        // Count bookings by day of week
+        bookings.forEach(booking => {
+            const date = new Date(booking.bookingDate);
+            const day = date.getDay(); // 0-6 (Sunday-Saturday)
+            dailyBookings[day].occupancy += booking.seatsCount;
+        });
+        
+        return dailyBookings;
+    };
+
+    const revenueData = calculateMonthlyRevenue();
+    const occupancyData = calculateDailyOccupancy();
     
     return (
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">

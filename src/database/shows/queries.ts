@@ -1,7 +1,7 @@
 import { MovieWithShows, MovieDetails, Pricing, Showtime, Status, Price, Booking, Ticket, TicketStatus, SeatWithPrice, Coupon } from "@/types/movie";
 import prisma from "@/lib/prisma"; 
 import { Prisma, BookingStatus } from "@prisma/client"; // Import the BookingStatus enum
-import { generateBookingId, generateCouponId } from "@/lib/utils";
+import { generateCouponId } from "@/lib/utils";
 
 export const createMovie = async (movieDetails: MovieDetails) => {
     const movieData = {
@@ -305,7 +305,7 @@ export const createCoupon = async (coupon: Coupon) => {
             id: generateCouponId(),
             code: coupon.code,
             discount: coupon.discount,
-            expiryDate: Math.floor(new Date(coupon.expiryDate).getTime() / 1000), // Convert to UNIX timestamp
+            expiryDate: Math.floor(new Date(coupon.expiryDate).getTime() / 1000), 
             isActive: coupon.isActive,
             usageCount: 0
         }

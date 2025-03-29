@@ -82,7 +82,20 @@ export const fetchMovies = async (status: Status) => {
     try {
         const movies = await showQueries.fetchMoviesByStatus(status);
         if (!movies) return null;
-        return movies;
+        
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        
+        const moviesWithShows = await Promise.all(
+            movies.map(async (movie) => {
+                const movieWithShows = await showQueries.fetchMovieWithShowsById(movie.id!);
+                return movieWithShows;
+            })
+        );
+        
+        const filteredMovies = moviesWithShows.filter(movie => {
+            return movie?.shows.some(show => show.endDate > currentTimestamp);
+        });
+        return filteredMovies;
     } catch (error) {
         console.error('Error fetching movies with shows:', error);
         throw error;
