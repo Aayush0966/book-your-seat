@@ -9,15 +9,12 @@ export default function Footer() {
   
   return (
     <footer className="bg-black border-t border-[#ff0000]/10 py-16 relative overflow-hidden">
-      {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-[#ff0000]/5 rounded-full blur-3xl opacity-50"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#8b0000]/5 rounded-full blur-3xl opacity-50"></div>
       <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,transparent,black)] pointer-events-none"></div>
       
       <div className="container mx-auto px-4 relative z-10">
-        {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
-          {/* Column 1: Logo and company info */}
           <div className="space-y-5">
             <div className="flex items-center space-x-2">
               <div className="relative h-8 w-8 rounded-full bg-[#ff0000] flex items-center justify-center">
@@ -44,11 +41,10 @@ export default function Footer() {
             </div>
           </div>
           
-          {/* Column 2: Quick Links */}
           <div>
             <h3 className="font-semibold text-white text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              {['Contact us', 'Ticket Rate', 'Profile'].map((item, index) => (
+              {['Contact', 'Ticket Rate', 'Profile'].map((item, index) => (
                 <li key={index}>
                   <Link href={`/${item.toLowerCase().replace(' ', '-')}`} 
                     className="text-gray-400 hover:text-[#ff0000] transition-colors duration-200 text-sm flex items-center group">
@@ -60,7 +56,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Empty or Additional Links */}
           <div>
             <h3 className="font-semibold text-white text-lg mb-4">Resources</h3>
             <ul className="space-y-2">
@@ -76,7 +71,6 @@ export default function Footer() {
             </ul>
           </div>
           
-          {/* Column 4: Contact */}
           <div>
             <h3 className="font-semibold text-white text-lg mb-4">Stay Connected</h3>
             <p className="text-sm text-gray-400 mb-4">Subscribe for exclusive offers and updates</p>
@@ -114,7 +108,6 @@ export default function Footer() {
         
         <Separator className="bg-[#ff0000]/10 my-8" />
         
-        {/* Bottom footer with copyright and additional links */}
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
           <p className="mb-4 md:mb-0">© {currentYear} BookYourSeat. All rights reserved.</p>
           
@@ -131,7 +124,6 @@ export default function Footer() {
           </div>
         </div>
         
-        {/* Payment methods */}
         <div className="mt-10">
           <p className="text-center text-xs text-gray-500 mb-3">Supported payment methods</p>
           <div className="flex justify-center space-x-4">

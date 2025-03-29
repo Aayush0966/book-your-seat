@@ -1,9 +1,10 @@
 'use client'
 import MovieCard from "./MovieCard";
-import { Film, ChevronRight, Popcorn, Clapperboard } from "lucide-react";
+import { Film, ChevronRight, Clapperboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Movie } from "@/types/movie";
 import { motion } from "framer-motion";
+import React from "react";
 
 interface NowShowingSectionProps {
   shows: Movie[];

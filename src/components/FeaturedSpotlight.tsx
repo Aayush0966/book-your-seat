@@ -9,7 +9,6 @@ export default function FeaturedSpotlight({ show }: { show: Movie }) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#000000]/30 via-[#000000]/20 to-secondary/20 shadow-xl">
-        {/* Background image with improved loading and animation */}
         <div className="absolute inset-0 z-0">
           <Image
             src={show.backdropUrl || "/api/placeholder/1200/600"}
@@ -22,13 +21,11 @@ export default function FeaturedSpotlight({ show }: { show: Movie }) {
           />
         </div>
         
-        {/* Improved gradient overlays for better text readability */}
         <div className="absolute inset-0  to-transparent backdrop-blur-sm z-[1]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(0,0,0,0.85)_0%,transparent_70%)] z-[1]" />
         
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 p-6 sm:p-8 md:p-12 lg:p-16">
           <div className="flex flex-col justify-center">
-            {/* Animated badge */}
             <Badge 
               variant="outline" 
               className="w-fit mb-6 bg-indigo-900/80 backdrop-blur-sm border-indigo-400 text-indigo-50 py-1 px-3 animate-pulse"
@@ -36,12 +33,10 @@ export default function FeaturedSpotlight({ show }: { show: Movie }) {
               Featured Show
             </Badge>
             
-            {/* Improved title with better gradient and animation */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-blue-200 drop-shadow-md">
               {show.title}
             </h1>
             
-            {/* Reworked metadata badges with improved contrast and spacing */}
             <div className="flex flex-wrap items-center gap-3 mb-6 text-sm">
               <div className="flex items-center gap-1.5 bg-amber-600/90 px-3 py-1.5 rounded-full text-white shadow-md">
                 <Star className="w-4 h-4 text-amber-200 fill-amber-200" />
@@ -57,12 +52,10 @@ export default function FeaturedSpotlight({ show }: { show: Movie }) {
               </div>
             </div>
             
-            {/* Description with improved readability */}
             <p className="mb-8 text-base md:text-lg text-gray-100 leading-relaxed backdrop-blur-sm bg-black/20 p-4 rounded-md max-w-xl">
               {show.description}
             </p>
             
-            {/* Enhanced call-to-action buttons */}
             <div className="flex flex-wrap gap-4">
               <Link href={`/show/${show.id}`}>
                 <Button 
@@ -74,31 +67,19 @@ export default function FeaturedSpotlight({ show }: { show: Movie }) {
                 </Button>
               </Link>
               
-              {/* Watch trailer button */}
-              <Button 
-                className="bg-gray-800/80 hover:bg-gray-700/90 text-white font-medium px-6 py-5 text-base md:text-lg shadow-lg transition-all duration-300 flex items-center gap-2 rounded-full backdrop-blur-sm border border-gray-700 hover:border-gray-500"
-                variant="outline"
-                aria-label="Watch trailer"
-              >
-                <PlayCircle className="w-5 h-5" />
-                <span>Watch Trailer</span>
-              </Button>
-              
-              {/* More info button */}
               <Link href={`/show/${show.id}/details`}>
                 <Button 
-                  className="bg-transparent hover:bg-gray-800/50 text-white font-medium px-6 py-5 text-base md:text-lg transition-all duration-300 flex items-center gap-2 rounded-full border border-gray-500"
+                  className="bg-transparent hover:bg-gray-800/50 text-white font-medium px-6 py-5 text-base md:text-lg transition-all duration-300 flex items-center gap-2 rounded-full border border-gray-500 hover:border-gray-400"
                   variant="outline"
                   aria-label="More information about this show"
                 >
-                  <Info className="w-5 h-5" />
-                  <span>More Info</span>
+                  <Info className="w-5 h-5 text-gray-300" />
+                  <span className="text-sm text-gray-300">More Info</span>
                 </Button>
               </Link>
             </div>
           </div>
           
-          {/* Enhanced poster with better hover effects and accessibility */}
           <div className="relative aspect-[2/3] mx-auto max-w-xs md:max-w-none group">
             <div className="absolute inset-0 rounded-xl overflow-hidden shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:rotate-1 group-hover:shadow-indigo-500/30">
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>

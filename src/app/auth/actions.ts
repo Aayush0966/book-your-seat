@@ -6,7 +6,7 @@ import { AuthError } from "next-auth";
 
 export const verifyUser = async (credentials: CredentialsType) => {
   try {
-    const user = await signIn("credentials", {
+      await signIn("credentials", {
       ...credentials,
       redirect: false, // Prevent automatic redirect
     });
