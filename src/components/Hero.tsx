@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Play, ChevronLeft, ChevronRight, AlertCircle, Clock } from "lucide-react";
+import { Play, ChevronLeft, ChevronRight, AlertCircle, Clock, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { nowPlayingApiUrl } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -86,14 +86,39 @@ const Hero = () => {
 
   if (isLoadingMovies) {
     return (
-      <div className="relative w-full h-[calc(100vh-4rem)] overflow-hidden bg-black mt-16">
-        <Skeleton className="w-full h-full" />
-        <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto px-4 md:px-8 lg:px-20">
+      <div className="relative w-full h-[calc(100vh-4rem)] overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 mt-16">
+        {/* Animated background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 animate-pulse" />
+        
+        {/* Loading spinner and content */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center space-y-6">
+            {/* Main loading spinner */}
+            <div className="relative">
+              <Loader2 className="w-16 h-16 text-primary animate-spin mx-auto" />
+              <div className="absolute inset-0 w-16 h-16 border-4 border-primary/20 rounded-full mx-auto animate-pulse" />
+            </div>
+            
+            {/* Loading text */}
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-white">Loading Movies</h2>
+              <p className="text-gray-400">Fetching the latest movies for you...</p>
+            </div>
+            
+            {/* Loading dots animation */}
+            <div className="flex justify-center space-x-1">
+              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            </div>
+          </div>
+        </div>
+        
+        {/* Optional: Skeleton preview in background */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="container mx-auto px-4 md:px-8 lg:px-20 h-full flex items-center">
             <div className="max-w-3xl space-y-6">
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-8 w-32 rounded-full" />
-              </div>
+              <Skeleton className="h-8 w-32 rounded-full" />
               <Skeleton className="h-16 w-full max-w-2xl" />
               <Skeleton className="h-20 w-full" />
               <div className="flex gap-4 pt-4">

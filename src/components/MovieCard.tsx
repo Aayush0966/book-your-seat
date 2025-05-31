@@ -1,10 +1,10 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Movie } from '@/types/movie';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Clock, Calendar, Eye, Ticket, Bell } from 'lucide-react';
+import { Clock, Calendar, Eye, Ticket, Bell, Loader2 } from 'lucide-react';
 
 interface MovieCardProps {
   movie: Movie;
@@ -12,11 +12,19 @@ interface MovieCardProps {
 
 const MovieCard = ({ movie }: MovieCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isBookingLoading, setIsBookingLoading] = useState(false);
   const router = useRouter();
 
   if (!movie) return null;
 
   const { title, posterUrl, duration, releaseDate, genres, description } = movie;
+
+  // Reset loading state when component unmounts or after navigation
+  useEffect(() => {
+    return () => {
+      setIsBookingLoading(false);
+    };
+  }, []);
 
   const calculateDaysUntil = (date: string): number => {
     const today = new Date();
@@ -28,6 +36,32 @@ const MovieCard = ({ movie }: MovieCardProps) => {
   const daysUntil = calculateDaysUntil(new Date(releaseDate).toISOString());
   const isReleased = daysUntil <= 0;
 
+  const handleCardClick = () => {
+    if (!isBookingLoading) {
+      router.push(`/show/${movie.id}`);
+    }
+  };
+
+  const handleBookNowClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    if (isReleased && !isBookingLoading) {
+      setIsBookingLoading(true);
+      // Navigate immediately to show loading state
+      router.push(`/show/${movie.id}`);
+      
+      // Reset loading state after a delay in case navigation fails
+      setTimeout(() => {
+        setIsBookingLoading(false);
+      }, 3000);
+    }
+  };
+
+  const handleNotifyClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    // Handle notify me functionality here
+    console.log('Notify me clicked for:', title);
+  };
+
   return (
     <motion.div
       className="relative w-full h-[450px] rounded-xl overflow-hidden cursor-pointer group"
@@ -35,7 +69,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
       transition={{ duration: 0.2 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      onClick={() => router.push(`/show/${movie.id}`)}
+      onClick={handleCardClick}
     >
       {/* Poster Image with Gradient Overlay */}
       <div className="relative w-full h-full">
@@ -104,19 +138,30 @@ const MovieCard = ({ movie }: MovieCardProps) => {
           {/* Action Buttons */}
           <div className="flex items-center space-x-3 pt-2">
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium flex items-center justify-center space-x-2 ${
+              whileHover={{ scale: isBookingLoading ? 1 : 1.05 }}
+              whileTap={{ scale: isBookingLoading ? 1 : 0.95 }}
+              onClick={isReleased ? handleBookNowClick : handleNotifyClick}
+              disabled={isBookingLoading}
+              className={`flex-1 py-2 px-4 rounded-lg font-medium flex items-center justify-center space-x-2 transition-all duration-200 ${
                 isReleased
-                  ? 'bg-primary text-white hover:bg-primary/90'
-                  : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                  ? isBookingLoading
+                    ? 'bg-primary/70 text-white cursor-not-allowed'
+                    : 'bg-primary text-white hover:bg-primary/90'
+                  : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-500 hover:to-blue-500'
               }`}
             >
               {isReleased ? (
-                <>
-                  <Ticket className="w-4 h-4" />
-                  <span>Book Now</span>
-                </>
+                isBookingLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Loading...</span>
+                  </>
+                ) : (
+                  <>
+                    <Ticket className="w-4 h-4" />
+                    <span>Book Now</span>
+                  </>
+                )
               ) : (
                 <>
                   <Bell className="w-4 h-4" />
@@ -128,6 +173,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               className="p-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20"
+              onClick={(e) => e.stopPropagation()}
             >
               <Eye className="w-5 h-5 text-white" />
             </motion.button>
