@@ -166,7 +166,6 @@ const ForgotPassword = ({data}: {data: { code: string | null, email: string | nu
 
     useEffect(() => {
         if (data?.code && data?.email) {
-            console.log(data.code, data.email)
             setEmail(data.email);
             otpForm.setValue('otp', data.code.toString());
             const timer = setTimeout(() => {

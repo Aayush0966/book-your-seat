@@ -73,8 +73,6 @@ export const verifyCode = async (email: string, code: number) => {
         success: false,
         error: 'user not found'
     }
-    console.log(user.otp, code)
-    console.log(user.otp == code)
     if (user.otp != code) {
         return {
             success: false,
@@ -94,16 +92,13 @@ export const verifyCode = async (email: string, code: number) => {
 }
 
 export const updateNewPassword = async (email: string, password: string, otp: number) => {
-    console.log(`Received request to update password for email: ${email} with OTP: ${otp}`);
     const user = await userQueries.getUserByEmail(email);
     if (!user) {
-        console.log('User not found');
         return {
             success: false,
             error: 'user not found'
         };
     }
-    console.log('User found:', user);
     // if (user.otp !== otp) {
     //     console.log('OTP is incorrect');
     //     return {
@@ -119,17 +114,13 @@ export const updateNewPassword = async (email: string, password: string, otp: nu
     //     };
     // }
     const hashedPass = await saltAndHashPassword(password);
-    console.log(`Password hashed: ${hashedPass}`);
     const updatedUser = await userQueries.updatePassword(email, hashedPass);
-    console.log('User after password update:', updatedUser);
     if (!updatedUser) {
-        console.log('Error updating password');
         return {
             success: false,
             error: 'something went wrong'
         };
     }
-    console.log('Password changed successfully');
     return {
         success: true,
         message: 'password changed successfully'

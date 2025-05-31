@@ -33,7 +33,6 @@ export const addMovieAndShow = async (movieDetails: MovieDetails) => {
             })
         );
 
-        console.log('New movie created:', newMovie);
         return newMovie;
     } catch (error) {
         throw error;
@@ -105,16 +104,13 @@ export const fetchMovies = async (status: Status) => {
 export const bookShow = async (bookingDetails: BookingRequest) => {
     const session = await auth();
     const seatsCount = bookingDetails.seatsBooked.length;
-    console.log('Checking if seats are already booked...');
     const booked = await Promise.all(
         bookingDetails.seatsBooked.map(async (seat) => {
             const booking = await showQueries.fetchBookingBySeat(seat.seat, bookingDetails.selectedTime, bookingDetails.bookingDate);
-            console.log(`Seat ${seat.seat} booked status: ${!!booking}`);
             if (booking) return true;
             return false;
         })
     );
-    console.log('Booked seats status:', booked);
 
     if (booked.includes(true)) {
         return {

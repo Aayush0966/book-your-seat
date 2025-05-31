@@ -5,8 +5,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ movieI
     const movieId = (await params).movieId;
     const { status } = await req.json();
 
-    console.log(movieId, status)
-
     if (!movieId) {
         return NextResponse.json({ error: 'Invalid movie ID' }, { status: 400 });
     }

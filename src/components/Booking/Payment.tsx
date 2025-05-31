@@ -55,7 +55,6 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
       const response = await axios.get(`/api/coupons?code=${couponCode}`)
       if (response.status == 200) {
         const discount  = response.data.discount;
-        console.log(discount)
         const discountAmount = Math.floor(originalAmount * (discount / 100));
         setDiscount(discountAmount)
         setAppliedCoupon(couponCode)
@@ -106,7 +105,6 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
       const response = await axios.post('/api/booking', bookingDetails);
       if (response.status === 200) {
-        console.log('redirecting....');
         window.location.href = response.data.paymentUrl;
       }
     } catch (error) {
