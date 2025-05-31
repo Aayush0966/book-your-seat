@@ -103,6 +103,10 @@ export const fetchMovies = async (status: Status) => {
 
 export const bookShow = async (bookingDetails: BookingRequest) => {
     const session = await auth();
+    
+    // Check and cancel any expired pending bookings before checking seat availability
+    await showQueries.cancelExpiredPendingBookings();
+    
     const seatsCount = bookingDetails.seatsBooked.length;
     const booked = await Promise.all(
         bookingDetails.seatsBooked.map(async (seat) => {
@@ -166,8 +170,35 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
 }
 
 export const fetchBookingDetails = async (bookingId: string): Promise<BookingDetails | null> => {
+    // Get the current session to verify user authorization
+    const session = await auth();
+    if (!session?.user?.id) {
+        return null; // User not authenticated
+    }
+
+    // Check and cancel any expired pending bookings system-wide
+    await showQueries.cancelExpiredPendingBookings();
+
     const booking = await showQueries.fetchBookingById(bookingId);
     if (!booking) return null;
+
+    // Security check: Ensure the booking belongs to the current user
+    const currentUserId = parseInt(session.user.id);
+    if (booking.userId !== currentUserId) {
+        return null; // Booking doesn't belong to the current user
+    }
+
+    // Check if this specific booking has expired and should be cancelled
+    const thirtyMinutesAgo = Math.floor((Date.now() - 30 * 60 * 1000) / 1000);
+    if (booking.bookingStatus === 'PENDING' && booking.bookingDate < thirtyMinutesAgo) {
+        // Cancel this specific booking if it's expired
+        await showQueries.cancelExpiredPendingBookings();
+        // Fetch the updated booking
+        const updatedBooking = await showQueries.fetchBookingById(bookingId);
+        if (updatedBooking) {
+            booking.bookingStatus = updatedBooking.bookingStatus;
+        }
+    }
 
     const showDetails = await showQueries.fetchBookingWithShowById(booking.id);
     if (!showDetails) return null;
@@ -186,17 +217,34 @@ export const fetchBookingDetails = async (bookingId: string): Promise<BookingDet
 }
 
 export const fetchShowDetailsByTicketId = async (ticketId: string) => {
+    // Get the current session to verify user authorization
+    const session = await auth();
+    if (!session?.user?.id) {
+        return null; // User not authenticated
+    }
+
     const ticket = await showQueries.fetchTicketById(ticketId);
     if (!ticket) return null;
-    const booking = await showQueries.fetchBookingWithShowById(ticket.bookingId);
+
+    // Get the booking to verify ownership
+    const booking = await showQueries.fetchBookingById(ticket.bookingId);
     if (!booking) return null;
+
+    // Security check: Ensure the ticket's booking belongs to the current user
+    const currentUserId = parseInt(session.user.id);
+    if (booking.userId !== currentUserId) {
+        return null; // Ticket doesn't belong to the current user
+    }
+
+    const showDetails = await showQueries.fetchBookingWithShowById(ticket.bookingId);
+    if (!showDetails) return null;
 
     const ticketDetails: TicketDetails = {
         ...ticket,
-        movieName: booking.movieName!,
-        date: booking.date,
-        time: booking.time,
-        hallNumber: booking.hallNumber,
+        movieName: showDetails.movieName!,
+        date: showDetails.date,
+        time: showDetails.time,
+        hallNumber: showDetails.hallNumber,
         seats: [
             {
                 seat: ticket.seatNumber,
@@ -224,5 +272,21 @@ export const validateCoupon = async (couponCode: string) => {
     return {
         success: true,
         discount: coupon.discount
+    }
+}
+
+export const checkAndCancelExpiredBookings = async () => {
+    try {
+        const result = await showQueries.cancelExpiredPendingBookings();
+        return {
+            success: true,
+            ...result
+        };
+    } catch (error) {
+        console.error('Error checking expired bookings:', error);
+        return {
+            success: false,
+            error: 'Failed to check expired bookings'
+        };
     }
 }

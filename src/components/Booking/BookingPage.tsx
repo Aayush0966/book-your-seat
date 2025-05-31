@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { BookingDetails } from '@/types/movie';
 import { Calendar, MapPin, Ticket, CreditCard, Download, Check, Clock, Share2, ChevronDown, AlertTriangle, X, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { formatDate, formatTime } from '@/lib/utils';
+import { formatDate, formatTime, isBookingExpired } from '@/lib/utils';
 import QRCode from '../ui/QRCode';
 import { useReactToPrint } from 'react-to-print';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import {
   Alert,
   AlertDescription,
 } from "@/components/ui/alert";
+import axios from 'axios';
 
 const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => {
   const bookingRef = useRef<HTMLDivElement>(null);
@@ -19,6 +20,8 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
   const [ticketsSubtotal, setTicketsSubtotal] = useState(0);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [currentBookingStatus, setCurrentBookingStatus] = useState(bookingDetails.bookingStatus);
+  const [showExpirationAlert, setShowExpirationAlert] = useState(false);
   
   // Calculate subtotal and discount on component mount
   useEffect(() => {
@@ -30,6 +33,30 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
     setDiscountAmount(discount);
     setDiscountPercentage(percentage);
   }, [bookingDetails]);
+
+  // Check for expired bookings when component mounts
+  useEffect(() => {
+    const checkExpiredBookings = async () => {
+      try {
+        // Check if this booking was originally pending and might have expired
+        const originalStatus = bookingDetails.bookingStatus;
+        
+        if (isBookingExpired(bookingDetails.bookingDate, originalStatus)) {
+          // This booking should be expired, trigger cleanup
+          await axios.post('/api/cleanup-expired-bookings');
+          setCurrentBookingStatus('CANCELLED');
+          setShowExpirationAlert(true);
+          
+          // Hide the alert after 10 seconds
+          setTimeout(() => setShowExpirationAlert(false), 10000);
+        }
+      } catch (error) {
+        console.error('Error checking expired bookings:', error);
+      }
+    };
+
+    checkExpiredBookings();
+  }, [bookingDetails.bookingStatus, bookingDetails.bookingDate]);
   
   const handleDownload = useReactToPrint({
     contentRef: bookingRef,
@@ -79,7 +106,7 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
     }
   };
 
-  const status = bookingDetails.bookingStatus || 'CONFIRMED';
+  const status = currentBookingStatus || 'CONFIRMED';
   const currentStatus = statusConfig[status as keyof typeof statusConfig];
  
   return (
@@ -88,6 +115,14 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
         <Alert className="fixed top-4 right-4 w-auto bg-white dark:bg-gray-800 shadow-lg print:hidden">
           <AlertDescription>
             Booking details copied to clipboard!
+          </AlertDescription>
+        </Alert>
+      )}
+      {showExpirationAlert && (
+        <Alert className="fixed top-4 left-4 w-auto max-w-md bg-red-50 dark:bg-red-900/50 border-red-200 dark:border-red-800 shadow-lg print:hidden">
+          <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
+          <AlertDescription className="text-red-800 dark:text-red-200">
+            This booking has been automatically cancelled because payment was not completed within 30 minutes.
           </AlertDescription>
         </Alert>
       )}

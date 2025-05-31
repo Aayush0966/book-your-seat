@@ -38,6 +38,7 @@ const BookingHall: FC<BookingHallProps> = ({ movie }) => {
     const selectedDateTimestamp = Math.floor(new Date(selectedDate).getTime() / 1000);
     return selectedShow.bookings.some(booking => 
       booking.showDate === selectedDateTimestamp && 
+      booking.bookingStatus !== 'CANCELLED' &&
       (booking.seatsBooked as SeatWithPrice[]).some(seat => seat.seat === seatNumber)
     );
   };

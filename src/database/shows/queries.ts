@@ -244,8 +244,13 @@ export const fetchBookingWithShowById = async(bookingId: string) => {
 
 export const fetchBookingBySeat = async (seatNumber: string, showTime: number, bookingDate: number) => {
     const bookings = await fetchBookings();
-    const filteredBookings = bookings.filter((booking) => booking.show.showTime == showTime && booking.bookingDate == bookingDate);
-    const booking = filteredBookings.find((booking) => {
+    // Filter out cancelled bookings so their seats become available again
+    const activeBookings = bookings.filter((booking) => 
+        booking.show.showTime == showTime && 
+        booking.bookingDate == bookingDate &&
+        booking.bookingStatus !== 'CANCELLED'
+    );
+    const booking = activeBookings.find((booking) => {
         const seatsBooked: SeatWithPrice[] = booking?.seatsBooked as unknown as SeatWithPrice[];
         return seatsBooked.find((seat) => seat.seat == seatNumber);
     });
@@ -336,4 +341,62 @@ export const updateCouponUseCount = async(couponId: string) => {
             }
         }
     })
+}
+
+export const cancelExpiredPendingBookings = async () => {
+    try {
+        // Calculate 30 minutes ago timestamp
+        const thirtyMinutesAgo = Math.floor((Date.now() - 30 * 60 * 1000) / 1000);
+        
+        // Find all pending bookings older than 30 minutes
+        const expiredBookings = await prisma.booking.findMany({
+            where: {
+                bookingStatus: 'PENDING',
+                bookingDate: {
+                    lt: thirtyMinutesAgo
+                }
+            }
+        });
+
+        if (expiredBookings.length === 0) {
+            return { cancelledCount: 0, bookingIds: [] };
+        }
+
+        // Get booking IDs for batch operations
+        const expiredBookingIds = expiredBookings.map(booking => booking.id);
+
+        // Update bookings to CANCELLED status
+        await prisma.booking.updateMany({
+            where: {
+                id: {
+                    in: expiredBookingIds
+                }
+            },
+            data: {
+                bookingStatus: 'CANCELLED'
+            }
+        });
+
+        // Update associated tickets to CANCELLED status
+        await prisma.ticket.updateMany({
+            where: {
+                bookingId: {
+                    in: expiredBookingIds
+                }
+            },
+            data: {
+                status: 'CANCELLED'
+            }
+        });
+
+        console.log(`Cancelled ${expiredBookings.length} expired pending bookings:`, expiredBookingIds);
+        
+        return { 
+            cancelledCount: expiredBookings.length, 
+            bookingIds: expiredBookingIds 
+        };
+    } catch (error) {
+        console.error('Error cancelling expired bookings:', error);
+        throw error;
+    }
 }
