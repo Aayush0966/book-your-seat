@@ -5,6 +5,49 @@ import { fetchMovies } from "@/services/showServices";
 import FeaturedSpotlight from "@/components/FeaturedSpotlight";
 import Testimonials from "@/components/Testimonials";
 import { Star } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Book Your Seat - Premium Movie Ticket Booking",
+  description: "Book movie tickets online with ease. Choose from the latest movies, select your preferred seats, and enjoy a seamless booking experience. Premium cinema halls with comfortable seating.",
+  keywords: ["movie tickets", "cinema booking", "online booking", "movie theater", "film tickets", "seat selection", "entertainment"],
+  authors: [{ name: "Book Your Seat" }],
+  creator: "Book Your Seat",
+  publisher: "Book Your Seat",
+  openGraph: {
+    title: "Book Your Seat - Premium Movie Ticket Booking",
+    description: "Book movie tickets online with ease. Choose from the latest movies, select your preferred seats, and enjoy a seamless booking experience.",
+    url: "/home",
+    siteName: "Book Your Seat",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Book Your Seat - Movie Ticket Booking",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Book Your Seat - Premium Movie Ticket Booking",
+    description: "Book movie tickets online with ease. Choose from the latest movies and select your preferred seats.",
+    images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
 
 export default async function Home() {
   const activeShows = await fetchMovies('ACTIVE') || [];

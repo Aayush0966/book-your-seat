@@ -1,5 +1,28 @@
 import PaymentProcessor from '@/components/Booking/PaymentProcessor';
 import { PaymentMethod } from '@/types/movie';
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: Promise<{ paymentMethod: PaymentMethod }> }): Promise<Metadata> {
+  const paymentMethod = (await params).paymentMethod;
+  
+  return {
+    title: `Payment Processing - ${paymentMethod} | Book Your Seat`,
+    description: "Your payment is being processed. Please wait while we confirm your movie ticket booking.",
+    keywords: ["payment processing", "booking confirmation", "movie tickets", paymentMethod],
+    authors: [{ name: "Book Your Seat" }],
+    openGraph: {
+      title: "Payment Processing - Book Your Seat",
+      description: "Your payment is being processed for your movie ticket booking.",
+      url: `/paymentSuccess/${paymentMethod}`,
+      siteName: "Book Your Seat",
+      type: "website",
+    },
+    robots: {
+      index: false, // Payment pages should not be indexed
+      follow: false,
+    },
+  };
+}
 
 const Page = async ({ params }: {
   params: Promise<{ paymentMethod: PaymentMethod }>
