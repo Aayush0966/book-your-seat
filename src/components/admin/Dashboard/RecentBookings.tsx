@@ -1,11 +1,13 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import { Filter, Clock } from "lucide-react";
 import { useShow } from "@/context/showContext";
 import { formatDate } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const RecentBookings = () => {
-    const {bookings} = useShow();
+    const { bookings, isLoading } = useShow();
 
     // Sort bookings by creation date (newest first) and take only the first 3
     const recentBookings = bookings 
@@ -13,6 +15,38 @@ const RecentBookings = () => {
           .sort((a, b) => new Date(b.show?.createdAt).getTime() - new Date(a.show?.createdAt).getTime())
           .slice(0, 3)
       : [];
+
+    // Show skeleton loading for recent bookings
+    if (isLoading) {
+        return (
+            <Card className="lg:col-span-2 animate-pulse">
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Skeleton className="w-5 h-5" />
+                        <Skeleton className="h-6 w-32" />
+                    </div>
+                    <Skeleton className="h-8 w-20" />
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                <div className="flex-1">
+                                    <Skeleton className="h-4 w-32 mb-2" />
+                                    <Skeleton className="h-3 w-24 mb-1" />
+                                    <Skeleton className="h-3 w-20" />
+                                </div>
+                                <div className="text-right">
+                                    <Skeleton className="h-4 w-16 mb-1" />
+                                    <Skeleton className="h-3 w-12" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card className="lg:col-span-2">

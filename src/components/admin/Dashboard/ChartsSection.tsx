@@ -1,3 +1,4 @@
+'use client'
 import { Card, CardTitle, CardContent, CardHeader } from "@/components/ui/card";
 import { 
     ResponsiveContainer,  
@@ -16,9 +17,34 @@ import {
 } from "recharts";
 import { useShow } from "@/context/showContext";
 import { SeatWithPrice } from "@/types/movie";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ChartsSection = () => {
-    const { bookings, movies } = useShow();
+    const { bookings, movies, isLoading } = useShow();
+
+    // Show skeleton loading for charts
+    if (isLoading) {
+        return (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <Card className="animate-pulse">
+                    <CardHeader>
+                        <Skeleton className="h-6 w-48" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-80 w-full" />
+                    </CardContent>
+                </Card>
+                <Card className="animate-pulse">
+                    <CardHeader>
+                        <Skeleton className="h-6 w-48" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-80 w-full" />
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
 
     // Calculate monthly revenue from bookings using createdAt
     const calculateMonthlyRevenue = () => {

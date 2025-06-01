@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react';
 import {
   BarChart,
@@ -35,8 +36,17 @@ import ChartsSection from './ChartsSection';
 import UpcomingMovies from './UpcomingMovies';
 import RecentBookings from './RecentBookings';
 import HeaderSection from './HeaderSection';
+import { useShow } from '@/context/showContext';
+import AdminLoader from '../AdminLoader';
 
 const DashboardContent = () => {
+  const { isLoading } = useShow();
+
+  // Show dashboard skeleton while loading
+  if (isLoading) {
+    return <AdminLoader variant="dashboard" />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
       <div className="flex justify-between items-center mb-6">

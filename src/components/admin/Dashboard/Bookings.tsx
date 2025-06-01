@@ -18,10 +18,11 @@ import { PlusCircle, Percent, Calendar, RefreshCw, TicketCheck } from "lucide-re
 import toast from "react-hot-toast";
 import { Coupon } from "@/types/movie";
 import axios from "axios";
+import AdminLoader from '../AdminLoader';
 
 
 const Bookings = () => {
-  const { bookings } = useShow();
+  const { bookings, isLoading: contextLoading } = useShow();
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState("bookings");
   const [coupons, setCoupons] = useState<Coupon[]>([]);
@@ -139,6 +140,16 @@ const Bookings = () => {
       setIsLoading(false);
     }
   };
+
+  // Show loading state while context data is being fetched
+  if (contextLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <AdminLoader variant="stats" />
+        <AdminLoader variant="table" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">

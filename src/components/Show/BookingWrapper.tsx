@@ -42,7 +42,7 @@ const BookingWrapper: React.FC<BookingWrapperProps> = ({ movie }) => {
   if (isInitializing) {
     return (
       <div 
-        className="min-h-screen pt-24 pb-8 px-4 sm:px-6 lg:px-8 flex items-center justify-center"
+        className="min-h-screen pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8 px-3 sm:px-4 md:px-6 lg:px-8 flex items-center justify-center"
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${movie.backdropUrl})`,
           backgroundSize: 'cover',
@@ -55,17 +55,17 @@ const BookingWrapper: React.FC<BookingWrapperProps> = ({ movie }) => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="text-center space-y-6"
+          className="text-center space-y-4 sm:space-y-6"
         >
           <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary/10 rounded-full blur-xl animate-pulse"></div>
-            <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-full">
+            <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-primary/20 to-primary/10 rounded-full blur-xl animate-pulse"></div>
+            <div className="relative p-4 sm:p-6 bg-white/10 backdrop-blur-sm rounded-full">
               <LoadingSpinner size="lg" className="text-white" />
             </div>
           </div>
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-white">{movie.title}</h2>
-            <p className="text-white/80">Setting up your booking experience...</p>
+          <div className="space-y-1 sm:space-y-2">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white">{movie.title}</h2>
+            <p className="text-sm sm:text-base text-white/80">Setting up your booking experience...</p>
           </div>
         </motion.div>
       </div>
@@ -77,7 +77,7 @@ const BookingWrapper: React.FC<BookingWrapperProps> = ({ movie }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen pt-24 pb-8 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8 px-3 sm:px-4 md:px-6 lg:px-8"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${movie.backdropUrl})`,
         backgroundSize: 'cover',

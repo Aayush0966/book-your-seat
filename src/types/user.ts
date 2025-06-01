@@ -7,7 +7,7 @@ export type UserType = {
     fullName: string;
     email: string;
     role?: Role;
-    contactNumber: bigint | null
+    contactNumber: number | null
     otp?: number | null;
     otpExpiresAt?: bigint | null;
     createdAt?: Date;

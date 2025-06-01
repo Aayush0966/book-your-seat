@@ -9,6 +9,9 @@ interface ShowContextProps {
     shows: Show[] | null;
     movies: Movie[] | null;
     users: UserType[] | null;
+    isLoading: boolean;
+    error: string | null;
+    refetchData: () => Promise<void>;
 }
 
 const ShowContext = createContext<ShowContextProps | undefined>(undefined);
@@ -19,8 +22,12 @@ export const ShowProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [shows, setShows] = useState<Show[] | null>(null);
     const [movies, setMovies] = useState<Movie[] | null>(null);
     const [users, setUsers] = useState<UserType[] | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchAllData = async () => {
+        setIsLoading(true);
+        setError(null);
         try {
             const [movies, users, bookings, shows] = await Promise.all([
                 fetchMovies(),
@@ -34,6 +41,9 @@ export const ShowProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setShows(shows);
         } catch (error) {
             console.error('Failed to fetch data:', error);
+            setError('Failed to load data. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -42,7 +52,7 @@ export const ShowProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, []);
 
     return (
-        <ShowContext.Provider value={{ movies, shows, bookings, users  }}>
+        <ShowContext.Provider value={{ movies, shows, bookings, users, isLoading, error, refetchData: fetchAllData }}>
             {children}
         </ShowContext.Provider>
     );

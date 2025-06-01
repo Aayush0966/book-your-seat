@@ -78,7 +78,7 @@ Before running this project, make sure you have:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/book-your-seat.git
+git clone https://github.com/Aayush0966/book-your-seat.git
 cd book-your-seat
 ```
 
@@ -107,6 +107,9 @@ GOOGLE_CLIENT_SECRET="your-google-client-secret"
 EMAILJS_SERVICE_ID="your-emailjs-service-id"
 EMAILJS_TEMPLATE_ID="your-emailjs-template-id"
 EMAILJS_PUBLIC_KEY="your-emailjs-public-key"
+
+# Admin Email Configuration
+NEXT_PUBLIC_MY_EMAIL="your-email@example.com"  # Optional: Set your email to receive admin OTPs
 
 # Payment Gateways
 ESEWA_MERCHANT_ID="your-esewa-merchant-id"
@@ -179,6 +182,23 @@ book-your-seat/
 2. **Manage Movies**: Add new movies, update details, and manage showtimes
 3. **Monitor Bookings**: View real-time booking statistics and user activity
 4. **Configure Settings**: Manage screens, pricing, and system settings
+
+## 🔑 Admin Access
+
+### Default Admin Credentials
+- **Email**: `admin@bookyourseat.com`
+- **Default OTP**: `101010`
+
+### Custom Admin Email Setup
+To receive admin OTPs in your own email inbox, add your email to the environment variables:
+
+```env
+NEXT_PUBLIC_MY_EMAIL="your-email@example.com"
+```
+
+When this environment variable is set, admin OTPs will be sent to your specified email address instead of using the default OTP (101010).
+
+**Note**: Make sure your EmailJS configuration is properly set up to receive emails at your specified address.
 
 ## 🔧 Available Scripts
 

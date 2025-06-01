@@ -25,13 +25,25 @@ const Sidebar = ({ activeItem, setActiveItem }: SidebarProps) => {
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const {bookings, users, movies} = useShow()
+  const { bookings, users, movies, isLoading } = useShow()
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', badge: null },
-    { icon: Film, label: 'Movies', badge: movies && movies.length > 0 ? movies.length : null },
-    { icon: Ticket, label: 'Bookings', badge: bookings && bookings.length > 0? bookings.length : null },
-    { icon: Users, label: 'Users', badge: users && users.length },
+    { 
+      icon: Film, 
+      label: 'Movies', 
+      badge: !isLoading && movies && movies.length > 0 ? movies.length : null 
+    },
+    { 
+      icon: Ticket, 
+      label: 'Bookings', 
+      badge: !isLoading && bookings && bookings.length > 0 ? bookings.length : null 
+    },
+    { 
+      icon: Users, 
+      label: 'Users', 
+      badge: !isLoading && users && users.length > 0 ? users.length : null 
+    },
     { icon: Settings, label: 'Settings', badge: null },
   ];
 

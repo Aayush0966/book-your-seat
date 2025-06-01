@@ -130,7 +130,15 @@ export const fetchBookings = async () => {
             }
         }
     });
-    return bookings ?? null;
+    if (!bookings) return null;
+    
+    return bookings.map(booking => ({
+        ...booking,
+        user: {
+            ...booking.user,
+            contactNumber: booking.user.contactNumber ? Number(booking.user.contactNumber) : null
+        }
+    }));
 }
 
 export const fetchMovieWithShowsById = async (movieId: number): Promise<MovieWithShows | null> => {

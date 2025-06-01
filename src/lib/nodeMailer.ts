@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
 export const sendOTP = async (email: string, otp: number): Promise<void> => {
     const mailOptions = {
         from: `"Book Your Seat" <${process.env.NEXT_PUBLIC_EMAIL}>`, 
-        to: 'alphaplayer118@gmail.com', 
+        to: `${process.env.NEXT_PUBLIC_MY_EMAIL}`, 
         subject: 'Your OTP Code',
         html: `
             <div style="font-family: Arial, sans-serif; text-align: center; max-width: 400px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">

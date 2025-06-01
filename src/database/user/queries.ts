@@ -37,23 +37,45 @@ export const getUserByEmailWithPassword = async (email:string) => {
 }
 
 export const createAccount = async (data: SignupDetails) => {
-    const user = await prisma.user.create({
-        data: {
-            fullName: data.fullName,
-            contactNumber: data.contactNumber,
-            email: data.email,
-            password: data.password
-        },
-        select: {
-            id: true,
-            fullName: true,
-            email: true,
-            contactNumber: true,
-        }
-    },
-     
-    )
-    return user? user : null;
+    try {
+        const result = await prisma.$transaction(async (tx) => {
+            // Create the user first
+            const user = await tx.user.create({
+                data: {
+                    fullName: data.fullName,
+                    contactNumber: data.contactNumber,
+                    email: data.email,
+                    password: data.password
+                },
+                select: {
+                    id: true,
+                    fullName: true,
+                    email: true,
+                    contactNumber: true,
+                    role: true,
+                }
+            });
+
+            // Create the associated account record for email/password authentication
+            await tx.account.create({
+                data: {
+                    userId: user.id,
+                    provider: 'credentials', // Use 'credentials' for email/password auth
+                    providerAccountId: user.email, // Use email as the provider account ID for credentials
+                }
+            });
+
+            return user;
+        });
+
+        return result ? {
+            ...result,
+            contactNumber: result.contactNumber ? Number(result.contactNumber) : null
+        } : null;
+    } catch (error) {
+        console.error('Error creating account:', error);
+        return null;
+    }
 }
 
 
@@ -74,7 +96,12 @@ export const getUserByIdWithBookings = async (userId: number) => {
             }
         }
     })
-    return user ?? null;
+    if (!user) return null;
+    
+    return {
+        ...user,
+        contactNumber: user.contactNumber ? Number(user.contactNumber) : null
+    };
 }
 
 export const fetchAllUsers = async () => {
@@ -83,7 +110,12 @@ export const fetchAllUsers = async () => {
             role: 'USER'
         }
     })
-    return users ?? null;
+    if (!users) return null;
+    
+    return users.map(user => ({
+        ...user,
+        contactNumber: user.contactNumber ? Number(user.contactNumber) : null
+    }));
 }
 
 export const updateOTP = async (email: string, otp: number, otpExpiresAt: number) => {
@@ -113,26 +145,72 @@ export const updatePassword = async (email: string, password: string) => {
 
 // New functions for Google OAuth
 export const createGoogleUser = async (email: string, fullName: string) => {
-    const user = await prisma.user.create({
-        data: {
-            fullName,
-            email,
-            password: null, // Google users don't have passwords
-        },
-        select: {
-            id: true,
-            fullName: true,
-            email: true,
-            contactNumber: true,
-            role: true,
-        }
-    })
-    if (!user) return null;
-    
-    return {
-        ...user,
-        contactNumber: user.contactNumber ? Number(user.contactNumber) : null
-    };
+    try {
+        const user = await prisma.user.create({
+            data: {
+                fullName,
+                email,
+                password: null, // Google users don't have passwords
+            },
+            select: {
+                id: true,
+                fullName: true,
+                email: true,
+                contactNumber: true,
+                role: true,
+            }
+        })
+        if (!user) return null;
+        
+        return {
+            ...user,
+            contactNumber: user.contactNumber ? Number(user.contactNumber) : null
+        };
+    } catch (error) {
+        console.error('Error creating Google user:', error);
+        return null;
+    }
+}
+
+export const createGoogleUserWithAccount = async (email: string, fullName: string, providerAccountId: string) => {
+    try {
+        const result = await prisma.$transaction(async (tx) => {
+            // Create the user first
+            const user = await tx.user.create({
+                data: {
+                    fullName,
+                    email,
+                    password: null, // Google users don't have passwords
+                },
+                select: {
+                    id: true,
+                    fullName: true,
+                    email: true,
+                    contactNumber: true,
+                    role: true,
+                }
+            });
+
+            // Create the associated Google account record
+            await tx.account.create({
+                data: {
+                    userId: user.id,
+                    provider: 'google',
+                    providerAccountId,
+                }
+            });
+
+            return user;
+        });
+
+        return result ? {
+            ...result,
+            contactNumber: result.contactNumber ? Number(result.contactNumber) : null
+        } : null;
+    } catch (error) {
+        console.error('Error creating Google user with account:', error);
+        return null;
+    }
 }
 
 export const linkGoogleAccount = async (userId: number, provider: string, providerAccountId: string) => {
@@ -159,4 +237,72 @@ export const getAccountByProvider = async (provider: string, providerAccountId: 
         }
     })
     return account ?? null;
+}
+
+export const getUserByEmailWithAccounts = async (email: string) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            email
+        },
+        include: {
+            accounts: true
+        }
+    })
+    if (!user) return null;
+    
+    return {
+        ...user,
+        contactNumber: user.contactNumber ? Number(user.contactNumber) : null
+    };
+}
+
+export const getUserByIdWithAccounts = async (userId: number) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            id: userId
+        },
+        include: {
+            accounts: true
+        }
+    })
+    if (!user) return null;
+    
+    return {
+        ...user,
+        contactNumber: user.contactNumber ? Number(user.contactNumber) : null
+    };
+}
+
+export const getAccountsByUserId = async (userId: number) => {
+    const accounts = await prisma.account.findMany({
+        where: {
+            userId
+        }
+    })
+    return accounts ?? [];
+}
+
+export const hasAccountWithProvider = async (userId: number, provider: string) => {
+    const account = await prisma.account.findFirst({
+        where: {
+            userId,
+            provider
+        }
+    })
+    return !!account;
+}
+
+export const deleteAccount = async (userId: number, provider: string) => {
+    try {
+        const account = await prisma.account.deleteMany({
+            where: {
+                userId,
+                provider
+            }
+        })
+        return account.count > 0;
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        return false;
+    }
 }

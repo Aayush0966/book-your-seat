@@ -14,13 +14,26 @@ import MovieForm from '../MovieForm';
 import MovieListing from "./MovieListing";
 import StatsCards from "./StatsCards";
 import HeaderSection from './HeaderSection';
+import { useShow } from '@/context/showContext';
+import AdminLoader from '../AdminLoader';
 
 const MovieManagement = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isLoading } = useShow();
 
   const handleClose = () => {
     setIsOpen(false);
   };
+
+  // Show loading state while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <AdminLoader variant="stats" />
+        <AdminLoader variant="table" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">

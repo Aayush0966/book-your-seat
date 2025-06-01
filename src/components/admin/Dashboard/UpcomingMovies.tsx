@@ -1,11 +1,13 @@
+'use client'
 import { Button } from '@/components/ui/button';
 import { Card, CardTitle, CardContent, CardHeader} from '@/components/ui/card';
 import { Calendar, Film } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useShow } from '@/context/showContext';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const UpcomingMovies = () => {
-    const {movies} = useShow()
+    const { movies, isLoading } = useShow()
 
     // Filter only upcoming movies and sort by release date (soonest first)
     const upcomingMovies = movies 
@@ -14,6 +16,34 @@ const UpcomingMovies = () => {
           .sort((a, b) => new Date(a.releaseDate * 1000).getTime() - new Date(b.releaseDate * 1000).getTime())
           .slice(0, 3)
       : [];
+
+    // Show skeleton loading for upcoming movies
+    if (isLoading) {
+        return (
+            <Card className="animate-pulse">
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Skeleton className="w-5 h-5" />
+                        <Skeleton className="h-6 w-32" />
+                    </div>
+                    <Skeleton className="h-8 w-20" />
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className="flex items-center space-x-3">
+                                <Skeleton className="h-10 w-10 rounded" />
+                                <div className="flex-1">
+                                    <Skeleton className="h-4 w-24 mb-1" />
+                                    <Skeleton className="h-3 w-16" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card>

@@ -34,9 +34,20 @@ import { useShow } from '@/context/showContext';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import StatsCards from './StatsCards';
 import HeaderSection from './HeaderSection';
+import AdminLoader from '../AdminLoader';
 
 const Users = () => {
-  const {users, bookings} = useShow();
+  const { users, bookings, isLoading } = useShow();
+
+  // Show loading state while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <AdminLoader variant="stats" />
+        <AdminLoader variant="table" />
+      </div>
+    );
+  }
 
   const getTotalBookings = (userId: number) => {
     return bookings?.filter((booking) => booking.userId === userId)

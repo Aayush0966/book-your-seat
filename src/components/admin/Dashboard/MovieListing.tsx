@@ -1,3 +1,4 @@
+'use client'
 import { Movie, Status } from "@/types/movie";
 import React, { useState } from "react";
 import { fetchMovies } from "./action";
@@ -15,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useShow } from "@/context/showContext";
 import Pagination from "@/components/ui/Pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const getStatusLabel = (status: Status) => {
     switch (status) {
@@ -39,7 +41,7 @@ const getStatusVariant = (status: Status) => {
 };
 
 const MovieListing = () => {
-    const { movies } = useShow();
+    const { movies, isLoading } = useShow();
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8; // Show 8 movies per page (2x4 grid)
 
@@ -84,6 +86,44 @@ const MovieListing = () => {
             });
         }
     };
+
+    // Show skeleton loading for movie listing
+    if (isLoading) {
+        return (
+            <Card className="mt-6">
+                <CardHeader>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Skeleton className="w-5 h-5" />
+                            <Skeleton className="h-6 w-32" />
+                        </div>
+                        <Skeleton className="h-4 w-24" />
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {[...Array(8)].map((_, i) => (
+                            <div key={i} className="bg-card rounded-lg shadow-lg overflow-hidden animate-pulse">
+                                <Skeleton className="h-[400px] w-full" />
+                                <div className="p-4 space-y-3">
+                                    <Skeleton className="h-6 w-3/4" />
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-full" />
+                                        <Skeleton className="h-4 w-full" />
+                                        <Skeleton className="h-4 w-2/3" />
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <Skeleton className="h-6 w-20" />
+                                        <Skeleton className="h-8 w-8" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card className="mt-6">

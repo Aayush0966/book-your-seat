@@ -1,10 +1,17 @@
+'use client'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useShow } from "@/context/showContext";
 import { Status } from "@/types/movie";
 import { Ticket, TrendingUp, TrendingDown, DollarSign, Users, Film, Clock, Minus } from "lucide-react";
+import AdminLoader from "../AdminLoader";
 
 const StatsCards = () => {
-    const {bookings, users, movies} = useShow();
+    const {bookings, users, movies, isLoading} = useShow();
+
+    // Show skeleton loading for stats cards
+    if (isLoading) {
+        return <AdminLoader variant="stats" />;
+    }
 
     const getTotalRevenue = () => {
         return bookings?.filter(booking => booking.bookingStatus !== 'CANCELLED')

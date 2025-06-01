@@ -12,6 +12,9 @@ export default {
     ],
     theme: {
         extend: {
+            screens: {
+                'xs': '475px',
+            },
             colors: {
                 // Main theme colors based on cinematic vibe
                 background: '#F6F6F4',
