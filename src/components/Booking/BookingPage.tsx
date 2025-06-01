@@ -110,43 +110,44 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
   const currentStatus = statusConfig[status as keyof typeof statusConfig];
  
   return (
-    <div className="min-h-screen mt-20 flex flex-col items-center justify-center w-full bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
+    <div className="min-h-screen mt-16 sm:mt-20 flex flex-col items-center justify-center w-full bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-3 sm:p-4">
       {showShareAlert && (
-        <Alert className="fixed top-4 right-4 w-auto bg-white dark:bg-gray-800 shadow-lg print:hidden">
-          <AlertDescription>
+        <Alert className="fixed top-4 right-4 w-auto max-w-xs sm:max-w-sm bg-white dark:bg-gray-800 shadow-lg print:hidden z-50">
+          <AlertDescription className="text-sm">
             Booking details copied to clipboard!
           </AlertDescription>
         </Alert>
       )}
       {showExpirationAlert && (
-        <Alert className="fixed top-4 left-4 w-auto max-w-md bg-red-50 dark:bg-red-900/50 border-red-200 dark:border-red-800 shadow-lg print:hidden">
+        <Alert className="fixed top-4 left-4 w-auto max-w-xs sm:max-w-md bg-red-50 dark:bg-red-900/50 border-red-200 dark:border-red-800 shadow-lg print:hidden z-50">
           <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
-          <AlertDescription className="text-red-800 dark:text-red-200">
+          <AlertDescription className="text-red-800 dark:text-red-200 text-sm">
             This booking has been automatically cancelled because payment was not completed within 30 minutes.
           </AlertDescription>
         </Alert>
       )}
-      <div className="max-w-3xl w-full space-y-2">
+      <div className="max-w-3xl w-full space-y-2 sm:space-y-3">
         <div className="flex gap-2 print:hidden mb-2">
           <Button
             onClick={() => handleDownload()}
-            className={`flex-1 bg-${currentStatus.buttonColor} hover:bg-${currentStatus.hoverButtonColor} text-white flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-all duration-200 hover:shadow-lg ${status === 'CANCELLED' ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex-1 bg-${currentStatus.buttonColor} hover:bg-${currentStatus.hoverButtonColor} text-white flex items-center justify-center space-x-2 px-3 sm:px-4 py-2 rounded-md transition-all duration-200 hover:shadow-lg text-sm sm:text-base ${status === 'CANCELLED' ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={status === 'CANCELLED'}
           >
             <Download className="w-4 h-4" />
-            <span>Download PDF</span>
+            <span className="hidden sm:inline">Download PDF</span>
+            <span className="sm:hidden">Download</span>
           </Button>
         </div>
         <div 
           ref={bookingRef} 
-          className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 space-y-4 transition-all duration-200 hover:shadow-xl ${status === 'CANCELLED' ? 'opacity-80' : ''}`}
+          className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 sm:p-4 space-y-3 sm:space-y-4 transition-all duration-200 hover:shadow-xl ${status === 'CANCELLED' ? 'opacity-80' : ''}`}
         >
           <div className="text-center border-b border-gray-200 dark:border-gray-700 pb-3">
             <div className={`inline-flex items-center justify-center ${currentStatus.headerBg} rounded-full p-1 mb-2`}>
               {currentStatus.icon}
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{bookingDetails.movieName}</h2>
-            <div className="flex items-center justify-center space-x-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{bookingDetails.movieName}</h2>
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2">
               <span className={`px-2 py-0.5 bg-${currentStatus.color}-100 dark:bg-${currentStatus.color}-900/50 text-${currentStatus.color}-700 dark:text-${currentStatus.color}-400 rounded-full text-sm font-medium`}>
                 {currentStatus.text}
               </span>
@@ -160,35 +161,35 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
               </p>
             )}
           </div>
-          <div className="grid md:grid-cols-3 gap-4 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3">
             <div className="text-center">
               <div className="flex flex-col items-center text-gray-600 dark:text-gray-300">
-                <Calendar className="w-5 h-5 mb-1" />
-                <span className="font-medium">Date</span>
-                <p className="mt-0.5">{formatDate(bookingDetails.showDate)}</p>
+                <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mb-1" />
+                <span className="font-medium text-sm sm:text-base">Date</span>
+                <p className="mt-0.5 text-sm sm:text-base">{formatDate(bookingDetails.showDate)}</p>
               </div>
             </div>
             <div className="text-center">
               <div className="flex flex-col items-center text-gray-600 dark:text-gray-300">
-                <Clock className="w-5 h-5 mb-1" />
-                <span className="font-medium">Time</span>
-                <p className="mt-0.5">{formatTime(bookingDetails.time)}</p>
+                <Clock className="w-4 h-4 sm:w-5 sm:h-5 mb-1" />
+                <span className="font-medium text-sm sm:text-base">Time</span>
+                <p className="mt-0.5 text-sm sm:text-base">{formatTime(bookingDetails.time)}</p>
               </div>
             </div>
             <div className="text-center">
               <div className="flex flex-col items-center text-gray-600 dark:text-gray-300">
-                <MapPin className="w-5 h-5 mb-1" />
-                <span className="font-medium">Venue</span>
-                <p className="mt-0.5">Hall {bookingDetails.hallNumber}</p>
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 mb-1" />
+                <span className="font-medium text-sm sm:text-base">Venue</span>
+                <p className="mt-0.5 text-sm sm:text-base">Hall {bookingDetails.hallNumber}</p>
               </div>
             </div>
           </div>
           <div className="py-2">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-lg font-semibold">Tickets</h3>
+              <h3 className="text-base sm:text-lg font-semibold">Tickets</h3>
               <button 
                 onClick={() => setIsTicketsExpanded(!isTicketsExpanded)}
-                className="print:hidden"
+                className="print:hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
               >
                 <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isTicketsExpanded ? 'transform rotate-180' : ''}`} />
               </button>
@@ -200,13 +201,13 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
                   <Link 
                     href={`/ticket/${ticket.ticketId}`} 
                     key={ticket.ticketId} 
-                    className={`flex justify-between items-center p-2 border border-gray-100 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200 ${status === 'CANCELLED' ? 'pointer-events-none' : ''}`}
+                    className={`flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 sm:p-3 border border-gray-100 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200 space-y-1 sm:space-y-0 ${status === 'CANCELLED' ? 'pointer-events-none' : ''}`}
                   >
                     <div>
-                      <p className="font-medium">{ticket.seatCategory} - Seat {ticket.seatNumber}</p>
+                      <p className="font-medium text-sm sm:text-base">{ticket.seatCategory} - Seat {ticket.seatNumber}</p>
                       <p className="text-xs text-gray-500">ID: {ticket.ticketId.slice(-6)}</p>
                     </div>
-                    <p className="font-semibold">NPR {ticket.price.toLocaleString()}</p>
+                    <p className="font-semibold text-sm sm:text-base self-start sm:self-auto">NPR {ticket.price.toLocaleString()}</p>
                   </Link>
                 ))}
               </div>
@@ -214,71 +215,71 @@ const BookingPage = ({ bookingDetails }: { bookingDetails: BookingDetails }) => 
           </div>
           {status !== 'CANCELLED' && (
             <div className="flex justify-center py-3">
-              <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+              <div className="bg-gray-50 dark:bg-gray-700/50 p-2 sm:p-3 rounded-lg">
                 {bookingDetails.id && <QRCode Id={bookingDetails.id} />}
               </div>
             </div>
           )}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-3 space-y-3">
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-3 space-y-2 sm:space-y-3">
             {/* Subtotal section */}
             <div className="flex justify-between items-center p-2">
-              <span className="text-gray-600 dark:text-gray-300">Subtotal</span>
-              <span className="font-medium">NPR {ticketsSubtotal.toLocaleString()}</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">Subtotal</span>
+              <span className="font-medium text-sm sm:text-base">NPR {ticketsSubtotal.toLocaleString()}</span>
             </div>
             
             {/* Discount section - only show if there is a discount */}
             {discountAmount > 0 && (
-              <div className="flex justify-between items-center p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 sm:p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg space-y-1 sm:space-y-0">
                 <div className="flex items-center">
                   <Tag className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mr-2" />
-                  <span className="font-medium text-indigo-600 dark:text-indigo-400">
+                  <span className="font-medium text-indigo-600 dark:text-indigo-400 text-sm sm:text-base">
                     Discount Applied {discountPercentage > 0 && `(${discountPercentage}%)`}
                   </span>
                 </div>
-                <span className="font-medium text-indigo-600 dark:text-indigo-400">
+                <span className="font-medium text-indigo-600 dark:text-indigo-400 text-sm sm:text-base self-start sm:self-auto">
                   - NPR {discountAmount.toLocaleString()}
                 </span>
               </div>
             )}
             
             {/* Total section */}
-            <div className={`flex justify-between items-center bg-${currentStatus.color}-50 dark:bg-${currentStatus.color}-900/30 p-3 rounded-lg`}>
+            <div className={`flex flex-col sm:flex-row sm:justify-between sm:items-center bg-${currentStatus.color}-50 dark:bg-${currentStatus.color}-900/30 p-3 rounded-lg space-y-1 sm:space-y-0`}>
               <div className="flex items-center">
-                <CreditCard className={`w-5 h-5 text-${currentStatus.color}-600 dark:text-${currentStatus.color}-400 mr-2`} />
-                <span className="font-medium">Total Amount Paid</span>
+                <CreditCard className={`w-4 h-4 sm:w-5 sm:h-5 text-${currentStatus.color}-600 dark:text-${currentStatus.color}-400 mr-2`} />
+                <span className="font-medium text-sm sm:text-base">Total Amount Paid</span>
               </div>
-              <span className={`text-xl font-bold text-${currentStatus.color}-600 dark:text-${currentStatus.color}-400`}>
+              <span className={`text-lg sm:text-xl font-bold text-${currentStatus.color}-600 dark:text-${currentStatus.color}-400 self-start sm:self-auto`}>
                 NPR {bookingDetails.totalPrice.toLocaleString()}
               </span>
             </div>
           </div>
-          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 space-y-1 text-sm">
+          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 space-y-2 text-sm">
             {status === 'CONFIRMED' && (
               <>
-                <p className="flex items-center text-gray-600 dark:text-gray-300">
-                  <Clock className="w-4 h-4 mr-2" />
-                  Please arrive 30 minutes before show time
+                <p className="flex items-start sm:items-center text-gray-600 dark:text-gray-300">
+                  <Clock className="w-4 h-4 mr-2 mt-0.5 sm:mt-0 flex-shrink-0" />
+                  <span>Please arrive 30 minutes before show time</span>
                 </p>
-                <p className="flex items-center text-gray-600 dark:text-gray-300">
-                  <Ticket className="w-4 h-4 mr-2" />
-                  Present this confirmation at the counter
+                <p className="flex items-start sm:items-center text-gray-600 dark:text-gray-300">
+                  <Ticket className="w-4 h-4 mr-2 mt-0.5 sm:mt-0 flex-shrink-0" />
+                  <span>Present this confirmation at the counter</span>
                 </p>
-                <p className="flex items-center text-gray-600 dark:text-gray-300">
-                  <Check className="w-4 h-4 mr-2" />
-                  Confirmation sent to your email
+                <p className="flex items-start sm:items-center text-gray-600 dark:text-gray-300">
+                  <Check className="w-4 h-4 mr-2 mt-0.5 sm:mt-0 flex-shrink-0" />
+                  <span>Confirmation sent to your email</span>
                 </p>
               </>
             )}
             {status === 'PENDING' && (
-              <p className="flex items-center text-yellow-600 dark:text-yellow-400">
-                <AlertTriangle className="w-4 h-4 mr-2" />
-                Your payment is being processed. We'll email you once confirmed.
+              <p className="flex items-start sm:items-center text-yellow-600 dark:text-yellow-400">
+                <AlertTriangle className="w-4 h-4 mr-2 mt-0.5 sm:mt-0 flex-shrink-0" />
+                <span>Your payment is being processed. We'll email you once confirmed.</span>
               </p>
             )}
             {status === 'CANCELLED' && (
-              <p className="flex items-center text-red-600 dark:text-red-400">
-                <X className="w-4 h-4 mr-2" />
-                This booking has been cancelled. Please contact support for assistance.
+              <p className="flex items-start sm:items-center text-red-600 dark:text-red-400">
+                <X className="w-4 h-4 mr-2 mt-0.5 sm:mt-0 flex-shrink-0" />
+                <span>This booking has been cancelled. Please contact support for assistance.</span>
               </p>
             )}
           </div>

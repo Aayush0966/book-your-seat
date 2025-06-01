@@ -36,10 +36,15 @@ const Bookings = () => {
   
   const itemsPerPage = 10; 
   
-  const totalPages = Math.ceil((bookings?.length || 0) / itemsPerPage);
+  // Sort bookings by creation date (newest first)
+  const sortedBookings = bookings 
+    ? [...bookings].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    : [];
+  
+  const totalPages = Math.ceil((sortedBookings?.length || 0) / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentBookings = bookings?.slice(startIndex, endIndex);
+  const currentBookings = sortedBookings?.slice(startIndex, endIndex);
   
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -192,7 +197,7 @@ const Bookings = () => {
                 </TableBody>
               </Table>
               {/* Add Pagination */}
-              {bookings && bookings.length > 0 && (
+              {sortedBookings && sortedBookings.length > itemsPerPage && (
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}

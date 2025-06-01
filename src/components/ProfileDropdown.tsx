@@ -21,6 +21,9 @@ const ProfileDropdown: FC<ProfileDropdownProps> = ({ session }) => {
     setIsNavigatingToProfile(true);
     // Use router.push for immediate navigation
     navigate.push('/profile');
+    setTimeout(() => {
+      setIsNavigatingToProfile(false);
+    }, 2000);
   };
 
   return (

@@ -43,11 +43,20 @@ const MovieListing = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8; // Show 8 movies per page (2x4 grid)
 
+    // Sort movies by updatedAt (newest first), then by createdAt if updatedAt is not available
+    const sortedMovies = movies 
+      ? [...movies].sort((a, b) => {
+          const aDate = new Date(a.updatedAt || a.createdAt || 0).getTime();
+          const bDate = new Date(b.updatedAt || b.createdAt || 0).getTime();
+          return bDate - aDate; // Newest first
+        })
+      : [];
+
     // Calculate pagination
-    const totalPages = Math.ceil((movies?.length || 0) / itemsPerPage);
+    const totalPages = Math.ceil((sortedMovies?.length || 0) / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentMovies = movies?.slice(startIndex, endIndex);
+    const currentMovies = sortedMovies?.slice(startIndex, endIndex);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -79,7 +88,15 @@ const MovieListing = () => {
     return (
         <Card className="mt-6">
             <CardHeader>
-                <CardTitle>Movie Listings</CardTitle>
+                <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                        <Film className="w-5 h-5 text-blue-600" />
+                        Movie Listings
+                    </CardTitle>
+                    <div className="text-sm text-gray-500">
+                        Showing {currentMovies?.length || 0} of {sortedMovies?.length || 0} movies
+                    </div>
+                </div>
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -94,6 +111,15 @@ const MovieListing = () => {
                                     sizes="(max-width: 768px) 80vw, (max-width: 1200px) 50vw, 33vw"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                
+                                {/* Recently Updated Badge */}
+                                {movie.updatedAt && new Date(movie.updatedAt).getTime() > Date.now() - 24 * 60 * 60 * 1000 && (
+                                    <div className="absolute top-2 left-2">
+                                        <span className="px-2 py-1 bg-green-500 text-white text-xs rounded-full font-medium">
+                                            Recently Updated
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                             
                             <div className="p-4">
@@ -152,7 +178,7 @@ const MovieListing = () => {
                 </div>
 
                 {/* Add Pagination */}
-                {movies && movies.length > itemsPerPage && (
+                {sortedMovies && sortedMovies.length > itemsPerPage && (
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

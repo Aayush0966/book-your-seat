@@ -58,7 +58,9 @@ const Navigation = () => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="flex justify-between h-20 items-center">
           <Link 
-            href="/" 
+            href="/home" 
+            prefetch={true}
+            onMouseEnter={() => handleNavItemHover('/home')}
             className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md group"
           >
             <div className="relative overflow-hidden">
