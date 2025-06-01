@@ -14,6 +14,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   title: 'Book Your Seat',
   description: 'Book your seat - Reserve your spot easily',
 };

@@ -8,6 +8,35 @@
 
 A modern, full-stack movie ticket booking platform built with Next.js 15, featuring real-time seat selection, secure payment integration, and comprehensive admin management.
 
+## 🧪 Test Credentials
+
+### 🔐 User Login Credentials
+For testing the application, use these credentials:
+- **Email**: `test@gmail.com`
+- **Password**: `test123`
+
+### 💳 Payment Gateway Test Credentials
+
+**⚠️ Important**: Always use test credentials for payment testing. Never use real payment details during development or testing.
+
+#### eSewa Test Credentials
+- **Test eSewa ID**: `9806800001`
+- **Test OTP**: `123456`
+- **Test Password**: `Nepal@123`
+
+#### Khalti Test Credentials
+- **Test Khalti IDs**: 
+  - `9800000000`
+  - `9800000001` 
+  - `9800000002`
+  - `9800000003`
+  - `9800000004`
+  - `9800000005`
+- **Test MPIN**: `1111`
+- **Test OTP**: `987654`
+
+> **Note**: These are official test credentials provided by eSewa and Khalti for development and testing purposes. Do not use real payment credentials on the website.
+
 ## 🌟 Features
 
 ### 🎭 User Features

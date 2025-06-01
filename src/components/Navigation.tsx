@@ -37,6 +37,7 @@ const Navigation = () => {
   React.useEffect(() => {
     const fetchSession = async () => {
       const sessionData = await getSession();
+      console.log("sessionData", sessionData)
       setSession(sessionData);
     };
     fetchSession();
@@ -69,7 +70,7 @@ const Navigation = () => {
                 width={160} 
                 height={120} 
                 alt="Company Logo"
-                className="transform transition-all duration-300 group-hover:scale-110"
+                className="transform transition-all duration-300 group-hover:scale-110 h-auto"
                 priority
               />
             </div>

@@ -1,5 +1,5 @@
-const CACHE_NAME = 'book-your-seat-v1';
-const STATIC_CACHE_NAME = 'book-your-seat-static-v1';
+const CACHE_NAME = 'book-your-seat-v3';
+const STATIC_CACHE_NAME = 'book-your-seat-static-v3';
 
 // Pages to cache immediately
 const PAGES_TO_CACHE = [
@@ -18,17 +18,67 @@ const STATIC_ASSETS = [
   '/manifest.json'
 ];
 
+// Helper function to safely cache a response
+async function safeCacheResponse(cache, request, response) {
+  try {
+    // Only cache if response is valid and not already consumed
+    if (response && response.ok && response.status === 200 && !response.bodyUsed) {
+      // Create a new response to avoid cloning issues
+      const responseToCache = new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers
+      });
+      await cache.put(request, responseToCache);
+    }
+  } catch (error) {
+    // Silently ignore cache errors
+    console.debug('Cache error:', error);
+  }
+}
+
+// Helper function to safely fetch and cache
+async function fetchAndCache(request, cacheName) {
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) {
+      const cache = await caches.open(cacheName);
+      // Clone the response before caching
+      const responseClone = response.clone();
+      await safeCacheResponse(cache, request, responseClone);
+    }
+    return response;
+  } catch (error) {
+    console.debug('Fetch error:', error);
+    // Try to return from cache if fetch fails
+    const cache = await caches.open(cacheName);
+    return await cache.match(request);
+  }
+}
+
 // Install event - cache static assets and pages
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    Promise.all([
-      // Cache static assets
-      caches.open(STATIC_CACHE_NAME).then((cache) => {
-        return cache.addAll(STATIC_ASSETS);
+    Promise.allSettled([
+      // Cache static assets one by one to avoid addAll failures
+      caches.open(STATIC_CACHE_NAME).then(async (cache) => {
+        for (const asset of STATIC_ASSETS) {
+          try {
+            await cache.add(asset);
+          } catch (error) {
+            console.debug(`Failed to cache ${asset}:`, error);
+          }
+        }
       }),
-      // Cache pages
-      caches.open(CACHE_NAME).then((cache) => {
-        return cache.addAll(PAGES_TO_CACHE);
+      // Cache pages one by one
+      caches.open(CACHE_NAME).then(async (cache) => {
+        for (const page of PAGES_TO_CACHE) {
+          try {
+            await cache.add(page);
+          } catch (error) {
+            console.debug(`Failed to cache ${page}:`, error);
+          }
+        }
       })
     ]).then(() => {
       // Force the waiting service worker to become the active service worker
@@ -66,35 +116,23 @@ self.addEventListener('fetch', (event) => {
   // Skip external requests
   if (url.origin !== self.location.origin) return;
 
-  // Handle page requests
+  // Skip chrome-extension and other non-http requests
+  if (!url.protocol.startsWith('http')) return;
+
+  // Handle page requests (navigation)
   if (request.mode === 'navigate') {
     event.respondWith(
-      caches.match(request).then((cachedResponse) => {
+      caches.match(request).then(async (cachedResponse) => {
         if (cachedResponse) {
-          // Serve from cache immediately
-          fetch(request).then((networkResponse) => {
-            // Update cache in background
-            if (networkResponse.ok) {
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, networkResponse.clone());
-              });
-            }
-          }).catch(() => {
-            // Network failed, but we have cache
+          // Serve from cache and update in background
+          fetchAndCache(request, CACHE_NAME).catch(() => {
+            // Ignore background update errors
           });
           return cachedResponse;
         }
 
         // Not in cache, fetch from network
-        return fetch(request).then((networkResponse) => {
-          if (networkResponse.ok) {
-            // Cache the response
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, networkResponse.clone());
-            });
-          }
-          return networkResponse;
-        });
+        return fetchAndCache(request, CACHE_NAME);
       })
     );
     return;
@@ -105,15 +143,11 @@ self.addEventListener('fetch', (event) => {
       url.pathname.startsWith('/static/') ||
       url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2)$/)) {
     event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        return cachedResponse || fetch(request).then((networkResponse) => {
-          if (networkResponse.ok) {
-            caches.open(STATIC_CACHE_NAME).then((cache) => {
-              cache.put(request, networkResponse.clone());
-            });
-          }
-          return networkResponse;
-        });
+      caches.match(request).then(async (cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetchAndCache(request, STATIC_CACHE_NAME);
       })
     );
     return;
@@ -122,16 +156,11 @@ self.addEventListener('fetch', (event) => {
   // Handle API requests with network-first strategy
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
-      fetch(request).then((networkResponse) => {
-        if (networkResponse.ok) {
-          // Cache successful API responses for short time
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, networkResponse.clone());
-          });
+      fetchAndCache(request, CACHE_NAME).then((response) => {
+        if (response) {
+          return response;
         }
-        return networkResponse;
-      }).catch(() => {
-        // Network failed, try cache
+        // If network fails, try cache
         return caches.match(request);
       })
     );
@@ -144,18 +173,14 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CACHE_PAGES') {
     const pagesToCache = event.data.pages || [];
     
-    caches.open(CACHE_NAME).then((cache) => {
-      return Promise.all(
-        pagesToCache.map((page) => {
-          return fetch(page).then((response) => {
-            if (response.ok) {
-              return cache.put(page, response);
-            }
-          }).catch(() => {
-            // Ignore failed requests
-          });
-        })
-      );
-    });
+    Promise.allSettled(
+      pagesToCache.map(async (page) => {
+        try {
+          await fetchAndCache(page, CACHE_NAME);
+        } catch (error) {
+          console.debug(`Failed to cache page ${page}:`, error);
+        }
+      })
+    );
   }
 }); 
