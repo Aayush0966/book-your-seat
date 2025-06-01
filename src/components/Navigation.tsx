@@ -20,6 +20,7 @@ const Navigation = () => {
   const [mobileDropdown, setMobileDropdown] = React.useState<boolean>(false);
   const [scrolled, setScrolled] = React.useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const navItems: NavItem[] = [
     {name:'Home', path:'/home'},
     {name: 'Contact', path: '/contact'},
@@ -27,6 +28,11 @@ const Navigation = () => {
   ];
   const [session, setSession] = React.useState<Session | null>(null);
   const navigate = useRouter();
+
+  // Prefetch handler for hover events
+  const handleNavItemHover = React.useCallback((path: string) => {
+    router.prefetch(path);
+  }, [router]);
 
   React.useEffect(() => {
     const fetchSession = async () => {
@@ -52,7 +58,9 @@ const Navigation = () => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="flex justify-between h-20 items-center">
           <Link 
-            href="/" 
+            href="/home" 
+            prefetch={true}
+            onMouseEnter={() => handleNavItemHover('/home')}
             className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md group"
           >
             <div className="relative overflow-hidden">
@@ -72,6 +80,8 @@ const Navigation = () => {
               <Link 
                 key={item.path}
                 href={item.path}
+                prefetch={true}
+                onMouseEnter={() => handleNavItemHover(item.path)}
                 className={`relative text-dark-text group px-2 py-2 ${
                   pathname === item.path ? 'text-primary' : ''
                 }`}
@@ -103,6 +113,8 @@ const Navigation = () => {
             ) : (
               <Link 
                 href="/auth"
+                prefetch={true}
+                onMouseEnter={() => handleNavItemHover('/auth')}
                 className="relative inline-flex items-center justify-center rounded-lg text-sm font-medium h-10 px-6 
                   bg-primary text-white overflow-hidden group hover:scale-105 transition-all duration-300"
               >
@@ -138,6 +150,8 @@ const Navigation = () => {
               <Link
                 key={item.path}
                 href={item.path}
+                prefetch={true}
+                onMouseEnter={() => handleNavItemHover(item.path)}
                 className={`block px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group ${
                   pathname === item.path 
                     ? 'text-primary bg-primary/5' 

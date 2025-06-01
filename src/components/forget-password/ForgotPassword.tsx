@@ -30,6 +30,8 @@ import {
     InputOTPSeparator 
 } from '../ui/input-otp'
 import { KeyRound, Mail, ArrowLeft, HelpCircle, ArrowRight } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import SlideShow from '../auth/SlideShow'
 
 const emailSchema = z.object({
     email: z.string().email("Please enter a valid email address")
@@ -164,7 +166,6 @@ const ForgotPassword = ({data}: {data: { code: string | null, email: string | nu
 
     useEffect(() => {
         if (data?.code && data?.email) {
-            console.log(data.code, data.email)
             setEmail(data.email);
             otpForm.setValue('otp', data.code.toString());
             const timer = setTimeout(() => {
@@ -177,6 +178,19 @@ const ForgotPassword = ({data}: {data: { code: string | null, email: string | nu
         }
         // If code or email is null or undefined, do nothing
     }, [data, otpForm]);
+
+    const getStepTitle = () => {
+        switch(step) {
+            case 'email':
+                return 'Reset Password';
+            case 'code':
+                return 'Verify Code';
+            case 'password':
+                return 'Create New Password';
+            default:
+                return '';
+        }
+    }
 
     const getStepDescription = () => {
         switch(step) {
@@ -191,236 +205,236 @@ const ForgotPassword = ({data}: {data: { code: string | null, email: string | nu
         }
     }
 
-    const getStepIcon = () => {
-        switch(step) {
-            case 'email':
-                return <Mail className="h-8 w-8 text-indigo-500" />;
-            case 'code':
-                return <div className="text-4xl font-bold text-indigo-500">#</div>;
-            case 'password':
-                return <KeyRound className="h-8 w-8 text-indigo-500" />;
-            default:
-                return null;
-        }
-    }
-
     const progressPercentage = step === 'email' ? 33 : step === 'code' ? 66 : 100;
 
     return (
-        <div className='flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-50 via-slate-50 to-blue-50'>
-            <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-indigo-500 to-purple-600 transform -skew-y-2"></div>
+        <div className="min-h-screen flex bg-gradient-to-br from-gray-900 to-gray-900">
+            <SlideShow />
             
-            <Card className='w-full max-w-lg bg-white/80 backdrop-blur-sm shadow-xl border-none relative overflow-hidden'>
-                <div className="absolute top-0 left-0 w-full h-1 bg-gray-200">
-                    <div 
-                        className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 transition-all duration-500 ease-in-out" 
-                        style={{ width: `${progressPercentage}%` }}
-                    />
-                </div>
-                
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200 to-indigo-200 rounded-full transform translate-x-16 -translate-y-16 opacity-50"></div>
-                
-                <CardHeader className='pt-8'>
-                    <div className="flex items-center space-x-3 mb-2">
-                        <div className="flex justify-center items-center h-12 w-12 rounded-full bg-indigo-100">
-                            {getStepIcon()}
-                        </div>
-                        <CardTitle className='text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>Recover Account</CardTitle>
-                    </div>
-                    <CardDescription className='text-gray-600'>
-                        {getStepDescription()}
-                    </CardDescription>
-                </CardHeader>
-                
-                <CardContent>
-                    {step === 'email' ? (
-                        <Form {...emailForm}>
-                            <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className='space-y-4'>
-                                <FormField
-                                    control={emailForm.control}
-                                    name='email'
-                                    render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel className="text-gray-700">Email</FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                                    <Input
-                                                        placeholder='Enter your email'
-                                                        type='email'
-                                                        disabled={isLoading}
-                                                        className="pl-10 border-gray-300 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                                        {...field}
-                                                    />
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <Button
-                                    type='submit'
-                                    className='w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200'
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? 'Sending...' : 'Send Verification Code'}
-                                    {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
-                                </Button>
-                            </form>
-                        </Form>
-                    ) : step === 'code' ? (
-                        <div className='space-y-6 py-2'>
-                            <div>
-                                <div className="mb-4 text-gray-700 font-medium">Verification Code</div>
-                                <div className='flex justify-center'>
-                                    <InputOTP 
-                                        maxLength={6} 
-                                        value={otpForm.watch('otp')} 
-                                        onChange={(value) => otpForm.setValue('otp', value)}
-                                        className="gap-2"
-                                    >
-                                        <InputOTPGroup className="gap-2">
-                                            <InputOTPSlot 
-                                                index={0} 
-                                                className="bg-white border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 w-12 h-12 text-xl"
-                                            />
-                                            <InputOTPSlot 
-                                                index={1} 
-                                                className="bg-white border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 w-12 h-12 text-xl"
-                                            />
-                                            <InputOTPSlot 
-                                                index={2} 
-                                                className="bg-white border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 w-12 h-12 text-xl"
-                                            />
-                                        </InputOTPGroup>
-                                        <InputOTPSeparator className="text-gray-300">-</InputOTPSeparator>
-                                        <InputOTPGroup className="gap-2">
-                                            <InputOTPSlot 
-                                                index={3} 
-                                                className="bg-white border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 w-12 h-12 text-xl"
-                                            />
-                                            <InputOTPSlot 
-                                                index={4} 
-                                                className="bg-white border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 w-12 h-12 text-xl"
-                                            />
-                                            <InputOTPSlot 
-                                                index={5} 
-                                                className="bg-white border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 w-12 h-12 text-xl"
-                                            />
-                                        </InputOTPGroup>
-                                    </InputOTP>
-                                </div>
-                                {otpForm.formState.errors.otp && (
-                                    <div className="text-sm font-medium text-red-500 mt-2 text-center">
-                                        {otpForm.formState.errors.otp.message}
-                                    </div>
-                                )}
-                                <div className="text-center text-gray-500 text-sm mt-4">
-                                    We sent a code to <span className="font-medium text-gray-700">{email}</span>
-                                </div>
-                            </div>
-                            <Button
-                                className='w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200'
-                                disabled={isLoading || !otpForm.watch('otp') || otpForm.watch('otp').length < 6}
-                                onClick={() => otpForm.handleSubmit(onOtpSubmit)()}
-                            >
-                                {isLoading ? 'Verifying...' : 'Verify Code'}
-                                {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
-                            </Button>
-                        </div>
-                    ) : (
-                        <Form {...passwordForm}>
-                            <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className='space-y-4'>
-                                <FormField
-                                    control={passwordForm.control}
-                                    name='password'
-                                    render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel className="text-gray-700">New Password</FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <KeyRound className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                                    <Input
-                                                        placeholder='Enter new password'
-                                                        type='password'
-                                                        disabled={isLoading}
-                                                        className="pl-10 border-gray-300 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                                        {...field}
-                                                    />
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={passwordForm.control}
-                                    name='confirmPassword'
-                                    render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel className="text-gray-700">Confirm Password</FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <KeyRound className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                                    <Input
-                                                        placeholder='Confirm your password'
-                                                        type='password'
-                                                        disabled={isLoading}
-                                                        className="pl-10 border-gray-300 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                                        {...field}
-                                                    />
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <Button
-                                    type='submit'
-                                    className='w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200'
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? 'Resetting...' : 'Reset Password'}
-                                </Button>
-                            </form>
-                        </Form>
-                    )}
-                </CardContent>
-                
-                <CardFooter className='flex justify-between py-5 border-t border-gray-100'>
-                    <Button
-                        variant='ghost'
-                        className='text-sm text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 flex items-center gap-1'
-                        onClick={() => window.location.href='/auth'}
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Back to login
-                    </Button>
-                    
-                    {step === 'code' && (
-                        <Button
-                            variant='ghost'
-                            className='text-sm text-gray-600 hover:text-indigo-600 hover:bg-indigo-50'
-                            onClick={() => setStep('email')}
-                            disabled={isLoading}
+            <div className="flex-1 flex items-center justify-center">
+                <div className="w-full max-w-md px-6 mx-auto">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={step}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
+                            className="space-y-10"
                         >
-                            Change email
-                        </Button>
-                    )}
-                    
-                    <Button
-                        variant='ghost'
-                        className='text-sm text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 flex items-center gap-1'
-                        onClick={() => window.location.href='/help'}
-                    >
-                        Need Help?
-                        <HelpCircle className="h-4 w-4" />
-                    </Button>
-                </CardFooter>
-                
-                {/* Decorative elements */}
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-200 to-purple-200 rounded-full transform -translate-x-12 translate-y-12 opacity-50"></div>
-            </Card>
+                            <motion.div 
+                                className="text-center"
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                <h1 className="text-5xl font-bold text-white mb-4">
+                                    {getStepTitle()}
+                                </h1>
+                                <p className="text-gray-400 text-lg">
+                                    {getStepDescription()}
+                                </p>
+                                
+                                {/* Progress bar */}
+                                <div className="flex justify-between mt-8 mb-4 px-1">
+                                    <div className={`h-1 w-1/3 rounded-full ${step === 'email' || step === 'code' || step === 'password' ? 'bg-purple-500' : 'bg-gray-700'} transition-all duration-300`}></div>
+                                    <div className="mx-1"></div>
+                                    <div className={`h-1 w-1/3 rounded-full ${step === 'code' || step === 'password' ? 'bg-purple-500' : 'bg-gray-700'} transition-all duration-300`}></div>
+                                    <div className="mx-1"></div>
+                                    <div className={`h-1 w-1/3 rounded-full ${step === 'password' ? 'bg-purple-500' : 'bg-gray-700'} transition-all duration-300`}></div>
+                                </div>
+                            </motion.div>
+                            
+                            {step === 'email' ? (
+                                <motion.form
+                                    className="space-y-6"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    onSubmit={emailForm.handleSubmit(onEmailSubmit)}
+                                >
+                                    <div className="relative group">
+                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10 group-focus-within:text-purple-400 transition-all duration-200" />
+                                        <input
+                                            type="email"
+                                            placeholder="Email address"
+                                            disabled={isLoading}
+                                            {...emailForm.register('email')}
+                                            className="w-full pl-12 pr-4 py-4 bg-white/[0.03] backdrop-blur-xl border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white/[0.05] text-white placeholder-gray-500 transition-all duration-200"
+                                        />
+                                    </div>
+                                    {emailForm.formState.errors.email && (
+                                        <p className="text-red-400 text-sm">
+                                            {emailForm.formState.errors.email.message}
+                                        </p>
+                                    )}
+                                    
+                                    <button
+                                        type="submit"
+                                        className="relative cursor-pointer w-full group"
+                                        disabled={isLoading}
+                                    >
+                                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-200" />
+                                        <div className="relative w-full py-4 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 rounded-xl text-white font-medium transform hover:translate-y-[-1px] transition-all duration-200 flex items-center justify-center">
+                                            {isLoading ? 'Sending...' : 'Send Verification Code'}
+                                            {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
+                                        </div>
+                                    </button>
+                                </motion.form>
+                            ) : step === 'code' ? (
+                                <motion.div
+                                    className="space-y-6"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <div className="flex flex-col items-center space-y-4">
+                                        <div className="mb-2 text-gray-400 text-center">
+                                            We sent a verification code to <span className="font-medium text-white">{email}</span>
+                                        </div>
+                                        
+                                        <div className="w-full">
+                                            <InputOTP 
+                                                maxLength={6} 
+                                                value={otpForm.watch('otp')} 
+                                                onChange={(value) => otpForm.setValue('otp', value)}
+                                                className="gap-2 flex justify-center"
+                                            >
+                                                <InputOTPGroup className="gap-2">
+                                                    <InputOTPSlot 
+                                                        index={0} 
+                                                        className="w-14 h-14 text-xl bg-white/[0.03] border-white/20 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                                                    />
+                                                    <InputOTPSlot 
+                                                        index={1} 
+                                                        className="w-14 h-14 text-xl bg-white/[0.03] border-white/20 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                                                    />
+                                                    <InputOTPSlot 
+                                                        index={2} 
+                                                        className="w-14 h-14 text-xl bg-white/[0.03] border-white/20 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                                                    />
+                                                </InputOTPGroup>
+                                                <InputOTPSeparator className="text-gray-600">-</InputOTPSeparator>
+                                                <InputOTPGroup className="gap-2">
+                                                    <InputOTPSlot 
+                                                        index={3} 
+                                                        className="w-14 h-14 text-xl bg-white/[0.03] border-white/20 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                                                    />
+                                                    <InputOTPSlot 
+                                                        index={4} 
+                                                        className="w-14 h-14 text-xl bg-white/[0.03] border-white/20 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                                                    />
+                                                    <InputOTPSlot 
+                                                        index={5} 
+                                                        className="w-14 h-14 text-xl bg-white/[0.03] border-white/20 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                                                    />
+                                                </InputOTPGroup>
+                                            </InputOTP>
+                                        </div>
+                                        
+                                        {otpForm.formState.errors.otp && (
+                                            <p className="text-red-400 text-sm">
+                                                {otpForm.formState.errors.otp.message}
+                                            </p>
+                                        )}
+                                    </div>
+                                    
+                                    <div className="flex gap-4">
+                                        <button
+                                            type="button"
+                                            className="relative flex-1"
+                                            onClick={() => setStep('email')}
+                                            disabled={isLoading}
+                                        >
+                                            <div className="w-full py-4 bg-white/[0.03] border border-white/20 hover:bg-white/[0.05] rounded-xl text-white font-medium transform hover:translate-y-[-1px] transition-all duration-200 flex items-center justify-center gap-2">
+                                                <ArrowLeft className="h-4 w-4" />
+                                                Back
+                                            </div>
+                                        </button>
+                                        
+                                        <button
+                                            type="button"
+                                            className="relative cursor-pointer flex-1 group"
+                                            disabled={isLoading || !otpForm.watch('otp') || otpForm.watch('otp').length < 6}
+                                            onClick={() => otpForm.handleSubmit(onOtpSubmit)()}
+                                        >
+                                            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-200" />
+                                            <div className="relative w-full py-4 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 rounded-xl text-white font-medium transform hover:translate-y-[-1px] transition-all duration-200 flex items-center justify-center">
+                                                {isLoading ? 'Verifying...' : 'Verify Code'}
+                                                {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
+                                            </div>
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            ) : (
+                                <motion.form
+                                    className="space-y-6"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
+                                >
+                                    <div className="space-y-4">
+                                        <div className="relative group">
+                                            <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10 group-focus-within:text-purple-400 transition-all duration-200" />
+                                            <input
+                                                type="password"
+                                                placeholder="Enter new password"
+                                                disabled={isLoading}
+                                                {...passwordForm.register('password')}
+                                                className="w-full pl-12 pr-4 py-4 bg-white/[0.03] backdrop-blur-xl border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white/[0.05] text-white placeholder-gray-500 transition-all duration-200"
+                                            />
+                                        </div>
+                                        {passwordForm.formState.errors.password && (
+                                            <p className="text-red-400 text-sm">
+                                                {passwordForm.formState.errors.password.message}
+                                            </p>
+                                        )}
+                                        
+                                        <div className="relative group">
+                                            <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10 group-focus-within:text-purple-400 transition-all duration-200" />
+                                            <input
+                                                type="password"
+                                                placeholder="Confirm your password"
+                                                disabled={isLoading}
+                                                {...passwordForm.register('confirmPassword')}
+                                                className="w-full pl-12 pr-4 py-4 bg-white/[0.03] backdrop-blur-xl border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white/[0.05] text-white placeholder-gray-500 transition-all duration-200"
+                                            />
+                                        </div>
+                                        {passwordForm.formState.errors.confirmPassword && (
+                                            <p className="text-red-400 text-sm">
+                                                {passwordForm.formState.errors.confirmPassword.message}
+                                            </p>
+                                        )}
+                                    </div>
+                                    
+                                    <button
+                                        type="submit"
+                                        className="relative cursor-pointer w-full group"
+                                        disabled={isLoading}
+                                    >
+                                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-200" />
+                                        <div className="relative w-full py-4 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 rounded-xl text-white font-medium transform hover:translate-y-[-1px] transition-all duration-200">
+                                            {isLoading ? 'Resetting Password...' : 'Reset Password'}
+                                        </div>
+                                    </button>
+                                </motion.form>
+                            )}
+                            
+                            <div className="flex justify-center mt-4">
+                                <button
+                                    type="button"
+                                    className="text-purple-400 hover:text-purple-300 text-sm transition-colors duration-200 flex items-center gap-2"
+                                    onClick={() => window.location.href='/auth'}
+                                >
+                                    <ArrowLeft className="h-4 w-4" />
+                                    Back to login
+                                </button>
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </div>
         </div>
     )
 }

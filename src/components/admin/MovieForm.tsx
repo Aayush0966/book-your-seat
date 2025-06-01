@@ -205,7 +205,7 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
   };
 
   const renderProgressBar = () => (
-    <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
+    <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
       <div
         className="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-in-out"
         style={{ width: `${(step / totalSteps) * 100}%` }}
@@ -251,14 +251,14 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
   };
 
   return (
-    <div className="max-w-screen-2xl p-6 bg-white rounded-xl">
+    <div className="max-w-screen-xl h-[80vh] flex flex-col p-4 md:p-6 bg-white rounded-xl">
       {renderProgressBar()}
 
-      <div className="min-h-[500px] w-full max-w-3xl min-w-[500px]">
+      <div className="flex-1 overflow-y-auto w-full max-w-3xl min-w-[500px] py-4">
         {renderStep()}
       </div>
 
-      <div className="flex justify-between mt-8">
+      <div className="flex justify-between mt-6 pt-4 border-t border-gray-200 flex-shrink-0">
         <button
           onClick={prevStep}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${

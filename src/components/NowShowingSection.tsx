@@ -1,9 +1,10 @@
 'use client'
 import MovieCard from "./MovieCard";
-import { Film, ChevronRight, Popcorn, Clapperboard } from "lucide-react";
+import { Film, ChevronRight, Clapperboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Movie } from "@/types/movie";
 import { motion } from "framer-motion";
+import React from "react";
 
 interface NowShowingSectionProps {
   shows: Movie[];
@@ -89,13 +90,13 @@ const NowShowingSection: React.FC<NowShowingSectionProps> = ({ shows }) => {
             className="flex flex-col items-center justify-center h-96 bg-white rounded-2xl border border-primary/10 shadow-xl"
           >
             <Film className="w-20 h-20 text-primary/60 animate-bounce" />
-            <h3 className="text-2xl font-bold text-gray-800 mt-6 mb-2">No Movies Available</h3>
-            <p className="text-gray-600 mb-8">Check back later for new releases</p>
+            <h3 className="text-2xl font-bold text-gray-800 mt-6 mb-2">No Active Shows Available</h3>
+            <p className="text-gray-600 mb-8">All current shows have ended. Check back soon for new screenings!</p>
             <Button 
               variant="outline"
               className="bg-white border-primary/20 hover:border-primary hover:bg-primary/5 transition-all duration-300"
             >
-              Explore Other Shows
+              Explore Upcoming Movies
             </Button>
           </motion.div>
         )}

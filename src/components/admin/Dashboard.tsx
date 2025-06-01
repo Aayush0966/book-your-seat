@@ -28,10 +28,12 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900">
       <Sidebar activeItem={activeItem} setActiveItem={setActiveItem} />
-      <div className="flex-1  p-4">
-        {renderComponent()}
+      <div className="flex-1 ml-64 transition-all duration-300 ease-in-out">
+        <div className="p-4 min-h-screen">
+          {renderComponent()}
+        </div>
       </div>
     </div>
   );

@@ -66,12 +66,12 @@ const DashboardContent = () => {
       <ChartsSection />
 
       {/* Bottom Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Upcoming Movies */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        {/* Recent Bookings - Takes 2 columns */}
+        <RecentBookings />
+        
+        {/* Upcoming Movies - Takes 1 column */}
         <UpcomingMovies />
-
-        {/* Recent Bookings */}
-         <RecentBookings />
       </div>
     </div>
   );

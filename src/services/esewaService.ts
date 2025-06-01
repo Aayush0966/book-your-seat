@@ -28,7 +28,6 @@ export async function verifyTransaction(transaction_uuid: string, amount: string
         );
         return response.data;
     } catch (error) {
-        console.log(error.response.data)
         console.error("Esewa verification failed:", error);
         return false;
     }

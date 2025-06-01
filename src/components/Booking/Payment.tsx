@@ -55,7 +55,6 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
       const response = await axios.get(`/api/coupons?code=${couponCode}`)
       if (response.status == 200) {
         const discount  = response.data.discount;
-        console.log(discount)
         const discountAmount = Math.floor(originalAmount * (discount / 100));
         setDiscount(discountAmount)
         setAppliedCoupon(couponCode)
@@ -106,7 +105,6 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
       const response = await axios.post('/api/booking', bookingDetails);
       if (response.status === 200) {
-        console.log('redirecting....');
         window.location.href = response.data.paymentUrl;
       }
     } catch (error) {
@@ -123,19 +121,19 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
   if (!mounted) return null;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-16 relative z-10">
+    <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6 animate-fade-in pb-16 relative z-10 px-4 sm:px-6">
       
       {/* Movie Details Card */}
       <Card className="bg-white/50 dark:bg-gray-800/50 border-0 shadow-lg overflow-hidden backdrop-blur-sm">
         <div className="h-2 bg-gradient-to-r from-red-500 to-red-700"></div>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-xl font-bold text-gray-900 dark:text-gray-100">{movie?.title}</CardTitle>
-          <div className="px-3 py-1 rounded-full bg-red-100/90 text-red-800 text-xs font-semibold backdrop-blur-sm dark:bg-red-900/40 dark:text-red-200">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 pb-2 p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">{movie?.title}</CardTitle>
+          <div className="px-3 py-1 rounded-full bg-red-100/90 text-red-800 text-xs font-semibold backdrop-blur-sm dark:bg-red-900/40 dark:text-red-200 self-start sm:self-auto">
             Booking in Progress
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 pt-2">
+        <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-2">
             <div className="flex items-center gap-3 text-sm text-gray-800 dark:text-gray-100">
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-50/90 dark:bg-red-900/30 backdrop-blur-sm">
                 <Clock className="h-4 w-4 text-red-600 dark:text-red-300" />
@@ -154,44 +152,44 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
       {/* Order Summary Card */}
       <Card className="bg-white/50 dark:bg-gray-800/50 border-0 shadow-lg backdrop-blur-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            Order Summary
+        <CardHeader className="pb-3 p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+            <span>Order Summary</span>
             <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
               ({selectedSeats.length} {selectedSeats.length === 1 ? 'ticket' : 'tickets'})
             </span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
           {selectedSeats.map((seat) => {
             const [category, seatNumber] = seat.split('/');
             const seatPrice = seatPrices && seatPrices[category as keyof typeof seatPrices] || 0;
 
             return (
               <div key={seat} className="flex justify-between items-center p-3 bg-gray-50/80 dark:bg-gray-700/60 rounded-lg backdrop-blur-sm">
-                <div className="flex gap-3 items-center">
-                  <span className={`px-2 py-1 rounded-md text-xs font-bold 
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center">
+                  <span className={`px-2 py-1 rounded-md text-xs font-bold w-fit
                     ${category === 'silver' ? 'bg-gray-200/90 text-gray-800 dark:bg-gray-600/90 dark:text-gray-100' : 
                       category === 'gold' ? 'bg-yellow-100/90 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200' : 
                       'bg-blue-100/90 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200'}`}>
                     {category.toUpperCase()}
                   </span>
-                  <p className="font-semibold text-gray-800 dark:text-gray-100">Seat {seatNumber}</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Seat {seatNumber}</p>
                 </div>
-                <p className="font-semibold text-red-700 dark:text-red-300">{formatCurrency(seatPrice)}</p>
+                <p className="font-semibold text-red-700 dark:text-red-300 text-sm sm:text-base">{formatCurrency(seatPrice)}</p>
               </div>
             );
           })}
 
           {/* Coupon Code */}
-          <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-2">Apply Coupon</p>
+          <div className="mt-4 sm:mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 mb-2">Apply Coupon</p>
             
             {appliedCoupon ? (
               <div className="flex items-center justify-between p-3 bg-green-50/80 dark:bg-green-900/30 rounded-lg text-green-800 dark:text-green-200 border border-green-100 dark:border-green-900/50">
                 <div className="flex items-center gap-2">
                   <Tag className="h-4 w-4" />
-                  <span className="font-medium">
+                  <span className="font-medium text-sm sm:text-base">
                     {appliedCoupon.toUpperCase()} applied: {formatCurrency(discount)} off
                   </span>
                 </div>
@@ -205,17 +203,17 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
                 </Button>
               </div>
             ) : (
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input
                   type="text"
                   placeholder="Enter coupon code"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
-                  className="bg-white/70 dark:bg-gray-700/70 border-gray-200 dark:border-gray-600"
+                  className="bg-white/70 dark:bg-gray-700/70 border-gray-200 dark:border-gray-600 text-sm sm:text-base"
                 />
                 <Button
                   variant="outline"
-                  className="whitespace-nowrap border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30"
+                  className="whitespace-nowrap border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 text-sm sm:text-base"
                   onClick={handleCouponApply}
                   disabled={isApplyingCoupon || !couponCode.trim()}
                 >
@@ -231,22 +229,22 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
           </div>
       
           {/* Total Amount */}
-            <div className="flex flex-col gap-4 border-t border-gray-200 dark:border-gray-700 pt-4 mt-6">
+            <div className="flex flex-col gap-3 sm:gap-4 border-t border-gray-200 dark:border-gray-700 pt-4 mt-4 sm:mt-6">
             {discount > 0 && (
-              <div className="flex flex-col w-full mb-2">
+              <div className="flex flex-col w-full mb-2 space-y-1">
               <div className="flex justify-between items-center">
                 <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Subtotal</p>
-                <p className="font-medium text-gray-900 dark:text-gray-100">{formatCurrency(originalAmount)}</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">{formatCurrency(originalAmount)}</p>
               </div>
               <div className="flex justify-between items-center">
                 <p className="text-sm font-medium text-green-900 dark:text-green-100">Discount</p>
-                <p className="font-medium text-green-900 dark:text-green-100">-{formatCurrency(discount)}</p>
+                <p className="font-medium text-green-900 dark:text-green-100 text-sm sm:text-base">-{formatCurrency(discount)}</p>
               </div>
               </div>
             )}
             <div className="flex justify-between items-center w-full">
-              <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">Total Amount</p>
-              <p className="text-2xl font-bold text-red-700 dark:text-red-300">{formatCurrency(totalAmount)}</p>
+              <p className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Total Amount</p>
+              <p className="text-xl sm:text-2xl font-bold text-red-700 dark:text-red-300">{formatCurrency(totalAmount)}</p>
             </div>
             </div>
         </CardContent>
@@ -254,28 +252,28 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
       {/* Payment Methods Card */}
       <Card className="bg-white/50 dark:bg-gray-800/50 border-0 shadow-lg backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold text-gray-900 dark:text-gray-100">Choose Payment Method</CardTitle>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Choose Payment Method</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4">
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <button
-              className={`h-24 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-2 group backdrop-blur-sm
+              className={`h-20 sm:h-24 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-1 sm:gap-2 group backdrop-blur-sm active:scale-95
                 ${selectedMethod === 'ESEWA' 
                   ? 'border-green-600 bg-green-50/90 dark:bg-green-900/40 dark:border-green-400' 
                   : 'border-gray-200 dark:border-gray-600 hover:border-red-300 dark:hover:border-red-600'}`}
               onClick={() => setSelectedMethod('ESEWA')}
             >
-              <div className="w-16 h-16 flex items-center justify-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
                 <Image 
                   src={esewaImg}
                   alt="eSewa" 
-                  width={48} 
-                  height={48} 
-                  className="object-contain" 
+                  width={40} 
+                  height={40}
+                  className="sm:w-12 sm:h-12 object-contain" 
                 />
               </div>
-              <p className={`font-semibold ${
+              <p className={`font-semibold text-sm sm:text-base ${
                 selectedMethod === 'ESEWA' 
                   ? 'text-green-700 dark:text-green-300' 
                   : 'text-gray-800 dark:text-gray-200'
@@ -283,22 +281,22 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
             </button>
 
             <button
-              className={`h-24 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-2 group backdrop-blur-sm
+              className={`h-20 sm:h-24 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-1 sm:gap-2 group backdrop-blur-sm active:scale-95
                 ${selectedMethod === 'KHALTI' 
                   ? 'border-purple-600 bg-purple-50/90 dark:bg-purple-900/40 dark:border-purple-400' 
                   : 'border-gray-200 dark:border-gray-600 hover:border-red-300 dark:hover:border-red-600'}`}
               onClick={() => setSelectedMethod('KHALTI')}
             >
-              <div className="w-16 h-16 flex items-center justify-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
                 <Image 
                   src={khaltiImg}
                   alt="Khalti" 
-                  width={48} 
-                  height={48}
-                  className="object-contain" 
+                  width={40} 
+                  height={40}
+                  className="sm:w-12 sm:h-12 object-contain" 
                 />
               </div>
-              <p className={`font-semibold ${
+              <p className={`font-semibold text-sm sm:text-base ${
                 selectedMethod === 'KHALTI' 
                   ? 'text-purple-700 dark:text-purple-300' 
                   : 'text-gray-800 dark:text-gray-200'
@@ -306,26 +304,26 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
             </button>
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4 pt-0">
-          <div className="w-full p-3 bg-gray-50/80 dark:bg-gray-700/50 rounded-lg flex items-center gap-2 text-sm text-gray-800 dark:text-gray-200 backdrop-blur-sm font-medium">
-            <Shield className="h-4 w-4 text-red-600 dark:text-red-300" />
+        <CardFooter className="flex flex-col space-y-3 sm:space-y-4 pt-0 p-4 sm:p-6">
+          <div className="w-full p-3 bg-gray-50/80 dark:bg-gray-700/50 rounded-lg flex items-center gap-2 text-xs sm:text-sm text-gray-800 dark:text-gray-200 backdrop-blur-sm font-medium">
+            <Shield className="h-4 w-4 text-red-600 dark:text-red-300 flex-shrink-0" />
             <span>Your payment information is encrypted and secure</span>
           </div>
           
           {selectedMethod && (
-            <div className="w-full p-3 bg-green-50/80 dark:bg-green-900/30 rounded-lg flex items-center gap-2 text-sm text-green-800 dark:text-green-200 border border-green-100 dark:border-green-900/50 backdrop-blur-sm font-medium">
-              <CheckCircle className="h-4 w-4" />
+            <div className="w-full p-3 bg-green-50/80 dark:bg-green-900/30 rounded-lg flex items-center gap-2 text-xs sm:text-sm text-green-800 dark:text-green-200 border border-green-100 dark:border-green-900/50 backdrop-blur-sm font-medium">
+              <CheckCircle className="h-4 w-4 flex-shrink-0" />
               <span>{selectedMethod === 'ESEWA' ? 'eSewa' : 'Khalti'} selected as your payment method</span>
             </div>
           )}
         </CardFooter>
       </Card>
 
-      {/* Action Buttons */}
-      <div className="flex gap-4 pt-6">
+      {/* Responsive Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6">
         <Button
           variant="outline"
-          className="w-1/3 h-12 flex items-center justify-center gap-2 border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-50/90 dark:hover:bg-gray-800/90 backdrop-blur-sm font-medium"
+          className="w-full sm:w-1/3 h-11 sm:h-12 flex items-center justify-center gap-2 border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-50/90 dark:hover:bg-gray-800/90 backdrop-blur-sm font-medium text-sm sm:text-base"
           onClick={() => setStep("SeatBook")}
           disabled={isProcessing}
         >
@@ -334,24 +332,26 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
         </Button>
         <Button
           onClick={() => handleBooking()}
-          className={`w-2/3 h-12 flex items-center justify-center gap-2 transition-all backdrop-blur-sm font-medium
+          className={`w-full sm:w-2/3 h-11 sm:h-12 flex items-center justify-center gap-2 transition-all backdrop-blur-sm font-medium text-sm sm:text-base
             ${!selectedMethod 
               ? 'bg-gray-300/90 dark:bg-gray-700/90 cursor-not-allowed text-gray-600 dark:text-gray-300' 
               : isProcessing
                 ? 'bg-green-600/95 dark:bg-green-700/95 text-white'
-                : 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white'
+                : 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white active:scale-95'
             }`}
           disabled={!selectedMethod || isProcessing}
         >
           {isProcessing ? (
             <>
               <RefreshCw className="h-4 w-4 animate-spin" />
-              Processing...
+              <span className="hidden sm:inline">Processing...</span>
+              <span className="sm:hidden">Processing</span>
             </>
           ) : (
             <>
               <Lock className="h-4 w-4" />
-              Pay {formatCurrency(totalAmount)}
+              <span className="hidden sm:inline">Pay {formatCurrency(totalAmount)}</span>
+              <span className="sm:hidden">{formatCurrency(totalAmount)}</span>
             </>
           )}
         </Button>

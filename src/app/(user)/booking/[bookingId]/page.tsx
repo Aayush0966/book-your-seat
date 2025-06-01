@@ -2,6 +2,29 @@ import BookingPage from "@/components/Booking/BookingPage";
 import { fetchBookingDetails } from "@/services/showServices";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ bookingId: string }> }): Promise<Metadata> {
+  const bookingId = (await params).bookingId;
+  
+  return {
+    title: `Booking Details - ${bookingId} | Book Your Seat`,
+    description: "View your movie booking details, tickets, and confirmation information. Download your tickets and check booking status.",
+    keywords: ["booking details", "movie tickets", "booking confirmation", "ticket download"],
+    authors: [{ name: "Book Your Seat" }],
+    openGraph: {
+      title: `Booking Details - Book Your Seat`,
+      description: "View your movie booking details and download your tickets.",
+      url: `/booking/${bookingId}`,
+      siteName: "Book Your Seat",
+      type: "website",
+    },
+    robots: {
+      index: false, // Booking details should not be indexed
+      follow: false,
+    },
+  };
+}
 
 const page = async ({ params }: { params: Promise<{ bookingId: string }> }) => {
     const bookingId = (await params).bookingId

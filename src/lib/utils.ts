@@ -74,8 +74,11 @@ export const generateCouponId = () => {
   return "C" + Math.random().toString(16).slice(2)
 }
 
-
-
+export const isBookingExpired = (bookingDate: number, bookingStatus: string): boolean => {
+  if (bookingStatus !== 'PENDING') return false;
+  const thirtyMinutesAgo = Math.floor((Date.now() - 30 * 60 * 1000) / 1000);
+  return bookingDate < thirtyMinutesAgo;
+}
 
 export const SCREEN_TYPES = [
   { screenId: 1, type: "Standard" },

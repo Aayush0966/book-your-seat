@@ -4,8 +4,6 @@ export const searchMovieByTitleApiUrl = ' https://api.themoviedb.org/3/search/mo
 export const imageUrl = 'https://image.tmdb.org/t/p/original'
 
 
-
-//payments
 export const esewaMethod = {
     merchantId: process.env.ESEWA_MERCHANT_ID,
     secretKey: process.env.ESEWA_SECRET_KEY,

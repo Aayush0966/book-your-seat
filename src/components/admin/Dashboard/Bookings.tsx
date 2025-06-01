@@ -29,18 +29,22 @@ const Bookings = () => {
   const [newCoupon, setNewCoupon] = useState({
     code: "",
     discount: 10,
-    expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
+    expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], 
     isActive: true
   });
 
-  console.log(coupons)
   
-  const itemsPerPage = 10; // Number of bookings per page
+  const itemsPerPage = 10; 
   
-  const totalPages = Math.ceil((bookings?.length || 0) / itemsPerPage);
+  // Sort bookings by creation date (newest first)
+  const sortedBookings = bookings 
+    ? [...bookings].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    : [];
+  
+  const totalPages = Math.ceil((sortedBookings?.length || 0) / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentBookings = bookings?.slice(startIndex, endIndex);
+  const currentBookings = sortedBookings?.slice(startIndex, endIndex);
   
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -193,7 +197,7 @@ const Bookings = () => {
                 </TableBody>
               </Table>
               {/* Add Pagination */}
-              {bookings && bookings.length > 0 && (
+              {sortedBookings && sortedBookings.length > itemsPerPage && (
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}

@@ -1,5 +1,5 @@
 export const sendCodeMailOptions = (email: string, name: string, resetCode: number) => ({
-  from: `"Book Your Seat" <${process.env.NEXT_PUBLIC_EMAIL}>`,
+  from: `"Book Your Seat" <${process.env.EMAIL}>`,
   to: email,
   subject: 'Reset Your Password - Book Your Seat',
   html: `<!DOCTYPE html>

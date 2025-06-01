@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma"
-import { genOTP } from "@/lib/utils"
 import { SignupDetails } from "@/types/auth"
 
 export const getUserByEmail = async (email: string) => {

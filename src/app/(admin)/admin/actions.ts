@@ -27,7 +27,6 @@ export const logOutAdmin = async () => {
         cookieStore.delete('loggedIn');
         return true
     } catch (error) {
-        console.log('Failed to logout: ', error)
         return false
     }
 }

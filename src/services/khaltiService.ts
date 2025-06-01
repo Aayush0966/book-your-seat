@@ -10,14 +10,12 @@ export const getKhaltiPaymentUrl = async (bookingDetails: BookingRequest, orderI
         purchase_order_id: orderId,
         purchase_order_name: 'movie tickets',
     }
-    console.log(payloadData)
 
     const response = await axios.post(khaltiMethod.paymentUrl, payloadData, {
         headers: {
             "Authorization": `key ${process.env.KHALTI_LIVE_SECRET_KEY}`
         }
     })
-    console.log(response.data)
     if (response.status == 200) {
         return {
             success: true,
@@ -38,7 +36,6 @@ export const verifyKhaltiPayment = async (data: string) => {
             "Authorization": `key ${process.env.KHALTI_LIVE_SECRET_KEY}`
         }
     })
-    console.log(response.data)
 
     if (response.status == 200) {
         return {

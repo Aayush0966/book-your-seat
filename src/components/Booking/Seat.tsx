@@ -30,16 +30,21 @@ const Seat: FC<SeatProps> = ({
       disabled={isBooked}
       onClick={() => !isBooked && handleSelectSeats(`${seatNumber}`)}
       className={clsx(
-        "w-12 h-12 rounded-md transition-all duration-300 transform hover:scale-110 flex items-center justify-center text-xs font-medium shadow-lg",
+        // Responsive sizing: smaller on mobile, larger on desktop
+        "w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-md transition-all duration-300 transform hover:scale-110 flex items-center justify-center text-xs font-medium shadow-lg",
+        // Touch-friendly on mobile
+        "active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-gray-800",
         isBooked
-          ? "bg-gradient-to-r from-rose-400 to-rose-500 shadow-rose-500/30 cursor-not-allowed"
+          ? "bg-gradient-to-r from-rose-400 to-rose-500 shadow-rose-500/30 cursor-not-allowed focus:ring-rose-400"
           : isSelected
-          ? "bg-gradient-to-r from-green-400 to-green-500 shadow-green-500/30"
-          : `bg-gradient-to-r ${categoryColors[category]} hover:shadow-lg`
+          ? "bg-gradient-to-r from-green-400 to-green-500 shadow-green-500/30 focus:ring-green-400"
+          : `bg-gradient-to-r ${categoryColors[category]} hover:shadow-lg focus:ring-${category === 'silver' ? 'gray' : category === 'gold' ? 'yellow' : 'blue'}-400`
       )}
       title={`Seat ${seatNumber} (${category.toUpperCase()} ${isBooked ? " - Booked" : ""})`}
     >
-      <span className="p-4">{seatNumber.split('/')[1]}</span>
+      <span className="text-[10px] sm:text-xs md:text-sm font-medium">
+        {seatNumber.split('/')[1].split('-')[1]}
+      </span>
     </button>
   );
 };
