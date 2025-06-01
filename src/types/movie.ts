@@ -82,8 +82,8 @@ export interface Booking {
     user?: UserType;
     bookingStatus: BookingStatus;
     tickets?: Ticket[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface Ticket {
