@@ -126,3 +126,56 @@ export const updateNewPassword = async (email: string, password: string, otp: nu
         message: 'password changed successfully'
     };
 };
+
+// Google OAuth functions
+export const handleGoogleSignIn = async (email: string, name: string, googleId: string) => {
+    try {
+        // Check if account already exists with this Google ID
+        const existingAccount = await userQueries.getAccountByProvider("google", googleId);
+        
+        if (existingAccount) {
+            // User already has Google account linked
+            return {
+                success: true,
+                user: existingAccount.user
+            };
+        }
+
+        // Check if user exists with this email
+        const existingUser = await userQueries.getUserByEmail(email);
+        
+        if (existingUser) {
+            // User exists, link Google account
+            await userQueries.linkGoogleAccount(existingUser.id, "google", googleId);
+            return {
+                success: true,
+                user: existingUser
+            };
+        } else {
+            // Create new user and link Google account
+            const newUser = await userQueries.createGoogleUser(email, name);
+            if (!newUser) {
+                return {
+                    success: false,
+                    error: "Failed to create user"
+                };
+            }
+            
+            await userQueries.linkGoogleAccount(newUser.id, "google", googleId);
+            
+            // Send welcome email
+            await sendWelcomeEmail(welcomeMailOptions(newUser.email, newUser.fullName));
+            
+            return {
+                success: true,
+                user: newUser
+            };
+        }
+    } catch (error) {
+        console.error("Google sign-in error:", error);
+        return {
+            success: false,
+            error: "Authentication failed"
+        };
+    }
+};

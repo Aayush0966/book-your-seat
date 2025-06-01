@@ -8,7 +8,9 @@ export const verifyUser = async (credentials: CredentialsType) => {
   try {
       await signIn("credentials", {
       ...credentials,
-      redirect: false, // Prevent automatic redirect
+      redirect: true,
+      redirectTo: "/home",
+      callbackUrl: "/home",
     });
 
     return { success: true };
@@ -25,7 +27,17 @@ export const verifyUser = async (credentials: CredentialsType) => {
   }
 }
 
-
+export const signInWithGoogle = async () => {
+  try {
+    await signIn("google", {
+      redirect: true,
+      redirectTo: "/home",
+      callbackUrl: "/home",
+    });
+  } catch (error) {
+    throw error;
+  }
+}
 
 export const logoutUser = async () => {
     await signOut();

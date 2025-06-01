@@ -78,6 +78,16 @@ export const getAllShows = async () => {
     return shows ?? null;
 }
 
+export const getAllShowsWithMovies = async () => {
+    const shows = await prisma.show.findMany({
+        include: {
+            movie: true,
+            screen: true
+        }
+    });
+    return shows ?? null;
+}
+
 export const fetchScreenById = (screenId: number) => {
     const screen = prisma.screen.findUnique({
         where: {

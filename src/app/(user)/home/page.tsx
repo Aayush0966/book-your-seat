@@ -60,7 +60,7 @@ export default async function Home() {
         {/* Hero Section with Parallax Effect */}
         <div className="relative">
           <div className="hidden md:block overflow-hidden">
-            <Hero />
+            <Hero activeShows={activeShows} />
           </div>
         </div>
 

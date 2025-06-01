@@ -15,8 +15,6 @@ interface DateRange {
   isToday: boolean;
 }
 
-
-
 const DateSelection = ({movie}: {movie: MovieWithShows}) => {
     const {step, setStep, setSelectedShow, selectedDate, setSelectedDate} = useBooking();
     const [dateRange, setDateRange] = useState<DateRange[]>([]);
@@ -90,19 +88,18 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
         }
     }, [selectedDate, selectedScreenType]);
 
-
     if (!movie) {
         return (
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
-                    <div className="lg:col-span-8 space-y-4 sm:space-y-6">
+            <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+                <div className="grid lg:grid-cols-12 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+                    <div className="lg:col-span-8 space-y-3 sm:space-y-4 md:space-y-6">
                         <Card className="bg-white/50 backdrop-blur-sm border-none shadow-lg">
-                            <CardContent className="p-4 sm:p-6">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <Monitor className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                                    <h3 className="text-base sm:text-lg font-semibold">No movie selected</h3>
+                            <CardContent className="p-3 sm:p-4 md:p-6">
+                                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                                    <Monitor className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-primary" />
+                                    <h3 className="text-sm sm:text-base md:text-lg font-semibold">No movie selected</h3>
                                 </div>
-                                <p className="text-sm sm:text-base">Please select a movie to proceed with booking.</p>
+                                <p className="text-xs sm:text-sm md:text-base">Please select a movie to proceed with booking.</p>
                             </CardContent>
                         </Card>
                     </div>
@@ -110,8 +107,6 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
             </div>
         );
     }
-
-
 
     const handleScreenTypeChange = (screenType: string) => {
         setSelectedScreenType(screenType);
@@ -143,16 +138,16 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-12 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
                 <ShowInfo movie={movie} />
                 
-                { movie.status === 'ACTIVE' && <div className="lg:col-span-8 space-y-4 sm:space-y-6">
+                { movie.status === 'ACTIVE' && <div className="lg:col-span-8 space-y-3 sm:space-y-4 md:space-y-6">
                     <Card className="bg-white/50 backdrop-blur-sm border-none shadow-lg">
-                        <CardContent className="p-4 sm:p-6">
-                            <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                                <Monitor className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                                <h3 className="text-base sm:text-lg font-semibold">Select Screen Type</h3>
+                        <CardContent className="p-3 sm:p-4 md:p-6">
+                            <div className="flex items-center gap-2 mb-2 sm:mb-3 md:mb-4">
+                                <Monitor className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-primary" />
+                                <h3 className="text-sm sm:text-base md:text-lg font-semibold">Select Screen Type</h3>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
                                 {SCREEN_TYPES.map((screen) => (
@@ -160,9 +155,9 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
                                         key={screen.screenId}
                                         onClick={() => handleScreenTypeChange(screen.type)}
                                         className={cn(
-                                            "px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105",
-                                            "border-2 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm sm:text-base",
-                                            "active:scale-95", // Touch feedback for mobile
+                                            "px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-md sm:rounded-lg md:rounded-xl transition-all duration-200 hover:scale-105",
+                                            "border-2 focus:outline-none focus:ring-2 focus:ring-primary/50 text-xs sm:text-sm md:text-base",
+                                            "active:scale-95 touch-manipulation", // Enhanced touch feedback for mobile
                                             selectedScreenType === screen.type
                                             ? "bg-primary text-white border-primary shadow-lg"
                                             : "bg-white/50 backdrop-blur-sm border-transparent hover:border-primary/30"
@@ -186,7 +181,7 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
 
                     {error && (
                         <Alert className="bg-red-50/50 backdrop-blur-sm border-red-200">
-                            <AlertDescription className="text-red-700 text-sm sm:text-base">
+                            <AlertDescription className="text-red-700 text-xs sm:text-sm md:text-base">
                                 {error}
                             </AlertDescription>
                         </Alert>
@@ -195,9 +190,9 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
                     {selectedTime && (
                         <div className="flex justify-center sm:justify-end">
                             <Button
-                            onClick={() => handleBook()}
+                                onClick={() => handleBook()}
                                 size="lg"
-                                className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg rounded-xl shadow-lg hover:scale-105 transition-all duration-200 active:scale-95"
+                                className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6 text-sm sm:text-base md:text-lg rounded-lg sm:rounded-xl shadow-lg hover:scale-105 transition-all duration-200 active:scale-95 touch-manipulation"
                             >
                                 Book Tickets
                             </Button>
@@ -205,12 +200,12 @@ const DateSelection = ({movie}: {movie: MovieWithShows}) => {
                     )}
                 </div>}
                 {
-                    movie.status === 'UPCOMING' && <div className="lg:col-span-8 space-y-4 sm:space-y-6">
+                    movie.status === 'UPCOMING' && <div className="lg:col-span-8 space-y-3 sm:space-y-4 md:space-y-6">
                     <Card className="bg-white/50 backdrop-blur-sm border-none shadow-lg">
-                    <CardContent className="p-4 sm:p-6">
+                    <CardContent className="p-3 sm:p-4 md:p-6">
                     <div className="flex items-center gap-2 justify-center">
-                        <Timer className="w-4 h-4 sm:w-5 sm:h-5 mt-2 sm:mt-4 text-primary" />
-                        <h3 className="text-base sm:text-lg mt-2 sm:mt-4 font-semibold">Movie is coming soon</h3>
+                        <Timer className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 mt-1 sm:mt-2 md:mt-4 text-primary" />
+                        <h3 className="text-sm sm:text-base md:text-lg mt-1 sm:mt-2 md:mt-4 font-semibold">Movie is coming soon</h3>
                     </div>            
                     </CardContent>
                     </Card>

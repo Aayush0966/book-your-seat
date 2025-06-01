@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     siteName: "Book Your Seat",
     images: [
       {
-        url: "/og-contact.jpg",
+        url: "/icon.png",
         width: 1200,
         height: 630,
         alt: "Contact Book Your Seat",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Contact Us - Book Your Seat",
     description: "Get in touch with Book Your Seat support team for assistance with movie bookings.",
-    images: ["/og-contact.jpg"],
+    images: ["/icon.png"],
   },
   robots: {
     index: true,

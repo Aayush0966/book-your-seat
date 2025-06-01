@@ -32,9 +32,6 @@ const SignInForm = ({ showPassword, setShowPassword }: AuthProps) => {
       toast.error(response.error)
       return;
     }
-    else {
-    router.push('/home')   
-    }
 
   };
 

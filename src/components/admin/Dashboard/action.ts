@@ -1,5 +1,5 @@
 'use server'
-import { fetchMoviesByStatus, getAllShows, fetchBookings as getFetchBookings, fetchMovies as getFetchMovies } from "@/database/shows/queries";
+import { fetchMoviesByStatus, getAllShows, getAllShowsWithMovies, fetchBookings as getFetchBookings, fetchMovies as getFetchMovies } from "@/database/shows/queries";
 import { fetchAllUsers } from "@/database/user/queries";
 
 
@@ -24,7 +24,7 @@ export const fetchUsers = async () => {
 }
 
 export const fetchShows = async () => {
-    const shows = await getAllShows();
+    const shows = await getAllShowsWithMovies();
     return shows ?? null;
 }
 

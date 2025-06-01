@@ -4,6 +4,8 @@ import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
 import { Roboto } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/react"
+import AdvancedPreloader from '@/components/AdvancedPreloader';
+import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -24,6 +26,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <link rel="icon" href="/favicon.ico" sizes="any" />
+      <link rel="manifest" href="/manifest.json" />
+      <meta name="theme-color" content="#ff0000" />
       <body
         className={`antialiased ${roboto.variable}`}
         suppressHydrationWarning
@@ -31,6 +35,8 @@ export default function RootLayout({
         <SessionProvider>
         <Toaster position="top-right" />
         <Analytics />
+        <AdvancedPreloader />
+        <ServiceWorkerRegistration />
         {children}
         </SessionProvider>
       </body>

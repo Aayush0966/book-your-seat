@@ -30,19 +30,22 @@ const Seat: FC<SeatProps> = ({
       disabled={isBooked}
       onClick={() => !isBooked && handleSelectSeats(`${seatNumber}`)}
       className={clsx(
-        // Responsive sizing: smaller on mobile, larger on desktop
-        "w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-md transition-all duration-300 transform hover:scale-110 flex items-center justify-center text-xs font-medium shadow-lg",
-        // Touch-friendly on mobile
-        "active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-gray-800",
+        // Enhanced responsive sizing: better mobile touch targets
+        "w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-sm sm:rounded-md md:rounded-lg transition-all duration-300 transform hover:scale-110 flex items-center justify-center text-xs font-medium shadow-lg",
+        // Enhanced touch-friendly interactions
+        "active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-gray-800 touch-manipulation",
+        // Improved mobile tap area
+        "relative before:absolute before:inset-[-2px] before:rounded-md before:content-[''] before:z-[-1]",
         isBooked
-          ? "bg-gradient-to-r from-rose-400 to-rose-500 shadow-rose-500/30 cursor-not-allowed focus:ring-rose-400"
+          ? "bg-gradient-to-r from-rose-400 to-rose-500 shadow-rose-500/30 cursor-not-allowed focus:ring-rose-400 opacity-80"
           : isSelected
-          ? "bg-gradient-to-r from-green-400 to-green-500 shadow-green-500/30 focus:ring-green-400"
-          : `bg-gradient-to-r ${categoryColors[category]} hover:shadow-lg focus:ring-${category === 'silver' ? 'gray' : category === 'gold' ? 'yellow' : 'blue'}-400`
+          ? "bg-gradient-to-r from-green-400 to-green-500 shadow-green-500/30 focus:ring-green-400 ring-2 ring-green-400/50"
+          : `bg-gradient-to-r ${categoryColors[category]} hover:shadow-lg focus:ring-${category === 'silver' ? 'gray' : category === 'gold' ? 'yellow' : 'blue'}-400 hover:brightness-110`
       )}
-      title={`Seat ${seatNumber} (${category.toUpperCase()} ${isBooked ? " - Booked" : ""})`}
+      title={`Seat ${seatNumber} (${category.toUpperCase()}${isBooked ? " - Booked" : ""})`}
+      aria-label={`Seat ${seatNumber.split('/')[1]} in ${category} section${isBooked ? " - unavailable" : isSelected ? " - selected" : " - available"}`}
     >
-      <span className="text-[10px] sm:text-xs md:text-sm font-medium">
+      <span className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-medium leading-none">
         {seatNumber.split('/')[1].split('-')[1]}
       </span>
     </button>

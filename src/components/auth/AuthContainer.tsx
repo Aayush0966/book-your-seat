@@ -3,10 +3,16 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SignInForm, SignupForm } from './AuthForms';
 import SlideShow from './SlideShow';
+import { signInWithGoogle } from '@/app/auth/actions';
 
 const MovieAuth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+
+
+  const handleGoogleLogin = async () => {
+    await signInWithGoogle();
+  }
 
 
   return (
@@ -68,19 +74,16 @@ const MovieAuth = () => {
                 transition={{ delay: 0.3 }}
               >
                 <button
+                  onClick={() => {
+                    handleGoogleLogin();
+                  }}
                   type="button"
                   className="flex items-center justify-center px-8 py-5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-purple-500/50 hover:scale-105 transition-all duration-200 text-white/90 hover:text-white group"
                 >
                   <img src="https://img.icons8.com/fluency/48/google-logo.png" alt="Google" className="w-6 h-6 mr-3 opacity-80 group-hover:opacity-100 transition-opacity" />
                   <span className="text-lg">Google</span>
                 </button>
-                <button
-                  type="button"
-                  className="flex items-center justify-center px-8 py-5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-purple-500/50 hover:scale-105 transition-all duration-200 text-white/90 hover:text-white group"
-                >
-                  <img src="https://img.icons8.com/ios-filled/50/mac-os.png" alt="Apple" className="w-6 h-6 mr-3 opacity-80 group-hover:opacity-100 transition-opacity" />
-                  <span className="text-lg">Apple</span>
-                </button>
+                
               </motion.div>
             </motion.div>
           </AnimatePresence>
