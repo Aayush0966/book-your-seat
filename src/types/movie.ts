@@ -76,12 +76,14 @@ export interface Booking {
     paymentMethod: PaymentMethod;
     couponId?: string;
     show?: Show;
-    seatsBooked: SeatWithPrice[] | JsonValue; // Modified this line
+    seatsBooked: SeatWithPrice[] | JsonValue;
     totalPrice: number;
     bookingDate: number;
     user?: UserType;
     bookingStatus: BookingStatus;
     tickets?: Ticket[];
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Ticket {
