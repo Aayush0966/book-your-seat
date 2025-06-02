@@ -1,21 +1,27 @@
 'use client'
-import { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { User, Settings, LogOut, Loader2 } from 'lucide-react';
 import { Session } from 'next-auth';
-import { signOut } from 'next-auth/react';
+import { getSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { handleLogout } from '@/lib/utils';
 import Link from 'next/link';
 
-interface ProfileDropdownProps {
-  session: Session;
-}
 
-const ProfileDropdown: FC<ProfileDropdownProps> = ({ session }) => {
+const ProfileDropdown = ( ) => {
   const navigate = useRouter();
+  const [session, setSession] = useState<Session | null>(null);
   const [isNavigatingToProfile, setIsNavigatingToProfile] = useState(false);
+
+  React.useEffect(() => {
+    const fetchSession = async () => {
+      const session = await getSession();
+      setSession(session);
+    };
+    fetchSession();
+  }, []);
 
   const handleProfileClick = () => {
     setIsNavigatingToProfile(true);
@@ -38,7 +44,7 @@ const ProfileDropdown: FC<ProfileDropdownProps> = ({ session }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>{session.user?.name}</DropdownMenuLabel>
+        <DropdownMenuLabel>{ session && session?.user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>

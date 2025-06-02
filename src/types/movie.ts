@@ -59,7 +59,7 @@ export interface BookingRequest {
     selectedTime: number
     showDate: number;
     bookingDate: number;
-    couponCode: string;
+    couponCode?: string;
     discount: number;
     totalPrice: number;
     paymentMethod: PaymentMethod;

@@ -260,19 +260,35 @@ export const fetchBookingWithShowById = async(bookingId: string) => {
     return bookingDetails;
 }
 
-export const fetchBookingBySeat = async (seatNumber: string, showTime: number, bookingDate: number) => {
-    const bookings = await fetchBookings();
-    // Filter out cancelled bookings so their seats become available again
-    const activeBookings = bookings.filter((booking) => 
-        booking.show.showTime == showTime && 
-        booking.bookingDate == bookingDate &&
-        booking.bookingStatus !== 'CANCELLED'
-    );
-    const booking = activeBookings.find((booking) => {
-        const seatsBooked: SeatWithPrice[] = booking?.seatsBooked as unknown as SeatWithPrice[];
-        return seatsBooked.find((seat) => seat.seat == seatNumber);
+export const fetchBookingBySeat = async (seatNumber: string, showId: number, showDate: number) => {
+    // First cancel any expired pending bookings
+    await cancelExpiredPendingBookings();
+    
+    // Get all active bookings for the specific show and date
+    const bookings = await prisma.booking.findMany({
+        where: {
+            showId: showId,
+            showDate: showDate,
+            bookingStatus: {
+                not: 'CANCELLED' // Exclude cancelled bookings
+            }
+        },
+        include: {
+            show: {
+                include: {
+                    movie: true
+                }
+            }
+        }
     });
-    console.debug("Booking found:", booking);
+
+    // Check if any booking contains the requested seat
+    const booking = bookings.find((booking) => {
+        const seatsBooked: SeatWithPrice[] = booking?.seatsBooked as unknown as SeatWithPrice[];
+        return seatsBooked.some((seat) => seat.seat === seatNumber);
+    });
+
+    console.debug("Seat booking check:", { seatNumber, showId, showDate, found: !!booking });
     return booking ?? null;
 }
 

@@ -104,28 +104,61 @@ export const fetchMovies = async (status: Status) => {
 export const bookShow = async (bookingDetails: BookingRequest) => {
     const session = await auth();
     
-    // Check and cancel any expired pending bookings before checking seat availability
     await showQueries.cancelExpiredPendingBookings();
     
     const seatsCount = bookingDetails.seatsBooked.length;
+    
+    // Check each seat individually to provide specific error messages
+    for (const seat of bookingDetails.seatsBooked) {
+        const existingBooking = await showQueries.fetchBookingBySeat(seat.seat, bookingDetails.showId, bookingDetails.showDate);
+        if (existingBooking) {
+            return {
+                success: false,
+                error: `Seat ${seat.seat} is already booked for this show`
+            };
+        }
+    }
+
+    // Double-check all seats again (race condition protection)
     const booked = await Promise.all(
         bookingDetails.seatsBooked.map(async (seat) => {
-            const booking = await showQueries.fetchBookingBySeat(seat.seat, bookingDetails.selectedTime, bookingDetails.bookingDate);
-            if (booking) return true;
-            return false;
+            const booking = await showQueries.fetchBookingBySeat(seat.seat, bookingDetails.showId, bookingDetails.showDate);
+            if (booking) return seat.seat; // Return the seat number for better error reporting
+            return null;
         })
     );
 
-    if (booked.includes(true)) {
+    const bookedSeats = booked.filter(seat => seat !== null);
+    if (bookedSeats.length > 0) {
         return {
             success: false,
-            error: 'The seat has been booked already'
+            error: `The following seats are already booked: ${bookedSeats.join(', ')}`
         };
     }
 
-    const coupon = await showQueries.fetchCouponByCode(bookingDetails.couponCode);
-    
-    await showQueries.updateCouponUseCount(coupon.id)
+    // Handle coupon validation - only process if coupon code is provided
+    let coupon = null;
+    if (bookingDetails.couponCode && bookingDetails.couponCode.trim() !== '') {
+        coupon = await showQueries.fetchCouponByCode(bookingDetails.couponCode);
+        
+        if (!coupon) {
+            return {
+                success: false,
+                error: 'Invalid coupon code'
+            };
+        }
+        
+        // Validate coupon is active and not expired
+        if (coupon.expiryDate < (Date.now() / 1000) || !coupon.isActive) {
+            return {
+                success: false,
+                error: 'Coupon has expired or is inactive'
+            };
+        }
+        
+        // Update coupon usage count only if coupon is valid
+        await showQueries.updateCouponUseCount(coupon.id);
+    }
 
     const bookingDetail: Booking = {
         id: generateBookingId(),
@@ -136,11 +169,27 @@ export const bookShow = async (bookingDetails: BookingRequest) => {
         orderId: (Date.now() / 1000).toLocaleString(),
         seatsBooked: bookingDetails.seatsBooked,
         totalPrice: bookingDetails.totalPrice,
-        couponId: coupon.id,
+        couponId: coupon?.id, // Use optional chaining to handle null coupon
         bookingDate: bookingDetails.bookingDate,
         bookingStatus: "PENDING",
         paymentMethod: bookingDetails.paymentMethod
     };
+
+    // Final check before creating booking (triple protection)
+    const finalCheck = await Promise.all(
+        bookingDetails.seatsBooked.map(async (seat) => {
+            const booking = await showQueries.fetchBookingBySeat(seat.seat, bookingDetails.showId, bookingDetails.showDate);
+            return booking ? seat.seat : null;
+        })
+    );
+
+    const finalBookedSeats = finalCheck.filter(seat => seat !== null);
+    if (finalBookedSeats.length > 0) {
+        return {
+            success: false,
+            error: `Race condition detected: seats ${finalBookedSeats.join(', ')} were just booked by another user`
+        };
+    }
 
     const newBooking = await showQueries.createBooking(bookingDetail);
 

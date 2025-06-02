@@ -144,6 +144,9 @@ KHALTI_SECRET_KEY="your-khalti-secret-key"
 
 # External APIs
 TMDB_API_KEY="your-tmdb-api-key"
+
+# Admin JWT Authentication 
+ADMIN_JWT_SECRET="your-super-secret-admin-jwt-key"
 ```
 
 ### 4. Database Setup

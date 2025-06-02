@@ -1,8 +1,13 @@
 import { createCoupon, fetchCoupons, toggleCouponStatus } from "@/database/shows/queries"
 import { validateCoupon } from "@/services/showServices";
 import { NextResponse } from "next/server";
+import { requireAdminAuth } from "@/lib/adminAuth";
 
 export const GET = async (request: Request) => {
+    // Check admin authentication
+    const authCheck = await requireAdminAuth();
+    if (authCheck) return authCheck;
+
     const { searchParams } = new URL(request.url);
     const couponCode = searchParams.get("code");
 
@@ -24,6 +29,10 @@ export const GET = async (request: Request) => {
 
 
 export const POST = async (request: Request) => {
+    // Check admin authentication
+    const authCheck = await requireAdminAuth();
+    if (authCheck) return authCheck;
+
     const {coupon} = await request.json();
     if (!coupon) {
         return NextResponse.json({error: "No coupon was provided"}, {status: 400})
@@ -39,6 +48,10 @@ export const POST = async (request: Request) => {
 }
 
 export const PATCH = async (request: Request) => {
+    // Check admin authentication
+    const authCheck = await requireAdminAuth();
+    if (authCheck) return authCheck;
+
     const {couponId, isActive} = await request.json();
     if (!couponId) {
         return NextResponse.json({error: "All fields are required"}, {status: 400})
@@ -50,4 +63,4 @@ export const PATCH = async (request: Request) => {
     }
 
     return NextResponse.json({success: true}, {status: 200})
-}
+} 

@@ -26,8 +26,7 @@ const Navigation = () => {
     {name: 'Contact', path: '/contact'},
     {name: 'Ticket rate', path: '/ticket-rate'}
   ];
-  const [session, setSession] = React.useState<Session | null>(null);
-  const navigate = useRouter();
+    const navigate = useRouter();
 
   // Prefetch handler for hover events
   const handleNavItemHover = React.useCallback((path: string) => {
@@ -35,13 +34,6 @@ const Navigation = () => {
   }, [router]);
 
   React.useEffect(() => {
-    const fetchSession = async () => {
-      const sessionData = await getSession();
-      console.log("sessionData", sessionData)
-      setSession(sessionData);
-    };
-    fetchSession();
-
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
@@ -109,20 +101,7 @@ const Navigation = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-            {session ? (
-              <ProfileDropdown session={session} />
-            ) : (
-              <Link 
-                href="/auth"
-                prefetch={true}
-                onMouseEnter={() => handleNavItemHover('/auth')}
-                className="relative inline-flex items-center justify-center rounded-lg text-sm font-medium h-10 px-6 
-                  bg-primary text-white overflow-hidden group hover:scale-105 transition-all duration-300"
-              >
-                <span className="relative z-10">Log in</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </Link>
-            )}
+              <ProfileDropdown />
           </div>
 
           <Button
@@ -168,14 +147,7 @@ const Navigation = () => {
                 }`} />
               </Link>
             ))}
-            {!session ? (
-              <Button 
-                className="w-full mt-2 bg-primary hover:bg-primary/90 transition-all duration-300 
-                  hover:scale-105 transform"
-              >
-                Log in
-              </Button>
-            ) : (
+          
               <Button 
                 onClick={() => {
                   handleLogout(navigate);
@@ -186,7 +158,7 @@ const Navigation = () => {
               >
                 Log Out
               </Button>
-            )}
+            
           </div>
         </div>
       </nav>

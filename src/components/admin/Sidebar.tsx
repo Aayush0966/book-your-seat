@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useShow } from '@/context/showContext';
 
 interface SidebarProps {
@@ -25,31 +25,38 @@ const Sidebar = ({ activeItem, setActiveItem }: SidebarProps) => {
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const { bookings, users, movies, isLoading } = useShow()
+  const [isHydrated, setIsHydrated] = useState(false);
+  const { bookings, users, movies, isLoading, isRefetching } = useShow()
+
+  // Ensure hydration consistency
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', badge: null },
     { 
       icon: Film, 
       label: 'Movies', 
-      badge: !isLoading && movies && movies.length > 0 ? movies.length : null 
+      badge: (!isLoading && movies && movies.length > 0 && isHydrated) ? movies.length : null 
     },
     { 
       icon: Ticket, 
       label: 'Bookings', 
-      badge: !isLoading && bookings && bookings.length > 0 ? bookings.length : null 
+      badge: (!isLoading && bookings && bookings.length > 0 && isHydrated) ? bookings.length : null 
     },
     { 
       icon: Users, 
       label: 'Users', 
-      badge: !isLoading && users && users.length > 0 ? users.length : null 
+      badge: (!isLoading && users && users.length > 0 && isHydrated) ? users.length : null 
     },
     { icon: Settings, label: 'Settings', badge: null },
   ];
 
   const handleActive = (label: string) => {
     setActiveItem(label.toLowerCase());
-    if (window.navigator.vibrate) {
+    // Only run browser-specific code on client side
+    if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
       window.navigator.vibrate(50);
     }
   };
@@ -91,6 +98,13 @@ const Sidebar = ({ activeItem, setActiveItem }: SidebarProps) => {
             ${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>
             Movie Admin
           </h2>
+          {/* Refresh indicator */}
+          {isRefetching && !isCollapsed && (
+            <div className="flex items-center ml-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-xs text-green-600 dark:text-green-400 ml-1">Syncing...</span>
+            </div>
+          )}
         </div>
       </div>
 

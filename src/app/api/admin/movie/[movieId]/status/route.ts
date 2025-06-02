@@ -1,7 +1,12 @@
 import { updateMovieStatus } from '@/database/shows/queries';
 import { NextResponse } from 'next/server';
+import { requireAdminAuth } from "@/lib/adminAuth";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ movieId: string }> }) {
+    // Check admin authentication
+    const authCheck = await requireAdminAuth();
+    if (authCheck) return authCheck;
+
     const movieId = (await params).movieId;
     const { status } = await req.json();
 

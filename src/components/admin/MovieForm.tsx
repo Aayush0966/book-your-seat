@@ -8,9 +8,11 @@ import { CastCrewStep } from './MovieForm/CastCrew';
 import { PricingStep } from './MovieForm/Pricing';
 import { ShowScheduleStep } from './MovieForm/ShowSchedule';
 import { TechnicalDetailsStep } from './MovieForm/TechnicalDetails';
+import { useShow } from '@/context/showContext';
 
 const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
   const [step, setStep] = useState(1);
+  const { refetchAll } = useShow();
   const [movieDetails, setMovieDetails] = useState<MovieDetails>({
     title: '',
     description: '',
@@ -221,6 +223,7 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
         toast.error("Something went wrong");
       } else {
         toast.success('Movie added successfully');
+        await refetchAll();
       }
     } catch (error) {
       toast.error("An error occurred during submission");

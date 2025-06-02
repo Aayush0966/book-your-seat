@@ -34,7 +34,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   
   const seatPrices = Array.isArray(selectedShow?.pricing) 
-    ? (selectedShow.pricing as Price[]).find((price: Price) => price.screenId === 1)?.prices 
+    ? (selectedShow.pricing as Price[]).find((price: Price) => price.screenId === selectedShow.screenId)?.prices 
     : null;
   const originalAmount = seatPrices ? getTotalPrice(selectedSeats, seatPrices) : 0;
   const totalAmount = originalAmount - discount;
@@ -52,7 +52,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
     setIsApplyingCoupon(true);
     try {
-      const response = await axios.get(`/api/coupons?code=${couponCode}`)
+      const response = await axios.get(`/api/admin/coupons?code=${couponCode}`)
       if (response.status == 200) {
         const discount  = response.data.discount;
         const discountAmount = Math.floor(originalAmount * (discount / 100));

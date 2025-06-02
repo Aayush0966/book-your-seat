@@ -11,7 +11,13 @@ import AdminLoader from './AdminLoader';
 
 const Dashboard = () => {
   const [activeItem, setActiveItem] = React.useState<string>('dashboard');
+  const [isHydrated, setIsHydrated] = React.useState(false);
   const { isLoading, error } = useShow();
+
+  // Ensure hydration consistency
+  React.useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const renderComponent = () => {
     switch (activeItem) {
@@ -30,13 +36,13 @@ const Dashboard = () => {
     }
   };
 
-  // Show full page loader while initial data is loading
-  if (isLoading) {
+  // Show full page loader while initial data is loading OR during hydration
+  if (isLoading || !isHydrated) {
     return <AdminLoader variant="full" text="Loading admin dashboard..." />;
   }
 
-  // Show error state if data loading failed
-  if (error) {
+  // Show error state if data loading failed (only after hydration)
+  if (error && isHydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">

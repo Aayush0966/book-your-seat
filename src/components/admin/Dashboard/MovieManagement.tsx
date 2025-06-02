@@ -19,10 +19,12 @@ import AdminLoader from '../AdminLoader';
 
 const MovieManagement = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoading } = useShow();
+  const { isLoading, refetchAll } = useShow();
 
-  const handleClose = () => {
+  const handleClose = async () => {
     setIsOpen(false);
+    // Refresh data when modal closes (MovieForm already calls refetchAll on success)
+    // This is just for additional safety in case any data needs refreshing
   };
 
   // Show loading state while data is being fetched

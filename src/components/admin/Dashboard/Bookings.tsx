@@ -22,7 +22,7 @@ import AdminLoader from '../AdminLoader';
 
 
 const Bookings = () => {
-  const { bookings, isLoading: contextLoading } = useShow();
+  const { bookings, isLoading: contextLoading, refetchAll } = useShow();
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState("bookings");
   const [coupons, setCoupons] = useState<Coupon[]>([]);
@@ -67,7 +67,7 @@ const Bookings = () => {
   const fetchCoupons = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get("/api/coupons");
+      const response = await axios.get("/api/admin/coupons");
       if (response.data) {
         setCoupons(response.data.coupons);
       } else {
@@ -98,7 +98,7 @@ const Bookings = () => {
   const createCoupon = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post('/api/coupons', {coupon: newCoupon})
+      const response = await axios.post('/api/admin/coupons', {coupon: newCoupon})
 
       if (response.data.success) {
         toast.success('Coupon created successfully');
@@ -109,7 +109,9 @@ const Bookings = () => {
           expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           isActive: true
         });
-        fetchCoupons();
+        // Refresh all data after coupon creation
+        await refetchAll();
+        fetchCoupons(); // Also update local coupons state
       } else {
         toast.error('failed creating coupon');
       }
@@ -124,12 +126,14 @@ const Bookings = () => {
   const toggleCouponStatus = async (couponId: string, isActive: boolean) => {
     setIsLoading(true);
     try {
-      const response = await axios.patch("/api/coupons", {isActive: !isActive, couponId})
+      const response = await axios.patch("/api/admin/coupons", {isActive: !isActive, couponId})
       
       
       if (response.data.success) {
         toast.success(`Coupon ${isActive ? 'deactivated' : 'activated'} successfully`);
-        fetchCoupons();
+        // Refresh all data after coupon status change
+        await refetchAll();
+        fetchCoupons(); // Also update local coupons state
       } else {
         toast.error('failed to update the coupon');
       }

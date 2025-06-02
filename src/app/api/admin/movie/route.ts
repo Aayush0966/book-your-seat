@@ -1,9 +1,13 @@
 import { addMovieAndShow } from "@/services/showServices";
 import { movieDetailsSchema } from "@/validators/showValidate";
 import { NextResponse } from "next/server";
-
+import { requireAdminAuth } from "@/lib/adminAuth";
 
 export const POST = async (request: Request) => {
+    // Check admin authentication
+    const authCheck = await requireAdminAuth();
+    if (authCheck) return authCheck;
+
     const {movieDetails} = await request.json();
 
     const result = movieDetailsSchema.safeParse(movieDetails);

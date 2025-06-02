@@ -41,7 +41,7 @@ const getStatusVariant = (status: Status) => {
 };
 
 const MovieListing = () => {
-    const { movies, isLoading } = useShow();
+    const { movies, isLoading, refetchAll } = useShow();
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8; // Show 8 movies per page (2x4 grid)
 
@@ -76,14 +76,12 @@ const MovieListing = () => {
 
             if (response.ok) {
                 toast.success(`Movie status changed to ${getStatusLabel(newStatus)}`);
+                // Refresh all data after successful status change
+                await refetchAll();
             }
         } catch (error) {
             console.error('Failed to update movie status:', error);
-            toast({
-                title: "Error",
-                description: "Failed to update movie status",
-                variant: "destructive",
-            });
+            toast.error("Failed to update movie status");
         }
     };
 
