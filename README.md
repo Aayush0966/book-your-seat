@@ -20,7 +20,7 @@ For testing the application, use these credentials:
 **⚠️ Important**: Always use test credentials for payment testing. Never use real payment details during development or testing.
 
 #### eSewa Test Credentials
-- **Test eSewa ID**: `9806800001`
+- **Test eSewa ID**: `9806800001/2/3/4/5`
 - **Test OTP**: `123456`
 - **Test Password**: `Nepal@123`
 
@@ -41,7 +41,7 @@ For testing the application, use these credentials:
 
 ### 🎭 User Features
 - **Movie Discovery**: Browse latest movies with detailed information
-- **Smart Seat Selection**: Interactive seat map with real-time availability
+- **Smart Seat Selection**: Interactive seat map with responsive design
 - **Secure Booking**: End-to-end encrypted booking process with OTP verification
 - **Multiple Payment Options**: Support for eSewa and Khalti payment gateways
 - **Digital Tickets**: QR code-enabled tickets with PDF download
@@ -70,9 +70,8 @@ For testing the application, use these credentials:
 - **Framework**: Next.js 15 with App Router
 - **Language**: TypeScript
 - **Styling**: TailwindCSS + Tailwind Animate
-- **UI Components**: Radix UI primitives
-- **State Management**: Zustand
-- **Forms**: React Hook Form + Zod validation
+- **UI Components**: Radix UI primitives, Shadcn
+- **State Management**: React context
 - **Animations**: Framer Motion
 - **Charts**: Recharts
 - **Icons**: Lucide React
@@ -90,7 +89,6 @@ For testing the application, use these credentials:
 - **Code Quality**: ESLint + Prettier
 - **Git Hooks**: Husky
 - **Commit Convention**: Conventional Commits
-- **Testing**: Cypress (E2E)
 - **Deployment**: Vercel
 - **Analytics**: Vercel Analytics
 
@@ -313,21 +311,6 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 - `test:` Test additions/modifications
 - `chore:` Maintenance tasks
 
-## 🐛 Known Issues
-
-- [ ] Mobile payment gateway integration needs optimization
-- [ ] Seat selection animation performance on older devices
-- [ ] Email delivery delays during peak hours
-
-## 📈 Roadmap
-
-- [ ] **Mobile App**: React Native mobile application
-- [ ] **Advanced Analytics**: ML-powered booking predictions
-- [ ] **Social Features**: User reviews and social sharing
-- [ ] **Multi-language**: Internationalization support
-- [ ] **Push Notifications**: Real-time booking updates
-- [ ] **Loyalty Program**: Points and rewards system
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -342,9 +325,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [Next.js](https://nextjs.org/) for the amazing React framework
 - [Prisma](https://www.prisma.io/) for the excellent database toolkit
+- [Supabase](https://supabase.com/) for managed PostgreSQL database hosting
 - [Radix UI](https://www.radix-ui.com/) for accessible UI components
+- [shadcn/ui](https://ui.shadcn.com/) for beautiful and customizable React components
 - [Vercel](https://vercel.com/) for seamless deployment
 - [TMDB](https://www.themoviedb.org/) for movie data API
+- [eSewa](https://esewa.com.np/) for payment gateway integration
+- [Khalti](https://khalti.com/) for payment gateway integration
 
 ---
 

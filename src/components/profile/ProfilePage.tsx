@@ -17,7 +17,6 @@ import {
 import ProfileTab from './ProfileTab';
 import BookingsTab from './BookingsTab';
 import PreferencesTab from './PreferencesTab';
-import SettingsTab from './SettingsTab';
 import { userDetails } from '@/types/user';
 
 interface ProfilePageProps {
@@ -107,8 +106,7 @@ const ProfilePage: FC<ProfilePageProps> = ({ userDetails }) => {
             {[
               { id: 'profile', icon: User, label: 'Profile' },
               { id: 'bookings', icon: Ticket, label: 'Bookings' },
-              { id: 'preferences', icon: Heart, label: 'Preferences' },
-              { id: 'settings', icon: Settings, label: 'Settings' }
+              { id: 'preferences', icon: Heart, label: 'Preferences' }
             ].map(tab => (
               <button
                 key={tab.id}
@@ -136,7 +134,6 @@ const ProfilePage: FC<ProfilePageProps> = ({ userDetails }) => {
           )}
           {activeTab === 'bookings' && <BookingsTab bookings={userDetails.bookings} />}
           {activeTab === 'preferences' && <PreferencesTab />}
-          {activeTab === 'settings' && <SettingsTab />}
         </div>
         
 

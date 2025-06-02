@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, Film } from 'lucide-react';
+import { Calendar, Clock, Film, Ticket } from 'lucide-react';
 import { Booking } from '@/types/movie';
 import { formatDate, formatTime, SCREEN_TYPES } from '@/lib/utils';
 import Link from 'next/link';
@@ -24,54 +24,80 @@ const BookingsTab = ({bookings}: {bookings: Booking[]}) => {
       <h2 className="text-xl font-bold text-dark-text dark:text-text mb-4">
         Booking History
       </h2>
-      <div className="space-y-4">
-        {paginatedBookings.map(booking => (
-          <Link
-            href={`/booking/${booking.id}`}
-            key={booking.id}
-            className="block border-b border-background-secondary dark:border-dark-background last:border-0 pb-4 last:pb-0 
-              hover:bg-gray-50 dark:hover:bg-dark-background/50 transition-colors duration-200 rounded-lg p-3
-              relative group"
-          >
-            <div className="flex flex-col md:flex-row justify-between gap-4">
-              <div className="group-hover:translate-x-1 transition-transform duration-200">
-                <h3 className="font-bold text-dark-text dark:text-text">{booking.show?.movie?.title}</h3>
-                <div className="flex flex-wrap gap-4 mt-2 text-text-secondary dark:text-dark-text-secondary">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    {formatDate(booking.showDate)}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {booking.show?.showTime ? formatTime(booking.show.showTime) : 'N/A'}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Film className="w-4 h-4" />
-                    {SCREEN_TYPES.find(screen => screen.screenId === booking.show?.screenId)?.type || ''}
-                  </span>
-                </div>
-              </div>
-              <div className="text-right group-hover:translate-x-[-4px] transition-transform duration-200">
-                <span className={`inline-block px-3 py-1 rounded-full text-sm ${
-                  booking.bookingStatus === 'CONFIRMED'
-                    ? 'bg-success/10 text-success'
-                    : 'bg-warning/10 text-warning'
-                }`}>
-                  {booking.bookingStatus.charAt(0).toUpperCase() + booking.bookingStatus.slice(1)}
-                </span>
-                <p className="mt-2 text-primary font-bold">NPR {booking.totalPrice}</p>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
       
-      {totalPages > 1 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+      {bookings.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="flex justify-center mb-4">
+            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+              <Ticket className="w-10 h-10 text-gray-400 dark:text-gray-500" />
+            </div>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">
+            No Bookings Yet
+          </h3>
+          <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+            You haven't made any movie bookings yet. Start exploring our latest movies and book your first show!
+          </p>
+          <Link 
+            href="/movies"
+            className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+          >
+            <Film className="w-5 h-5" />
+            Browse Movies
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="space-y-4">
+            {paginatedBookings.map(booking => (
+              <Link
+                href={`/booking/${booking.id}`}
+                key={booking.id}
+                className="block border-b border-background-secondary dark:border-dark-background last:border-0 pb-4 last:pb-0 
+                  hover:bg-gray-50 dark:hover:bg-dark-background/50 transition-colors duration-200 rounded-lg p-3
+                  relative group"
+              >
+                <div className="flex flex-col md:flex-row justify-between gap-4">
+                  <div className="group-hover:translate-x-1 transition-transform duration-200">
+                    <h3 className="font-bold text-dark-text dark:text-text">{booking.show?.movie?.title}</h3>
+                    <div className="flex flex-wrap gap-4 mt-2 text-text-secondary dark:text-dark-text-secondary">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        {formatDate(booking.showDate)}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        {booking.show?.showTime ? formatTime(booking.show.showTime) : 'N/A'}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Film className="w-4 h-4" />
+                        {SCREEN_TYPES.find(screen => screen.screenId === booking.show?.screenId)?.type || ''}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right group-hover:translate-x-[-4px] transition-transform duration-200">
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm ${
+                      booking.bookingStatus === 'CONFIRMED'
+                        ? 'bg-success/10 text-success'
+                        : 'bg-warning/10 text-warning'
+                    }`}>
+                      {booking.bookingStatus.charAt(0).toUpperCase() + booking.bookingStatus.slice(1)}
+                    </span>
+                    <p className="mt-2 text-primary font-bold">NPR {booking.totalPrice}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+          
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
+        </>
       )}
     </div>
   );
