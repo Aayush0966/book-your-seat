@@ -3,9 +3,19 @@ import { fetchShowsByMovieId } from "@/services/showServices";
 import NoMovieFound from "@/components/NoMovieFound";
 import { Metadata } from "next";
 
+// Force dynamic rendering to prevent build-time database queries
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }: { params: Promise<{ movieId: string }> }): Promise<Metadata> {
   const movieId = (await params).movieId;
-  const movie = await fetchShowsByMovieId(Number(movieId));
+  
+  let movie = null;
+  try {
+    movie = await fetchShowsByMovieId(Number(movieId));
+  } catch (error) {
+    console.error('Error fetching movie for metadata:', error);
+  }
   
   if (!movie) {
     return {
@@ -50,7 +60,14 @@ export async function generateMetadata({ params }: { params: Promise<{ movieId: 
 
 const page = async ({params}: {params: Promise<{movieId: number}>}) => {
     const movieId = (await params).movieId;
-    const movie = await fetchShowsByMovieId(Number(movieId));
+    
+    let movie = null;
+    try {
+        movie = await fetchShowsByMovieId(Number(movieId));
+    } catch (error) {
+        console.error('Error fetching movie:', error);
+    }
+    
     if (!movie) return <NoMovieFound />
     return (
         <BookingWrapper movie={movie} />

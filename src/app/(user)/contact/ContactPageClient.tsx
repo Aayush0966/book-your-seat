@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Phone, MapPin, Clock, ArrowRight, CheckCircle } from 'lucide-react'
 import Image from 'next/image'
-import logo from '@/assets/logo.png'
+
 
 const ContactPageClient = () => {
   const [formData, setFormData] = useState({
@@ -33,7 +33,7 @@ const ContactPageClient = () => {
         <div className="text-center mb-16">
           <div className="mb-8">
             <Image
-              src={logo}
+              src="/logo.png"
               alt="Company Logo"
               width={300}
               height={150}

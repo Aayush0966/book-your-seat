@@ -4,6 +4,10 @@ import { fetchUserDetails } from "@/services/userService";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
+// Force dynamic rendering to prevent build-time database queries
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "My Profile - Book Your Seat",
   description: "Manage your profile, view booking history, and update your personal information. Access all your movie bookings and account settings in one place.",
@@ -29,7 +33,14 @@ const page = async () => {
   if (!userId) {
     throw new Error("User ID is undefined");
   }
-  const userDetails = await fetchUserDetails(parseInt(userId))
+  
+  let userDetails = null;
+  try {
+    userDetails = await fetchUserDetails(parseInt(userId));
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+  }
+  
   if (!userDetails) {
     return <div>User details not found</div>;
   }

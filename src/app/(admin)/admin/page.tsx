@@ -4,6 +4,10 @@ import { cookies } from 'next/headers'
 import Dashboard from '@/components/admin/Dashboard'
 import { Metadata } from 'next'
 
+// Force dynamic rendering for admin pages
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Admin Dashboard - Book Your Seat",
   description: "Admin panel for managing movies, bookings, users, and cinema operations. Secure access for authorized personnel only.",

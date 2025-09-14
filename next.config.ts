@@ -37,6 +37,7 @@ const nextConfig: NextConfig = {
     ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60 * 60 * 24 * 30,
+    unoptimized: process.env.NODE_ENV === 'production',
   },
   async headers() {
     return [
