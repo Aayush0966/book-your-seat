@@ -6,8 +6,7 @@ import { User, Settings, LogOut, Loader2 } from 'lucide-react';
 import { Session } from 'next-auth';
 import { getSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { handleLogout } from '@/lib/utils';
-import Link from 'next/link';
+
 
 
 const ProfileDropdown = ( ) => {
@@ -23,6 +22,11 @@ const ProfileDropdown = ( ) => {
     fetchSession();
   }, []);
 
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate.push('/auth');
+  }
   const handleProfileClick = () => {
     setIsNavigatingToProfile(true);
     // Use router.push for immediate navigation
@@ -61,7 +65,7 @@ const ProfileDropdown = ( ) => {
               <span>{isNavigatingToProfile ? 'Loading Profile...' : 'Profile'}</span>
             </button>
           </DropdownMenuItem>
-          <DropdownMenuItem className='cursor-pointer' onClick={() => handleLogout(navigate)}>
+          <DropdownMenuItem className='cursor-pointer' onClick={() => handleLogout()}>
             <LogOut className="h-4 w-4" />
             <span>Log out</span>
           </DropdownMenuItem>

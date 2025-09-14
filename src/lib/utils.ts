@@ -16,10 +16,7 @@ export const genOTP = async () => {
   return parseInt(otp);
 }
 
-export const handleLogout = async (navigate: { push: (path: string) => void }) => {
-    await signOut();
-    navigate.push('/auth');
-  }
+
 
 export const formatTime = (timestamp: number) => {
   return new Intl.DateTimeFormat('en-US', {
@@ -81,7 +78,12 @@ export const isBookingExpired = (bookingDate: number, bookingStatus: string): bo
 }
 
 export const SCREEN_TYPES = [
-  { screenId: 1, type: "Standard" },
-  { screenId: 2, type: "3D" },
-  { screenId: 3, type: "IMAX" }
+  { screenId: 1, type: "STANDARD", displayName: "Standard" },
+  { screenId: 2, type: "THREED", displayName: "3D" },
+  { screenId: 3, type: "IMAX", displayName: "IMAX" }
 ];
+
+export const getScreenTypeDisplayName = (type: string): string => {
+  const screenType = SCREEN_TYPES.find(st => st.type === type);
+  return screenType?.displayName || type;
+};

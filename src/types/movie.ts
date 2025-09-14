@@ -102,11 +102,13 @@ export interface BookingDetails extends Booking {
     tickets: Ticket[];
 }
 
+export type ScreenType = 'STANDARD' | 'THREED' | 'IMAX';
+
 export interface Screen {
   id: number;
   screenNumber: number;
   totalSeats: number;
-  type: string
+  type: ScreenType;
   createdAt: Date;
   updatedAt: Date;
 }
