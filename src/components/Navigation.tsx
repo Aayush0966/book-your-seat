@@ -3,7 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import logo from "@/assets/logo.png";
+
 import { Menu, X } from 'lucide-react';
 import ProfileDropdown from './ProfileDropdown';
 import { getSession } from 'next-auth/react';
@@ -58,7 +58,7 @@ const Navigation = () => {
           >
             <div className="relative overflow-hidden">
               <Image 
-                src={logo}
+                src="/logo.png"
                 width={160} 
                 height={120} 
                 alt="Company Logo"

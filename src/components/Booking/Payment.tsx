@@ -20,8 +20,6 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import esewaImg from '@/assets/esewa.png'
-import khaltiImg from '@/assets/khalti.png'
 
 const Payment = ({ movie }: { movie: MovieWithShows }) => {
   const { selectedShow, selectedSeats, setStep, selectedDate } = useBooking();
@@ -266,7 +264,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
             >
               <div className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center">
                 <Image 
-                  src={esewaImg}
+                  src="/esewa.png"
                   alt="eSewa" 
                   width={32} 
                   height={32}
@@ -289,7 +287,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
             >
               <div className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center">
                 <Image 
-                  src={khaltiImg}
+                  src="/khalti.png"
                   alt="Khalti" 
                   width={32} 
                   height={32}
