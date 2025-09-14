@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, Film, Ticket } from 'lucide-react';
 import { Booking } from '@/types/movie';
-import { formatDate, formatTime, SCREEN_TYPES } from '@/lib/utils';
+import { formatDate, formatTime, SCREEN_TYPES, getScreenTypeDisplayName } from '@/lib/utils';
 import Link from 'next/link';
 import Pagination from '@/components/ui/Pagination';
 
@@ -71,7 +71,7 @@ const BookingsTab = ({bookings}: {bookings: Booking[]}) => {
                       </span>
                       <span className="flex items-center gap-1">
                         <Film className="w-4 h-4" />
-                        {SCREEN_TYPES.find(screen => screen.screenId === booking.show?.screenId)?.type || ''}
+                        {getScreenTypeDisplayName(SCREEN_TYPES.find(screen => screen.screenId === booking.show?.screenId)?.type || '')}
                       </span>
                     </div>
                   </div>

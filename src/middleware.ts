@@ -2,7 +2,16 @@ import { NextRequest, NextResponse } from "next/server"
 import {getToken} from 'next-auth/jwt'
 
 export async function middleware(request: NextRequest) {
+  // Skip middleware for service worker and static files
+  if (request.nextUrl.pathname === '/sw.js' || 
+      request.nextUrl.pathname.startsWith('/_next/static') ||
+      request.nextUrl.pathname.startsWith('/static/') ||
+      request.nextUrl.pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|webp|js|css|woff|woff2)$/)) {
+    return NextResponse.next()
+  }
+
   const token = await getToken({ req: request, secureCookie: process.env.APP_ENV == 'production', secret: process.env.NEXTAUTH_SECRET })
+  
   if (request.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/home', request.url))
   }
@@ -36,6 +45,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   runtime: 'nodejs',
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|public|admin).*)',
+    '/((?!_next/static|_next/image|favicon.ico|public|admin|sw.js|manifest.json).*)',
   ],
 }

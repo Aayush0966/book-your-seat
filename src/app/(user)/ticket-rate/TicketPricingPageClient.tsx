@@ -1,12 +1,13 @@
 'use client'
 import React, { useState } from 'react';
 import { Star, Film, Clapperboard, Info } from 'lucide-react';
+import { getScreenTypeDisplayName } from '@/lib/utils';
 
 const TicketPricingPageClient = () => {
   const pricing = [
     {
       screenId: 1,
-      type: "Standard",
+      type: "STANDARD",
       prices: { platinum: 300, gold: 200, silver: 150 },
       icon: Film,
       description: "Classic digital projection with crystal clear sound",
@@ -19,7 +20,7 @@ const TicketPricingPageClient = () => {
     },
     {
       screenId: 2,
-      type: "3D",
+      type: "THREED",
       prices: { platinum: 400, gold: 300, silver: 250 },
       icon: Clapperboard,
       description: "Immersive 3D experience with depth-enhanced visuals",
@@ -112,7 +113,7 @@ const TicketPricingPageClient = () => {
                 }`}
               >
                 <Icon className={`w-6 h-6 mb-4 ${selectedScreen.screenId === screen.screenId ? 'text-white' : 'text-red-500'}`} />
-                <h3 className="text-xl font-light mb-3">{screen.type}</h3>
+                <h3 className="text-xl font-light mb-3">{getScreenTypeDisplayName(screen.type)}</h3>
                 <p className="text-sm opacity-80 mb-6">{screen.description}</p>
                 <ul className="space-y-3 text-sm">
                   {screen.features.map((feature, idx) => (

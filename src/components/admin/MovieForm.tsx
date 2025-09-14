@@ -29,12 +29,12 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
     pricing: [
       {
         screenId: 1,
-        type: "Standard", 
+        type: "STANDARD", 
         prices: { platinum: 300, gold: 200, silver: 150 }
       },
       {
         screenId: 2,
-        type: "3D",
+        type: "THREED",
         prices: { platinum: 400, gold: 300, silver: 250 }
       },
       {
@@ -219,7 +219,7 @@ const MovieForm = ({onSuccess}: {onSuccess: () => void}) => {
     setIsLoading(true);
     try {
       const response = await axios.post('/api/admin/movie', { movieDetails });
-      if (response.statusText !== 'Created') {
+      if (response.status !== 201) {
         toast.error("Something went wrong");
       } else {
         toast.success('Movie added successfully');

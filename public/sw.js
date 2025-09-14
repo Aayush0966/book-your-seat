@@ -1,15 +1,5 @@
-const CACHE_NAME = 'book-your-seat-v4';
-const STATIC_CACHE_NAME = 'book-your-seat-static-v4';
-
-// Pages to cache immediately
-const PAGES_TO_CACHE = [
-  '/',
-  '/home',
-  '/contact',
-  '/ticket-rate',
-  '/profile',
-  '/auth'
-];
+const CACHE_NAME = 'book-your-seat-v5';
+const STATIC_CACHE_NAME = 'book-your-seat-static-v5';
 
 // Static assets to cache
 const STATIC_ASSETS = [
@@ -37,31 +27,18 @@ async function safeCacheResponse(cache, request, response) {
   }
 }
 
-// Helper function to create fetch request with proper options
-function createFetchRequest(request) {
-  return new Request(request, {
-    method: request.method,
-    headers: request.headers,
-    body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
-    mode: 'same-origin',
-    credentials: 'same-origin',
-    cache: 'default',
-    redirect: 'follow'
-  });
-}
-
 // Helper function to safely fetch and cache
 async function fetchAndCache(request, cacheName) {
   try {
-    // Create a new request with follow redirects
-    const fetchRequest = createFetchRequest(request);
+    const response = await fetch(request, {
+      redirect: 'follow',
+      mode: 'cors',
+      credentials: 'same-origin'
+    });
     
-    const response = await fetch(fetchRequest);
-    
-    // Don't cache redirected responses or error responses
+    // Cache successful responses that aren't redirected
     if (response && response.ok && !response.redirected && response.type !== 'opaqueredirect') {
       const cache = await caches.open(cacheName);
-      // Clone the response before caching
       const responseClone = response.clone();
       await safeCacheResponse(cache, request, responseClone);
     }
@@ -90,7 +67,7 @@ self.addEventListener('install', (event) => {
           try {
             const response = await fetch(asset, { 
               redirect: 'follow',
-              mode: 'same-origin',
+              mode: 'cors',
               credentials: 'same-origin'
             });
             if (response.ok && !response.redirected && response.type !== 'opaqueredirect') {
@@ -100,24 +77,8 @@ self.addEventListener('install', (event) => {
             console.debug(`Failed to cache ${asset}:`, error);
           }
         }
-      }),
-      // Cache pages one by one
-      caches.open(CACHE_NAME).then(async (cache) => {
-        for (const page of PAGES_TO_CACHE) {
-          try {
-            const response = await fetch(page, { 
-              redirect: 'follow',
-              mode: 'same-origin',
-              credentials: 'same-origin'
-            });
-            if (response.ok && !response.redirected && response.type !== 'opaqueredirect') {
-              await cache.put(page, response);
-            }
-          } catch (error) {
-            console.debug(`Failed to cache ${page}:`, error);
-          }
-        }
       })
+      // Don't pre-cache pages during install to avoid conflicts with Vercel routing
     ]).then(() => {
       console.log('Service Worker installed successfully');
       // Force the waiting service worker to become the active service worker
@@ -161,67 +122,28 @@ self.addEventListener('fetch', (event) => {
   // Skip chrome-extension and other non-http requests
   if (!url.protocol.startsWith('http')) return;
 
-  // Handle page requests (navigation)
-  if (request.mode === 'navigate') {
+  // Skip service worker requests
+  if (url.pathname.includes('sw.js')) return;
+
+  // Skip API auth routes to avoid interference
+  if (url.pathname.startsWith('/api/auth')) return;
+
+  // Handle static assets (highest priority for caching)
+  if (url.pathname.startsWith('/_next/static/') || 
+      url.pathname.startsWith('/static/') ||
+      url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|webp)$/)) {
     event.respondWith(
       (async () => {
         try {
-          // Check cache first
           const cachedResponse = await caches.match(request);
           if (cachedResponse) {
-            // Serve from cache and update in background
-            fetchAndCache(request, CACHE_NAME).catch(() => {
-              // Ignore background update errors
-            });
             return cachedResponse;
           }
-
-          // Not in cache, fetch from network with proper redirect handling
-          const fetchRequest = createFetchRequest(request);
-          const response = await fetch(fetchRequest);
-          
-          // If it's a redirect, just return it without caching
-          if (response.redirected || response.type === 'opaqueredirect') {
-            return response;
-          }
-          
-          // Cache successful responses
-          if (response.ok) {
-            const cache = await caches.open(CACHE_NAME);
-            const responseClone = response.clone();
-            await safeCacheResponse(cache, request, responseClone);
-          }
-          
-          return response;
+          return await fetchAndCache(request, STATIC_CACHE_NAME);
         } catch (error) {
-          console.debug('Navigation fetch error:', error);
-          // Try cache one more time
-          const cachedResponse = await caches.match(request);
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          // Return a basic fallback response
-          return new Response('Service temporarily unavailable', { 
-            status: 503,
-            headers: { 'Content-Type': 'text/plain' }
-          });
+          console.debug('Static asset fetch error:', error);
+          return fetch(request);
         }
-      })()
-    );
-    return;
-  }
-
-  // Handle static assets
-  if (url.pathname.startsWith('/_next/static/') || 
-      url.pathname.startsWith('/static/') ||
-      url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2)$/)) {
-    event.respondWith(
-      (async () => {
-        const cachedResponse = await caches.match(request);
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        return fetchAndCache(request, STATIC_CACHE_NAME);
       })()
     );
     return;
@@ -231,16 +153,65 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
       (async () => {
-        const response = await fetchAndCache(request, CACHE_NAME);
-        if (response) {
-          return response;
+        try {
+          const response = await fetchAndCache(request, CACHE_NAME);
+          if (response && response.ok) {
+            return response;
+          }
+          // If network fails, try cache
+          const cachedResponse = await caches.match(request);
+          return cachedResponse || fetch(request);
+        } catch (error) {
+          console.debug('API fetch error:', error);
+          return fetch(request);
         }
-        // If network fails, try cache
-        return await caches.match(request);
       })()
     );
     return;
   }
+
+  // Handle page requests (navigation) - Vercel optimized
+  if (request.mode === 'navigate' || request.destination === 'document') {
+    event.respondWith(
+      (async () => {
+        try {
+          // For navigation, try network first to handle Vercel routing correctly
+          const networkResponse = await fetch(request);
+          
+          // Only cache successful, non-redirected responses
+          if (networkResponse.ok && !networkResponse.redirected && networkResponse.status === 200) {
+            try {
+              const cache = await caches.open(CACHE_NAME);
+              const responseClone = networkResponse.clone();
+              await safeCacheResponse(cache, request, responseClone);
+            } catch (cacheError) {
+              // Ignore cache errors for navigation
+              console.debug('Cache error during navigation:', cacheError);
+            }
+          }
+          
+          return networkResponse;
+        } catch (error) {
+          console.debug('Navigation fetch error:', error);
+          // Try cache as fallback only if network completely fails
+          try {
+            const cachedResponse = await caches.match(request);
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+          } catch (cacheError) {
+            console.debug('Cache match error:', cacheError);
+          }
+          
+          // Final fallback - let the browser handle it naturally
+          throw error;
+        }
+      })()
+    );
+    return;
+  }
+
+  // For other requests, let them pass through normally
 });
 
 // Message event - handle cache updates

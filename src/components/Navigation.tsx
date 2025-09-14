@@ -9,7 +9,7 @@ import ProfileDropdown from './ProfileDropdown';
 import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 import { useRouter, usePathname } from 'next/navigation';
-import { handleLogout } from '@/lib/utils';
+import { signOut } from 'next-auth/react';
 
 interface NavItem {
   name: string;
@@ -150,7 +150,7 @@ const Navigation = () => {
           
               <Button 
                 onClick={() => {
-                  handleLogout(navigate);
+                  signOut();
                   setMobileDropdown(false);
                 }} 
                 className="w-full mt-2 bg-primary hover:bg-primary/90 transition-all duration-300 

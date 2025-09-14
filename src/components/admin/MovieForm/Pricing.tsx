@@ -1,10 +1,11 @@
 import { Pricing, StepProps } from '@/types/movie';
 import { DollarSign } from 'lucide-react';
 import React from 'react';
+import { SCREEN_TYPES, getScreenTypeDisplayName } from '@/lib/utils';
 
 export const PricingStep = ({ movieDetails, handlePriceChange } : StepProps) => {
   const [selectedScreens, setSelectedScreens] = React.useState<string[]>([]);
-  const screenTypes = ['Standard', '3D', 'IMAX'];
+  const screenTypes = SCREEN_TYPES.map(st => st.type);
 
 
   const toggleScreen = (screen: string) => {
@@ -40,7 +41,7 @@ export const PricingStep = ({ movieDetails, handlePriceChange } : StepProps) => 
                   : 'bg-gray-200 hover:bg-gray-300'
               }`}
             >
-              {screen}
+              {getScreenTypeDisplayName(screen)}
             </button>
           ))}
         </div>
@@ -49,7 +50,7 @@ export const PricingStep = ({ movieDetails, handlePriceChange } : StepProps) => 
       {selectedScreens.map((screenType, index) => (
         <div key={screenType} className="p-4 border rounded-lg space-y-4" data-screen={screenType}>
           <div className="flex justify-between items-center">
-            <h3 className="font-semibold">{screenType} Screen</h3>
+            <h3 className="font-semibold">{getScreenTypeDisplayName(screenType)} Screen</h3>
           </div>
           <div className="grid grid-cols-3 gap-4">
             {['Platinum', 'Gold', 'Silver'].map(seatType => (
