@@ -7,6 +7,10 @@ import Testimonials from "@/components/Testimonials";
 import { Star } from "lucide-react";
 import { Metadata } from "next";
 
+// Force dynamic rendering to prevent build-time database queries
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Book Your Seat - Premium Movie Ticket Booking",
   description: "Book movie tickets online with ease. Choose from the latest movies, select your preferred seats, and enjoy a seamless booking experience. Premium cinema halls with comfortable seating.",
@@ -50,9 +54,18 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const activeShows = await fetchMovies('ACTIVE') || [];
-  const upcomingShows = await fetchMovies('UPCOMING') || [];
-  const featuredShow = activeShows.length > 0 ? activeShows[0] : null;
+  let activeShows = [];
+  let upcomingShows = [];
+  let featuredShow = null;
+
+  try {
+    activeShows = await fetchMovies('ACTIVE') || [];
+    upcomingShows = await fetchMovies('UPCOMING') || [];
+    featuredShow = activeShows.length > 0 ? activeShows[0] : null;
+  } catch (error) {
+    console.error('Error fetching movies:', error);
+    // Continue with empty arrays - the UI will handle the empty state
+  }
 
   return (
     <ShowProvider>

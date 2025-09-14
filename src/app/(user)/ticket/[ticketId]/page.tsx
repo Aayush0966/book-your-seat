@@ -4,6 +4,10 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Metadata } from "next";
 
+// Force dynamic rendering to prevent build-time database queries
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }: { params: Promise<{ ticketId: string }> }): Promise<Metadata> {
   const ticketId = (await params).ticketId;
   
@@ -28,7 +32,13 @@ export async function generateMetadata({ params }: { params: Promise<{ ticketId:
 
 const page = async ({params}: {params: Promise<{ticketId: string}>}) => {
     const ticketId = (await params).ticketId;
-    const ticketDetails = await fetchShowDetailsByTicketId(ticketId);
+    
+    let ticketDetails = null;
+    try {
+        ticketDetails = await fetchShowDetailsByTicketId(ticketId);
+    } catch (error) {
+        console.error('Error fetching ticket details:', error);
+    }
     
     if (!ticketDetails) {
         return (

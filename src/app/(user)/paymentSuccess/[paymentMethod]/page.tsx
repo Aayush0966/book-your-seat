@@ -2,6 +2,10 @@ import PaymentProcessor from '@/components/Booking/PaymentProcessor';
 import { PaymentMethod } from '@/types/movie';
 import { Metadata } from 'next';
 
+// Force dynamic rendering for payment processing
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }: { params: Promise<{ paymentMethod: PaymentMethod }> }): Promise<Metadata> {
   const paymentMethod = (await params).paymentMethod;
   
