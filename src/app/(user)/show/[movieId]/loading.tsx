@@ -1,60 +1,48 @@
-import LoadingSpinner from '@/components/ui/loading-spinner';
-import { Ticket, Film } from 'lucide-react';
+import { Film } from 'lucide-react';
 
 export default function Loading() {
   return (
-    <div className="min-h-screen pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8 px-3 sm:px-4 md:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 sm:space-y-8">
-          {/* Enhanced Animated Icons */}
-          <div className="relative">
-            <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-primary/20 to-primary/10 rounded-full blur-xl animate-pulse"></div>
-            <div className="relative flex items-center space-x-3 sm:space-x-4">
-              <div className="p-3 sm:p-4 bg-white/10 backdrop-blur-sm rounded-full">
-                <Film className="w-6 h-6 sm:w-8 sm:h-8 text-primary animate-bounce" />
-              </div>
-              <div className="p-3 sm:p-4 bg-white/10 backdrop-blur-sm rounded-full">
-                <Ticket className="w-6 h-6 sm:w-8 sm:h-8 text-primary animate-bounce" style={{ animationDelay: '0.2s' }} />
-              </div>
-            </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-[#1a0505] via-[#2b0808] to-[#0a0303]">
+      {/* Ambient glow */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff0000]/10 blur-[120px]" />
+
+      <div className="relative flex flex-col items-center gap-9">
+        {/* Cinematic spinner */}
+        <div className="relative h-24 w-24">
+          {/* soft pulse halo */}
+          <div className="absolute inset-0 rounded-full bg-[#ff0000]/20 blur-2xl animate-pulse" />
+
+          {/* static outer track */}
+          <div className="absolute inset-0 rounded-full border border-white/10" />
+
+          {/* primary spinning arc */}
+          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#ff0000] border-r-[#ff0000]/40 animate-spin [animation-duration:1.1s]" />
+
+          {/* inner counter-rotating arc */}
+          <div className="absolute inset-[14px] rounded-full border border-transparent border-b-[#ff0000]/70 animate-premium-spin-reverse" />
+
+          {/* center icon */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Film className="h-7 w-7 text-[#ff0000] animate-premium-float" />
+          </div>
+        </div>
+
+        {/* Wordmark */}
+        <div className="flex flex-col items-center gap-4">
+          <h1 className="text-base font-semibold uppercase tracking-[0.35em] text-white/90 sm:text-lg">
+            Book Your Seat
+          </h1>
+
+          {/* shimmer line */}
+          <div className="relative h-px w-44 overflow-hidden rounded-full bg-white/10">
+            <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-[#ff0000] to-transparent animate-premium-shimmer" />
           </div>
 
-          {/* Enhanced Loading Spinner */}
-          <LoadingSpinner 
-            size="lg" 
-            text="Loading movie details..."
-            className="text-white"
-          />
-
-          {/* Enhanced Loading Steps */}
-          <div className="space-y-2 sm:space-y-3 text-center px-4">
-            <div className="flex items-center justify-center space-x-2 text-white/80">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-pulse"></div>
-              <span className="text-xs sm:text-sm">Preparing your booking experience</span>
-            </div>
-            <div className="flex items-center justify-center space-x-2 text-white/60">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white/40 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-              <span className="text-xs sm:text-sm">Loading showtimes and seats</span>
-            </div>
-            <div className="flex items-center justify-center space-x-2 text-white/40">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-              <span className="text-xs sm:text-sm">Almost ready...</span>
-            </div>
-          </div>
-
-          {/* Enhanced Progress Bar */}
-          <div className="w-full max-w-xs sm:max-w-md px-4">
-            <div className="h-1.5 sm:h-2 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full animate-pulse"></div>
-            </div>
-          </div>
-
-          {/* Mobile-friendly tip */}
-          <div className="sm:hidden mt-4 text-center">
-            <p className="text-xs text-white/50 animate-pulse">Please wait while we prepare everything...</p>
-          </div>
+          <p className="text-xs font-light tracking-wide text-white/45">
+            Preparing your cinematic experience
+          </p>
         </div>
       </div>
     </div>
   );
-} 
+}

@@ -79,6 +79,46 @@ export const createAccount = async (data: SignupDetails) => {
 }
 
 
+export const createAdminUser = async (email: string, fullName: string, hashedPassword: string) => {
+    try {
+        const result = await prisma.$transaction(async (tx) => {
+            const user = await tx.user.create({
+                data: {
+                    fullName,
+                    email,
+                    password: hashedPassword,
+                    role: 'ADMIN',
+                },
+                select: {
+                    id: true,
+                    fullName: true,
+                    email: true,
+                    contactNumber: true,
+                    role: true,
+                }
+            });
+
+            await tx.account.create({
+                data: {
+                    userId: user.id,
+                    provider: 'credentials',
+                    providerAccountId: user.email,
+                }
+            });
+
+            return user;
+        });
+
+        return result ? {
+            ...result,
+            contactNumber: result.contactNumber ? Number(result.contactNumber) : null
+        } : null;
+    } catch (error) {
+        console.error('Error creating admin user:', error);
+        return null;
+    }
+}
+
 export const getUserByIdWithBookings = async (userId: number) => {
     const user = await prisma.user.findUnique({
         where: {

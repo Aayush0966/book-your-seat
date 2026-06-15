@@ -1,0 +1,13 @@
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  core-js: true
+  cypress: true
+  esbuild: true
+  prisma: true
+  sharp: true
+  tesseract.js: true
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - commitizen@4.3.2
+  - lucide-react@1.18.0

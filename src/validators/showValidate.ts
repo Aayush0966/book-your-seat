@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const jsonSchema = z.union([z.array(z.string()), z.record(z.unknown()), z.string()]);
+const jsonSchema = z.union([z.array(z.string()), z.record(z.string(), z.unknown()), z.string()]);
 
 export const statusEnum = z.enum(["ACTIVE", "COMPLETED", "UPCOMING"]);
 

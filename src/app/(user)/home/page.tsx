@@ -11,6 +11,10 @@ import { Metadata } from "next";
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+// Keep the homepage focused on a small, evergreen set of movies.
+const MAX_ACTIVE_DISPLAY = 8;
+const MAX_UPCOMING_DISPLAY = 8;
+
 export const metadata: Metadata = {
   title: "Book Your Seat - Premium Movie Ticket Booking",
   description: "Book movie tickets online with ease. Choose from the latest movies, select your preferred seats, and enjoy a seamless booking experience. Premium cinema halls with comfortable seating.",
@@ -61,6 +65,9 @@ export default async function Home() {
   try {
     activeShows = await fetchMovies('ACTIVE') || [];
     upcomingShows = await fetchMovies('UPCOMING') || [];
+    // Limit how many we render on the user side.
+    activeShows = activeShows.slice(0, MAX_ACTIVE_DISPLAY);
+    upcomingShows = upcomingShows.slice(0, MAX_UPCOMING_DISPLAY);
     featuredShow = activeShows.length > 0 ? activeShows[0] : null;
   } catch (error) {
     console.error('Error fetching movies:', error);

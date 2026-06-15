@@ -50,7 +50,7 @@ const Payment = ({ movie }: { movie: MovieWithShows }) => {
 
     setIsApplyingCoupon(true);
     try {
-      const response = await axios.get(`/api/admin/coupons?code=${couponCode}`)
+      const response = await axios.get(`/api/coupons/validate?code=${encodeURIComponent(couponCode.trim())}`)
       if (response.status == 200) {
         const discount  = response.data.discount;
         const discountAmount = Math.floor(originalAmount * (discount / 100));

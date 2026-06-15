@@ -26,13 +26,18 @@ const SignInForm = ({ showPassword, setShowPassword }: AuthProps) => {
     const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get("email")
     const password = formData.get("password")
+    
     const response = await verifyUser({email, password} as CredentialsType);
-    if (response.error) {
+    if (response?.error) {
       setLoading(false)
       toast.error(response.error)
       return;
     }
-
+    
+    // Success! Redirect to home page
+    toast.success("Signed in successfully!")
+    // Use window.location for full page reload to ensure session is loaded
+    window.location.href = '/home'
   };
 
   return (

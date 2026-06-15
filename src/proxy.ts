@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import {getToken} from 'next-auth/jwt'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Skip middleware for service worker and static files
   if (request.nextUrl.pathname === '/sw.js' || 
       request.nextUrl.pathname.startsWith('/_next/static') ||
@@ -16,9 +16,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/home', request.url))
   }
 
+  // Logged-in users shouldn't see the login/signup page - send them home.
+  // (/api/auth is handled in the /api block below and never reaches here.)
+  if (token && request.nextUrl.pathname.startsWith('/auth')) {
+    return NextResponse.redirect(new URL('/home', request.url))
+  }
+
   if (request.nextUrl.pathname.startsWith('/api')) {
     if (request.nextUrl.pathname.startsWith('/api/admin') ||
-        request.nextUrl.pathname.startsWith('/api/auth')) {
+        request.nextUrl.pathname.startsWith('/api/auth') ||
+        request.nextUrl.pathname.startsWith('/api/sync-movies') ||
+        request.nextUrl.pathname.startsWith('/api/cleanup-expired-bookings')) {
       return NextResponse.next()
     }
     if (!token) {
@@ -43,7 +51,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  runtime: 'nodejs',
   matcher: [
     '/((?!_next/static|_next/image|favicon.ico|public|admin|sw.js|manifest.json).*)',
   ],

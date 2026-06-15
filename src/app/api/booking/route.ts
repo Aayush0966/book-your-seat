@@ -33,7 +33,10 @@ export async function POST(request: Request) {
         }
 
         const currentTimestamp = Math.floor(Date.now() / 1000);
-        if (bookingDetails.showDate < currentTimestamp) {
+        // Validate against the actual showtime, not the show's calendar day.
+        // showDate is midnight of the show day, so comparing it to "now" would
+        // wrongly reject same-day bookings made after midnight for a later show.
+        if (bookingDetails.selectedTime < currentTimestamp) {
             return NextResponse.json({ error: "Cannot book shows in the past" }, { status: 400 });
         }
 

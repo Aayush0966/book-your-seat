@@ -3,17 +3,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SignInForm, SignupForm } from './AuthForms';
 import SlideShow from './SlideShow';
-import { signInWithGoogle } from '@/app/auth/actions';
 
 const MovieAuth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
-
-
-  const handleGoogleLogin = async () => {
-    await signInWithGoogle();
-  }
-
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-gray-900 to-gray-900">
@@ -55,36 +48,6 @@ const MovieAuth = () => {
               ) : (
                 <SignupForm setLogin={() => setIsLogin(true)} showPassword={showPassword} setShowPassword={setShowPassword} />
               )}
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/10"></div>
-                </div>
-                <div className="relative flex justify-center text-base">
-                  <span className="px-6 text-gray-400 bg-gray-900">
-                    Or continue with
-                  </span>
-                </div>
-              </div>
-
-              <motion.div 
-                className="grid gap-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <button
-                  onClick={() => {
-                    handleGoogleLogin();
-                  }}
-                  type="button"
-                  className="flex items-center justify-center px-8 py-5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-purple-500/50 hover:scale-105 transition-all duration-200 text-white/90 hover:text-white group"
-                >
-                  <img src="https://img.icons8.com/fluency/48/google-logo.png" alt="Google" className="w-6 h-6 mr-3 opacity-80 group-hover:opacity-100 transition-opacity" />
-                  <span className="text-lg">Google</span>
-                </button>
-                
-              </motion.div>
             </motion.div>
           </AnimatePresence>
         </div>

@@ -434,3 +434,39 @@ export const cancelExpiredPendingBookings = async () => {
         throw error;
     }
 }
+
+export const countMovies = async () => {
+    return await prisma.movie.count();
+}
+
+export const findMovieByTitle = async (title: string) => {
+    const movie = await prisma.movie.findFirst({
+        where: {
+            title: {
+                equals: title,
+                mode: 'insensitive'
+            }
+        }
+    });
+    return movie ?? null;
+}
+
+export const ensureDefaultScreens = async () => {
+    const defaults = [
+        { screenNumber: 1, type: 'STANDARD' as const, totalSeats: 100 },
+        { screenNumber: 2, type: 'THREED' as const, totalSeats: 80 },
+        { screenNumber: 3, type: 'IMAX' as const, totalSeats: 120 },
+    ];
+
+    const screens = await Promise.all(
+        defaults.map((screen) =>
+            prisma.screen.upsert({
+                where: { screenNumber: screen.screenNumber },
+                update: {},
+                create: screen,
+            })
+        )
+    );
+
+    return screens;
+}
