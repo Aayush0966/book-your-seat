@@ -108,6 +108,24 @@ export const fetchMoviesByStatus = async (status: Status) => {
     return movie ? movie: null
 }
 
+// Counts movies of a given status that still have at least one show whose
+// window hasn't ended yet (i.e. movies actually displayable to users).
+export const countDisplayableMoviesByStatus = async (
+    status: Status,
+    nowTs: number
+): Promise<number> => {
+    return prisma.movie.count({
+        where: {
+            status,
+            shows: {
+                some: {
+                    endDate: { gt: nowTs },
+                },
+            },
+        },
+    });
+};
+
 export const fetchMovies = async () => {
     const movies = await prisma.movie.findMany({
         where: {

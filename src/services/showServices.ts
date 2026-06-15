@@ -79,6 +79,15 @@ export const fetchShowsByMovieId = async (movieId: number) => {
 
 export const fetchMovies = async (status: Status) => {
     try {
+        // Keep the catalog evergreen without a cron: top up from TMDB on demand
+        // when movies run low. Throttled + deduped so it's cheap on hot paths.
+        try {
+            const { ensureCatalogFresh } = await import("@/services/tmdbService");
+            await ensureCatalogFresh();
+        } catch (freshnessError) {
+            console.error("Catalog freshness check failed:", freshnessError);
+        }
+
         const movies = await showQueries.fetchMoviesByStatus(status);
         if (!movies) return null;
         

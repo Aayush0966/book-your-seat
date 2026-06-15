@@ -244,10 +244,12 @@ export const syncMoviesFromTmdb = async (pagesPerList = 1): Promise<SyncResult> 
         }
     }
 
-    // Only top up to the per-status cap, counting what's already stored so the
-    // catalog stays at a small, evergreen size (no runaway growth on re-runs).
-    const existingActive = (await showQueries.fetchMoviesByStatus("ACTIVE"))?.length ?? 0;
-    const existingUpcoming = (await showQueries.fetchMoviesByStatus("UPCOMING"))?.length ?? 0;
+    // Only top up to the per-status cap, counting movies that are still
+    // displayable (have a non-expired show). This way expired movies don't
+    // block new ones, keeping the catalog evergreen as windows lapse.
+    const nowTs = Math.floor(Date.now() / 1000);
+    const existingActive = await showQueries.countDisplayableMoviesByStatus("ACTIVE", nowTs);
+    const existingUpcoming = await showQueries.countDisplayableMoviesByStatus("UPCOMING", nowTs);
     const remaining: Record<Status, number> = {
         ACTIVE: Math.max(0, MOVIES_PER_STATUS - existingActive),
         UPCOMING: Math.max(0, MOVIES_PER_STATUS - existingUpcoming),
@@ -292,4 +294,58 @@ export const syncMoviesFromTmdb = async (pagesPerList = 1): Promise<SyncResult> 
         `TMDB sync complete: added ${result.added}, skipped ${result.skipped}, failed ${result.failed}`
     );
     return result;
+};
+
+// ---- Lazy, on-demand catalog refresh (replaces the paid Vercel cron) ----
+
+// At most one freshness check / sync per window, per server instance.
+const SYNC_THROTTLE_MS = Math.max(
+    60_000,
+    Number(process.env.SYNC_THROTTLE_MS) || 1000 * 60 * 60 // default: 1 hour
+);
+
+let lastSyncAt = 0;
+let inFlightSync: Promise<unknown> | null = null;
+
+/**
+ * Cheap guard meant to run on movie requests. If the displayable catalog has
+ * dropped below the per-status target (and we're outside the throttle window),
+ * it tops up from TMDB. Concurrent callers are deduped via an in-flight promise
+ * and a server-local timestamp, so this stays inexpensive on hot paths.
+ *
+ * The triggering request waits for the sync so results are immediately fresh;
+ * once filled, subsequent requests skip out fast until the next window.
+ */
+export const ensureCatalogFresh = async (): Promise<void> => {
+    // A sync is already running - don't pile on, let the caller proceed.
+    if (inFlightSync) return;
+
+    const now = Date.now();
+    if (now - lastSyncAt < SYNC_THROTTLE_MS) return;
+
+    const nowTs = Math.floor(now / 1000);
+    let needsSync = false;
+    try {
+        const [activeCount, upcomingCount] = await Promise.all([
+            showQueries.countDisplayableMoviesByStatus("ACTIVE", nowTs),
+            showQueries.countDisplayableMoviesByStatus("UPCOMING", nowTs),
+        ]);
+        needsSync =
+            activeCount < MOVIES_PER_STATUS || upcomingCount < MOVIES_PER_STATUS;
+    } catch (error) {
+        console.error("[catalog] Freshness check failed:", error);
+        return;
+    }
+
+    // Mark checked regardless, so a healthy catalog isn't re-counted every hit.
+    lastSyncAt = now;
+    if (!needsSync) return;
+
+    console.log("[catalog] Catalog below target - syncing from TMDB...");
+    inFlightSync = syncMoviesFromTmdb(1)
+        .catch((error) => console.error("[catalog] On-demand sync failed:", error))
+        .finally(() => {
+            inFlightSync = null;
+        });
+    await inFlightSync;
 };
